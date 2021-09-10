@@ -14,7 +14,10 @@ public class ProblemJpaEntity {
     @Id
     private String id;
 
-    @Column(name = "repository_url")
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "repository_url", nullable = false)
     private String repositoryUrl;
 
     @Column(name = "branch")

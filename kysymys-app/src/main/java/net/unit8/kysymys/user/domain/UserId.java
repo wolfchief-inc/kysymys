@@ -7,9 +7,10 @@ import lombok.Value;
 
 @Value
 public class UserId {
-    public static final StringValidator<String> validator = StringValidatorBuilder
+    public static final StringValidator<UserId> validator = StringValidatorBuilder
             .of("value", c -> c.notBlank().greaterThanOrEqual(21).lessThanOrEqual(21))
-            .build();
+            .build()
+            .andThen(UserId::new);
 
     String value;
 
@@ -18,10 +19,10 @@ public class UserId {
     }
 
     public UserId() {
-        this(validator.validated(NanoIdUtils.randomNanoId()));
+        this(NanoIdUtils.randomNanoId());
     }
 
     public static UserId of(String value) {
-        return validator.andThen(UserId::new).validated(value);
+        return validator.validated(value);
     }
 }

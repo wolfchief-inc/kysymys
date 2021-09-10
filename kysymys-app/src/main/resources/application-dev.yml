@@ -1,0 +1,19 @@
+spring:
+  devtools:
+    restart:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTOCOMMIT=OFF;TRACE_LEVEL_SYSTEM_OUT=1
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  mail:
+    host: mailtrap.io
+    port: 2525
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

@@ -1,12 +1,18 @@
 package net.unit8.kysymys.lesson.adapter.persistence;
 
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import lombok.Data;
+
+import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+@Entity(name = "submission")
+@Table(name = "submissions")
+@Data
 public class SubmissionJpaEntity {
+    @Id
+    private String id;
+
     @ManyToOne
     private AnswerJpaEntity answer;
 
@@ -14,6 +20,5 @@ public class SubmissionJpaEntity {
     private String commitHash;
 
     @Column(name = "submitted_at")
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime submittedAt;
 }

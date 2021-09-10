@@ -19,4 +19,9 @@ public class UserName {
     public static UserName of(String value) {
         return validator.andThen(UserName::new).validated(value);
     }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }

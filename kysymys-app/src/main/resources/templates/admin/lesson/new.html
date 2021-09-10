@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{layout/template :: layout(~{::title},~{:: #content})}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+    <title></title>
+</head>
+<body>
+<div class="container">
+    <main id="content">
+        <section class="section">
+            <h2 class="title">New Problem</h2>
+            <div class="block">
+                <form th:action="@{/admin/lesson/new}" method="post" th:object="${problemForm}">
+                    <div class="field">
+                        <label class="label">Name</label>
+                        <div class="control">
+                            <input class="input" type="text"
+                                   th:classappend="${#fields.hasErrors('name')} ? is-danger"
+                                   th:field="*{name}"
+                                   placeholder="Problem Name">
+                        </div>
+                        <p th:if="${#fields.hasErrors('name')}"  th:errors="*{name}" class="help is-danger">This problem is invalid</p>
+                    </div>
+                    <div class="field">
+                        <label class="label">Repository URL</label>
+                        <div class="control">
+                            <input class="input" type="text"
+                                   th:classappend="${#fields.hasErrors('repositoryUrl')} ? is-danger"
+                                   th:field="*{repositoryUrl}"
+                                   placeholder="Repository URL">
+                        </div>
+                        <p th:if="${#fields.hasErrors('repositoryUrl')}"  th:errors="*{repositoryUrl}" class="help is-danger">This repositoryUrl is invalid</p>
+                    </div>
+                    <div class="field">
+                        <label class="label">Branch</label>
+                        <div class="control">
+                            <input class="input" type="text"
+                                   th:classappend="${#fields.hasErrors('branch')} ? is-danger"
+                                   th:field="*{branch}"
+                                   placeholder="Branch">
+                        </div>
+                        <p th:if="${#fields.hasErrors('branch')}"  th:errors="*{branch}" class="help is-danger">This branch is invalid</p>
+                    </div>
+                    <div class="field">
+                        <label class="label">README</label>
+                        <div class="control">
+                            <input class="input" type="text"
+                                   th:classappend="${#fields.hasErrors('readmePath')} ? is-danger"
+                                   th:field="*{readmePath}"
+                                   placeholder="README path">
+                        </div>
+                        <p th:if="${#fields.hasErrors('readmePath')}"  th:errors="*{readmePath}" class="help is-danger">This readme path is invalid</p>
+                    </div>
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <button class="button is-link">Create</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>

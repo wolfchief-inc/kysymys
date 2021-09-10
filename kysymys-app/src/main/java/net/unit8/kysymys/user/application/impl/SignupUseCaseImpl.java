@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.Set;
+
 @Component
 class SignupUseCaseImpl implements SignupUseCase {
     private final ExistsEmailAddressPort existsEmailAddressPort;
@@ -35,7 +37,8 @@ class SignupUseCaseImpl implements SignupUseCase {
                 new UserId(),
                 email,
                 UserName.of(command.getName()),
-                password);
+                password,
+                Roles.of(Set.of("")));
 
         return tx.execute(status -> {
             saveUserPort.save(user);

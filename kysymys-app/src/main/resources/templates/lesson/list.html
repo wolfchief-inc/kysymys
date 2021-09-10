@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"
+      th:replace="~{layout/template :: layout(~{::title},~{:: #content})}"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.springframework.org/schema/security">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css" rel="stylesheet">
+    <title></title>
+</head>
+<body>
+<div class="container">
+    <main id="content">
+    <section class="section">
+        <div class="block" th:if="${problems.hasContent()}">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>名前</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="problem : ${problems}">
+                    <td></td>
+                    <td>
+                        <a class="problem-name"
+                           th:href="${problem.readmeUrl}"
+                           th:text="${problem.name}">name</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <nav aria-label="pagination" class="pagination" id="pagination-problems" role="navigation" th:if="${problems.totalPages > 0}">
+            <ul class="pagination-list">
+                <li th:each="pageNumber : ${pageNumbers}">
+                    <a class="pagination-link"
+                       th:classappend="${pageNumber==problems.number + 1} ? 'is-current' : ''"
+                       th:href="@{'/problems'(p=${pageNumber})}"
+                       th:text="${pageNumber}">1</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="block" sec:authorize="hasAuthority('CREATE_PROBLEM')">
+            <a th:href="@{/admin/lesson/new}">Create a new problem</a>
+        </div>
+    </section>
+    </main>
+</div>
+</body>

@@ -11,8 +11,9 @@ public class AnswerJpaEntity {
     @Id
     private String id;
 
-    @Column(name = "problem_id", nullable = false)
-    private String problemId;
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "problem_id", nullable = false)
+    private ProblemJpaEntity problem;
 
     @Column(name = "answerer_id", nullable = false)
     private String answererId;
@@ -20,6 +21,11 @@ public class AnswerJpaEntity {
     @Column(name = "repository_url")
     private String repositoryUrl;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(name = "latest_submissions",
+            joinColumns =
+                    { @JoinColumn(name = "answer_id", referencedColumnName = "id")},
+            inverseJoinColumns =
+                    { @JoinColumn(name = "submission_id", referencedColumnName = "id")})
     private SubmissionJpaEntity latestSubmission;
 }
