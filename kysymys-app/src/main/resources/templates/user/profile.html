@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{layout/template :: layout(~{::title},~{:: #content})}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+    <title></title>
+</head>
+<body>
+<div class="container">
+    <main id="content">
+        <section class="section">
+            <div class="block">
+                <p>Name:<span th:text="${user.name}">name</span></p>
+                <form>
+
+                </form>
+            </div>
+            <div class="block">
+                <ul th:each="follower : ${follower}">
+                    <li><a th:href="@{'/user/' + follower.id}" th:text="${follower.name}">user</a></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+</div>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{layout/template :: layout(~{::title},~{:: #content})}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+    <title></title>
+</head>
+<body>
+<div class="container">
+    <main id="content">
+        <section class="section">
+            <div class="block">
+                <h2 class="title">Sign up</h2>
+            </div>
+            <div class="block">
+                <form th:action="@{'/signup'}" method="post" th:object="${signupForm}">
+                    <div class="field">
+                        <label class="label">Email</label>
+                        <div class="control">
+                            <input class="input" type="text" th:field="*{email}" placeholder="Email Address"
+                                   th:classappend="${#fields.hasErrors('email')} ? is-danger">
+                        </div>
+                        <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="help is-danger">Email is invalid</p>
+                    </div>
+                    <div class="field">
+                        <label class="label">Name</label>
+                        <div class="control">
+                            <input class="input" type="text" th:field="*{name}" placeholder="User name"
+                                   th:classappend="${#fields.hasErrors('name')} ? is-danger">
+                        </div>
+                        <p th:if="${#fields.hasErrors('name')}" th:errors="*{email}" class="help is-danger">Name is invalid</p>
+                    </div>
+                    <div class="field">
+                        <label class="label">Password</label>
+                        <div class="control">
+                            <input class="input" type="password" th:field="*{password}" placeholder="Password"
+                                   th:classappend="${#fields.hasErrors('password')} ? is-danger">
+                        </div>
+                        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="help is-danger">Password is invalid</p>
+                    </div>
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <button class="button is-link">Sign up</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

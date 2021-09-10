@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ログイン</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+</head>
+<body>
+<section class="hero is-success is-fullheight">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class="column is-4 is-offset-4">
+                <h3 class="title has-text-black">Login</h3>
+                <hr class="login-hr">
+                <p class="subtitle has-text-black">Please login to proceed.</p>
+                <div class="box">
+                    <form th:action="@{/login}" method="post">
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-large" type="email" name="username" placeholder="Your Email" autofocus=""
+                                th:attrappend="value=${#arrays.contains(@environment.getActiveProfiles(),'dev')?'user1@example.com':''}">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-large" type="password" name="password" placeholder="Your Password"
+                                       th:attrappend="value=${#arrays.contains(@environment.getActiveProfiles(),'dev')?'password':''}">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="checkbox">
+                                <input type="checkbox">
+                                Remember me
+                            </label>
+                        </div>
+                        <button class="button is-block is-info is-large is-fullwidth">Login <i class="fa fa-sign-in" aria-hidden="true"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
