@@ -30,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers()
                 .xssProtection();
         http.authorizeRequests()
-                .antMatchers("/login", "/signup", "/h2/**", "/token/watch/**")
+                .antMatchers("/login", "/signup", "/h2/**", "/token/watch/*")
                 .permitAll()
                 .anyRequest().authenticated()// それ以外は認証が必要
                 .and()
@@ -56,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
 
-        http.csrf().ignoringAntMatchers("/h2/**");
+        http.csrf().ignoringAntMatchers("/h2/**", "/token/watch/*");
         http.headers().frameOptions().disable();
     }
 }

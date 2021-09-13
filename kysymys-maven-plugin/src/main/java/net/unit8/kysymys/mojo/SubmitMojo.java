@@ -15,14 +15,27 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-
+/**
+ * Submit an answer.
+ *
+ */
 @Mojo(name = "submit")
 public class SubmitMojo extends AbstractMojo {
-    @Parameter(defaultValue = "http://localhost:8080")
-    private String kysymysUrl;
+    /**
+     * The URL of a kysysmys server.
+     */
+    @Parameter(defaultValue = "http://localhost:8080", property = "kysymys.url")
+    private String kysymysUrl = "";
 
-    @Parameter
+    /**
+     * The problem ID.
+     */
+    @Parameter(required = true, property = "kysymys.problemId")
     private String problemId;
 
     @Override
@@ -35,12 +48,6 @@ public class SubmitMojo extends AbstractMojo {
             throw new MojoExecutionException("", e);
         }
         String token = NanoIdUtils.randomNanoId();
-        Desktop desktop = Desktop.getDesktop();
-        try {
-            desktop.browse(URI.create(kysymysUrl + "/token/publish/" + token));
-        } catch (IOException e) {
-            throw new MojoExecutionException("", e);
-        }
         ObjectMapper mapper = new ObjectMapper();
         AnswerRepositoryDto answerRepository = new AnswerRepositoryDto(problemId,
                 result.getRepositoryUrl(),
@@ -50,12 +57,23 @@ public class SubmitMojo extends AbstractMojo {
 
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(kysymysUrl))
+                    .uri(URI.create(kysymysUrl + "/token/watch/" + token))
                     .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(answerRepository), StandardCharsets.UTF_8))
+                    .headers("content-type", "application/json")
                     .build();
-            httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
+            getLog().info("url:" + URI.create(kysymysUrl + "/token/watch/" + token));
+            CompletableFuture<HttpResponse<String>> future = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+            Desktop desktop = Desktop.getDesktop();
+            desktop.browse(URI.create(kysymysUrl + "/token/publish/" + token));
+
+            HttpResponse<String> response = future.get(5, TimeUnit.SECONDS);
+            getLog().info("status:" + response.statusCode());
+            getLog().info(response.body());
+        } catch (IOException | InterruptedException | ExecutionException e) {
             throw new MojoExecutionException("", e);
+        } catch (TimeoutException e) {
+            throw new MojoExecutionException("Time out", e);
         }
     }
 }

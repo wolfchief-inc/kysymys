@@ -23,7 +23,7 @@ public class SubmitAnswerUseCaseImpl implements SubmitAnswerUseCase {
 
     @Override
     public SubmittedAnswerEvent handle(SubmitAnswerCommand command) {
-        Validated<AnswerRepository> answerRepositoryValidated = AnswerRepository.validator.validate(command.getCommitHash(), command.getRepositoryUrl());
+        Validated<AnswerRepository> answerRepositoryValidated = AnswerRepository.validator.validate(command.getRepositoryUrl(), command.getCommitHash());
         Validated<AnswerId> answerIdValidated = AnswerId.validator.validate(command.getAnswererId());
 
         Problem problem = ProblemId.validator.validate(command.getProblemId())
