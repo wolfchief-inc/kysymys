@@ -24,17 +24,26 @@ public class DatabaseSetup implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (userRepository.findByEmail("user1@example.com").isPresent())
+        if (userRepository.findByEmail("teacher1@example.com").isPresent())
             return;
 
-        UserJpaEntity user1 = new UserJpaEntity();
-        user1.setId(new UserId().getValue());
-        user1.setName("user1");
-        user1.setEmail("user1@example.com");
-        user1.setPassword(passwordEncoder.encode("password"));
-        user1.setRoles(Set.of("STUDENT", "TEACHER"));
+        UserJpaEntity teacher1 = new UserJpaEntity();
+        teacher1.setId(new UserId().getValue());
+        teacher1.setName("teacher1");
+        teacher1.setEmail("teacher1@example.com");
+        teacher1.setPassword(passwordEncoder.encode("password"));
+        teacher1.setRoles(Set.of("STUDENT", "TEACHER"));
+
+        UserJpaEntity student1 = new UserJpaEntity();
+        student1.setId(new UserId().getValue());
+        student1.setName("student1");
+        student1.setEmail("student1@example.com");
+        student1.setPassword(passwordEncoder.encode("password"));
+        student1.setRoles(Set.of("STUDENT"));
+
         tx.execute(status -> {
-            userRepository.save(user1);
+            userRepository.save(teacher1);
+            userRepository.save(student1);
             return null;
         });
     }

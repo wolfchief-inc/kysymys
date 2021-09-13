@@ -11,6 +11,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
+import java.net.URI;
+import java.net.URL;
+
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Value
 public class ProblemRepository {
@@ -40,4 +43,11 @@ public class ProblemRepository {
         return of(url, branch, "/README.md");
     }
 
+    public URI getProblemUrl() {
+        if (url.startsWith("https://github.com/")) {
+            String githubUrl = url.endsWith(".git") ? url.substring(0, url.length() - 4): url;
+            return URI.create(githubUrl + "/blob/" + branch + readmePath);
+        }
+        return URI.create(url);
+    }
 }

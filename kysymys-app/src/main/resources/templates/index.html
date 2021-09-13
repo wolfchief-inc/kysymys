@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="https://www.thymeleaf.org"
-      th:replace="~{layout/template :: layout(~{::title},~{:: #content})}">
+      th:replace="~{layout/template :: layout(~{::title},~{:: #content})}" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,6 +13,7 @@
     <main id="content">
         <section class="section">
             <div class="block">
+                <h3 th:text="#{caption.latest_problem}"></h3>
                 <table class="table" th:if="${problems.hasContent()}">
                     <thead>
                     <tr>
@@ -32,6 +33,32 @@
                     </tbody>
                 </table>
                 <a th:href="@{/lesson/}">More...</a>
+            </div>
+        </section>
+        <section class="section">
+            <div class="block">
+                <h3 th:text="#{caption.list_offers}"></h3>
+                <table class="table" th:if="${offers.hasContent()}">
+                    <thead>
+                    <tr>
+                        <th>From</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="offer : ${offers}">
+                        <td>
+                            <span th:text="${offer.targetUser.name}"
+                               class="offer-name">name</span>
+                        </td>
+                        <td>
+                            <form action="@{/offer/accept/{id}(id=${offer.id})}">
+                                <button type="submit" class="button">Accept</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
     </main>

@@ -10,12 +10,16 @@ import java.util.Map;
 
 @Component
 public class SendMailEventListener {
-    private SendMailPort sendMailPort;
+    private final SendMailPort sendMailPort;
+
+    public SendMailEventListener(SendMailPort sendMailPort) {
+        this.sendMailPort = sendMailPort;
+    }
 
     @EventListener
     public void handle(OfferedToFollowEvent event) {
         Map<String, Object> params = new HashMap<>();
         MailMeta mailMeta = MailMeta.builder().build();
-        sendMailPort.sendWithTemplate(mailMeta, "", params);
+        //sendMailPort.sendWithTemplate(mailMeta, "", params);
     }
 }

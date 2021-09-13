@@ -16,7 +16,10 @@ class AnswerMapper {
 
     AnswerJpaEntity domainToEntity(Answer answer) {
         AnswerJpaEntity entity = new AnswerJpaEntity();
-
+        entity.setId(answer.getId().getValue());
+        entity.setAnswererId(answer.getAnswererId().getValue());
+        entity.setProblem(problemMapper.domainToEntity(answer.getProblem()));
+        entity.setRepositoryUrl(answer.getRepository().getUrl());
         return entity;
     }
 

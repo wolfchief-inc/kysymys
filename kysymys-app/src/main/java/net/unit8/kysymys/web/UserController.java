@@ -1,22 +1,52 @@
 package net.unit8.kysymys.web;
 
+import net.unit8.kysymys.user.application.SearchUsersQuery;
+import net.unit8.kysymys.user.application.SearchUsersUseCase;
 import net.unit8.kysymys.user.application.ShowUserProfileQuery;
 import net.unit8.kysymys.user.application.ShowUserProfileUseCase;
 import net.unit8.kysymys.user.domain.User;
 import net.unit8.kysymys.user.domain.UserProfileByOther;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
+    @Autowired
     private ShowUserProfileUseCase showUserProfileUseCase;
-    @GetMapping("/{userId}")
-    public String user(@RequestParam("userId") String userId,
+    @Autowired
+    private SearchUsersUseCase searchUsersUseCase;
+
+    @GetMapping("/search")
+    public String userSearch(@RequestParam(value = "q", required = false) String q,
+                             @RequestParam(value = "p", required = false, defaultValue = "1") int page,
+                             Model model) {
+        SearchUsersQuery query = new SearchUsersQuery(q, page);
+        Page<User> users = searchUsersUseCase.handle(query);
+        model.addAttribute("users", users);
+        int totalPages = users.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+        return "user/list";
+    }
+
+    @GetMapping("/{userId:^(?!search).*}")
+    public String user(@PathVariable("userId") String userId,
                        @AuthenticationPrincipal User user,
                        Model model) {
         UserProfileByOther profile = showUserProfileUseCase.handle(new ShowUserProfileQuery(
@@ -25,7 +55,7 @@ public class UserController {
         ));
         model.addAttribute("user", profile.getUser());
         model.addAttribute("followers", profile.getFollower());
-        model.addAttribute("isFollowing", profile.isFollowing());
+        model.addAttribute("followStatus", profile.getFollowStatus());
         return "user/profile";
     }
 }

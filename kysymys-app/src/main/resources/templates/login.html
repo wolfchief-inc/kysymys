@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,22 +11,20 @@
     <div class="hero-body">
         <div class="container has-text-centered">
             <div class="column is-4 is-offset-4">
-                <h3 class="title has-text-black">Login</h3>
+                <h3 class="title has-text-black" th:text="#{caption.login}">Login</h3>
                 <hr class="login-hr">
                 <p class="subtitle has-text-black">Please login to proceed.</p>
                 <div class="box">
                     <form th:action="@{/login}" method="post">
                         <div class="field">
                             <div class="control">
-                                <input class="input is-large" type="email" name="username" placeholder="Your Email" autofocus=""
-                                th:attrappend="value=${#arrays.contains(@environment.getActiveProfiles(),'dev')?'user1@example.com':''}">
+                                <input class="input is-large" type="email" name="username" placeholder="Your Email" autofocus="">
                             </div>
                         </div>
 
                         <div class="field">
                             <div class="control">
-                                <input class="input is-large" type="password" name="password" placeholder="Your Password"
-                                       th:attrappend="value=${#arrays.contains(@environment.getActiveProfiles(),'dev')?'password':''}">
+                                <input class="input is-large" type="password" name="password" placeholder="Your Password">
                             </div>
                         </div>
                         <div class="field">
@@ -37,6 +35,22 @@
                         </div>
                         <button class="button is-block is-info is-large is-fullwidth">Login <i class="fa fa-sign-in" aria-hidden="true"></i></button>
                     </form>
+                </div>
+                <div class="box" th:if="${#arrays.contains(@environment.getActiveProfiles(),'dev')}">
+                    <div class="field is-grouped">
+                        <p class="control">
+                        <form th:action="@{/login}" method="post">
+                            <input type="hidden" name="username" value="student1@example.com"/>
+                            <input type="hidden" name="password" value="password"/>
+                            <button type="submit" class="button">Student</button>
+                        </form>
+                        <form th:action="@{/login}" method="post">
+                            <input type="hidden" name="username" value="teacher1@example.com"/>
+                            <input type="hidden" name="password" value="password"/>
+                            <button type="submit" class="button">Teacher</button>
+                        </form>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,17 +1,19 @@
 package net.unit8.kysymys.lesson.adapter.persistence;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import net.unit8.kysymys.lesson.application.LoadAnswerPort;
 import net.unit8.kysymys.lesson.application.SaveAnswerPort;
 import net.unit8.kysymys.lesson.domain.Answer;
 import net.unit8.kysymys.lesson.domain.AnswerId;
 import net.unit8.kysymys.lesson.domain.ProblemId;
+import net.unit8.kysymys.steleotype.PersistenceAdapter;
 import net.unit8.kysymys.user.domain.UserId;
 import org.springframework.data.domain.Example;
-import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
-@Component
+@PersistenceAdapter
 class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort {
     private final AnswerRepository answerRepository;
     private final SubmissionRepository submissionRepository;
@@ -45,7 +47,16 @@ class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort {
                 answer.getRepository().getCommitHash());
         if (submission.isPresent()) return;
 
-        AnswerJpaEntity entity = answerMapper.domainToEntity(answer);
-        answerRepository.save(entity);
+        AnswerJpaEntity answerEntity = answerRepository.findById(answer.getId().getValue())
+                .orElse(answerMapper.domainToEntity(answer));
+
+        SubmissionJpaEntity submissionEntity = new SubmissionJpaEntity();
+        submissionEntity.setId(NanoIdUtils.randomNanoId());
+        submissionEntity.setAnswer(answerEntity);
+        submissionEntity.setCommitHash(answer.getRepository().getCommitHash());
+        submissionEntity.setSubmittedAt(LocalDateTime.now());
+
+        answerEntity.setLatestSubmission(submissionEntity);
+        answerRepository.save(answerEntity);
     }
 }

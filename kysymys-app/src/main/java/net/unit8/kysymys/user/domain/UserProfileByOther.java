@@ -8,5 +8,5 @@ import java.util.List;
 public class UserProfileByOther {
     User user;
     List<User> follower;
-    boolean following;
+    FollowStatus followStatus;
 }

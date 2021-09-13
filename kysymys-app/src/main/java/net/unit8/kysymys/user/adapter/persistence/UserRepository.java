@@ -16,13 +16,13 @@ import java.util.Set;
 public interface UserRepository extends JpaRepository<UserJpaEntity, String> {
     Optional<UserJpaEntity> findByEmail(String email);
 
-    @Query("SELECT u FROM user u WHERE name like %?#{escape(:query)}% OR email LIKE %?#{escape(:query)}%")
-    Page<User> findByQuery(@Param("query") String query, Pageable pageable);
+    @Query("SELECT u FROM user u WHERE name like %?#{escape([0])}% escape ?#{escapeCharacter()} OR email LIKE %?#{escape([0])}% escape ?#{escapeCharacter()}")
+    Page<UserJpaEntity> findByQuery(String query, Pageable pageable);
 
-    @Query("SELECT f FROM user u FETCH JOIN u.followers f WHERE u.id=:userId")
-    List<User> findAllFollowers(@Param("userId") String userId);
+    @Query("SELECT f FROM user u INNER JOIN u.followers f WHERE u.id=:userId")
+    List<UserJpaEntity> findAllFollowers(@Param("userId") String userId);
 
-    @Query("SELECT case when count(u) > 0 FROM user u JOIN u.followers f WHERE u.id=:followerId AND f.id=:followeeId")
+    @Query("SELECT case when count(u) > 0 then true else false end FROM user u JOIN u.followers f WHERE u.id=:followerId AND f.id=:followeeId")
     boolean isFollower(@Param("followerId") String followerId,
                        @Param("followeeId") String followeeId);
 }

@@ -21,4 +21,14 @@ public class SubmissionJpaEntity {
 
     @Column(name = "submitted_at")
     private LocalDateTime submittedAt;
+
+    @Override
+    public String toString() {
+        return "SubmissionEntity{" +
+                "id='" + id + '\'' +
+                ", answer=" + answer.getId() +
+                ", commitHash='" + commitHash + '\'' +
+                ", submittedAt=" + submittedAt +
+                '}';
+    }
 }

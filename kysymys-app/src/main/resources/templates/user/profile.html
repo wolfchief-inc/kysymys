@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <title></title>
 </head>
 <body>
@@ -20,8 +20,22 @@
             </div>
             <div class="block">
                 <ul th:each="follower : ${follower}">
-                    <li><a th:href="@{'/user/' + follower.id}" th:text="${follower.name}">user</a></li>
+                    <li><a th:href="@{/user/{id}(id=${follower.id})}" th:text="${follower.name}">user</a></li>
                 </ul>
+            </div>
+
+            <div class="block" th:switch="${followStatus}">
+                <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).UNFOLLOWING}">
+                    <form th:action="@{/offer/send/{id}(id=${user.id})}" method="post">
+                        <button type="submit" class="button">Offer</button>
+                    </form>
+                </div>
+                <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).HAS_ALREADY_OFFERED}">
+                    <button type="button" class="button">In progress</button>
+                </div>
+                <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).FOLLOWING}">
+                    <button type="button" class="button">Following</button>
+                </div>
             </div>
         </section>
     </main>

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,9 +30,9 @@ public class OfferController {
     @Autowired
     private MessageSource messageSource;
 
-    @PostMapping("/{targetUserId}")
+    @PostMapping("/send/{targetUserId}")
     public String offer(@AuthenticationPrincipal User user,
-                        @RequestParam String targetUserId,
+                        @PathVariable("targetUserId") String targetUserId,
                         RedirectAttributes redirectAttributes,
                         Locale locale) {
         OfferedToFollowEvent event = offerToFollowUseCase.handle(new OfferToFollowCommand(user.getId().getValue(), targetUserId));
@@ -45,7 +46,7 @@ public class OfferController {
 
     @PostMapping("/accept/{offerId}")
     public String accept(@AuthenticationPrincipal User user,
-                         @RequestParam String offerId,
+                         @PathVariable("offerId") String offerId,
                          RedirectAttributes redirectAttributes,
                          Locale locale) {
         acceptFollowUseCase.handle(new AcceptFollowCommand(offerId, user.getId().getValue()));

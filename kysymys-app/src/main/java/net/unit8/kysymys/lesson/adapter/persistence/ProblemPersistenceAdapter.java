@@ -5,13 +5,13 @@ import net.unit8.kysymys.lesson.application.LoadProblemPort;
 import net.unit8.kysymys.lesson.application.SaveProblemPort;
 import net.unit8.kysymys.lesson.domain.Problem;
 import net.unit8.kysymys.lesson.domain.ProblemId;
+import net.unit8.kysymys.steleotype.PersistenceAdapter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component
+@PersistenceAdapter
 public class ProblemPersistenceAdapter implements LoadProblemPort, SaveProblemPort, GetProblemsPort {
     private final ProblemRepository problemRepository;
     private final ProblemMapper problemMapper;
@@ -36,6 +36,7 @@ public class ProblemPersistenceAdapter implements LoadProblemPort, SaveProblemPo
 
     @Override
     public Page<Problem> list(int page) {
+        if (page > 0) page = page - 1;
         return problemRepository.findAll(PageRequest.of(page, 10))
                 .map(problemMapper::entityToDomain);
     }

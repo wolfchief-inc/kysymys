@@ -25,4 +25,9 @@ public class AnswerId {
     public static AnswerId of(String value) {
         return validator.validated(value);
     }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }

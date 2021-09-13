@@ -13,7 +13,8 @@ import lombok.Value;
 public class AnswerRepository {
     private static StringValidator<String> urlValidator = StringValidatorBuilder.of("url", c -> c.url())
             .build();
-    private static StringValidator<String> commitHashValidator = StringValidatorBuilder.of("commitHash", c -> c.url())
+    private static StringValidator<String> commitHashValidator = StringValidatorBuilder.of("commitHash", c ->
+            c.lessThanOrEqual(40).greaterThanOrEqual(40))
             .build();
 
     public static Arguments2Validator<String, String, AnswerRepository> validator = ArgumentsValidators

@@ -1,5 +1,6 @@
 package net.unit8.kysymys.user.application.impl;
 
+import net.unit8.kysymys.steleotype.UseCase;
 import net.unit8.kysymys.user.application.*;
 import net.unit8.kysymys.user.domain.*;
 import org.springframework.context.ApplicationEventPublisher;
@@ -9,7 +10,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Set;
 
-@Component
+@UseCase
 class SignupUseCaseImpl implements SignupUseCase {
     private final ExistsEmailAddressPort existsEmailAddressPort;
     private final SaveUserPort saveUserPort;

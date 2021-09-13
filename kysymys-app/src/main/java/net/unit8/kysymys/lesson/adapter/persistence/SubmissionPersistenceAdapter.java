@@ -1,7 +1,7 @@
 package net.unit8.kysymys.lesson.adapter.persistence;
 
-import org.springframework.stereotype.Component;
+import net.unit8.kysymys.steleotype.PersistenceAdapter;
 
-@Component
+@PersistenceAdapter
 class SubmissionPersistenceAdapter {
 }

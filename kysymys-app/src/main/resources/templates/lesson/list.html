@@ -19,6 +19,8 @@
                 <tr>
                     <th>#</th>
                     <th>名前</th>
+                    <th sec:authorize="hasAuthority('CREATE_PROBLEM')"
+                        th:text="#{label.operation}">Operation</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -26,8 +28,26 @@
                     <td></td>
                     <td>
                         <a class="problem-name"
-                           th:href="${problem.readmeUrl}"
+                           th:href="${problem.problemUrl}"
                            th:text="${problem.name}">name</a>
+                    </td>
+                    <td sec:authorize="hasAuthority('CREATE_PROBLEM')">
+                        <div class="field is-grouped">
+                            <p class="control">
+                                <a class="button is-link is-small"
+                                   th:href="@{/admin/lesson/{id}(id=${problem.id})}"
+                                   th:text="#{label.edit}">
+                                    Edit
+                                </a>
+                            </p>
+                            <p class="control">
+                                <button class="button is-danger is-small"
+                                        th:href="@{/admin/lesson/{id}(id=${problem.id})}"
+                                        th:text="#{label.delete}">
+                                    Delete
+                                </button>
+                            </p>
+                        </div>
                     </td>
                 </tr>
                 </tbody>
@@ -38,7 +58,7 @@
                 <li th:each="pageNumber : ${pageNumbers}">
                     <a class="pagination-link"
                        th:classappend="${pageNumber==problems.number + 1} ? 'is-current' : ''"
-                       th:href="@{'/problems'(p=${pageNumber})}"
+                       th:href="@{/lesson(p=${pageNumber})}"
                        th:text="${pageNumber}">1</a>
                 </li>
             </ul>

@@ -1,7 +1,10 @@
 package net.unit8.kysymys.lesson.application;
 
+import lombok.Value;
+
+@Value
 public class PostCommentCommand {
-    private String answerId;
-    private String commenterId;
-    private String description;
+    String answerId;
+    String commenterId;
+    String description;
 }

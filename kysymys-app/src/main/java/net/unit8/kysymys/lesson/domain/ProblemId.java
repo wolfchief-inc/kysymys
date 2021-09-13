@@ -25,4 +25,9 @@ public class ProblemId {
     public static ProblemId of(String value) {
         return validator.validated(value);
     }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }

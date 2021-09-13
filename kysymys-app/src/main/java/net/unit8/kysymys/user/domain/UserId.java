@@ -25,4 +25,9 @@ public class UserId {
     public static UserId of(String value) {
         return validator.validated(value);
     }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }

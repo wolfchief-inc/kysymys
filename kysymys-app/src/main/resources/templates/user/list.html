@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"
+      th:replace="~{layout/template :: layout(~{::title},~{:: #content})}"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.springframework.org/schema/security">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
+    <title></title>
+</head>
+<body>
+<div class="container">
+    <main id="content">
+    <section class="section">
+        <h3 class="title">List of users</h3>
+        <div class="block" th:if="${users.hasContent()}">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>名前</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}"></td>
+                    <td>
+                        <a class="user-name"
+                           th:href="@{/user/{id}(id=${user.id})}"
+                           th:text="${user.name}">name</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <nav aria-label="pagination" class="pagination" id="pagination-users" role="navigation" th:if="${users.totalPages > 0}">
+            <ul class="pagination-list">
+                <li th:each="pageNumber : ${pageNumbers}">
+                    <a class="pagination-link"
+                       th:classappend="${pageNumber==users.number + 1} ? 'is-current' : ''"
+                       th:href="@{'/user/search'(p=${pageNumber})}"
+                       th:text="${pageNumber}">1</a>
+                </li>
+            </ul>
+        </nav>
+    </section>
+    </main>
+</div>
+</body>

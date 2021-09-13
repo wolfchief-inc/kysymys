@@ -17,8 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Component
-class UserPersistenceAdapter implements UserDetailsService, LoadUserPort, SaveUserPort, ExistsEmailAddressPort, GetUsersPort,
-        IsFollowerPort, GetFollowersPort {
+class UserPersistenceAdapter implements UserDetailsService, LoadUserPort, SaveUserPort, ExistsEmailAddressPort, GetUsersPort {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
@@ -46,8 +45,16 @@ class UserPersistenceAdapter implements UserDetailsService, LoadUserPort, SaveUs
 
     @Override
     public Page<User> list(String query, int page) {
+        if (page > 0) page = page - 1;
         Pageable pageable = PageRequest.of(page, 10);
-        return userRepository.findByQuery(query, pageable);
+
+        if (query == null || query.isEmpty()) {
+            return userRepository.findAll(pageable)
+                    .map(userMapper::entityToDomain);
+        } else {
+            return userRepository.findByQuery(query, pageable)
+                    .map(userMapper::entityToDomain);
+        }
     }
 
     @Override
@@ -55,15 +62,4 @@ class UserPersistenceAdapter implements UserDetailsService, LoadUserPort, SaveUs
         return userRepository.findById(userId.getValue())
                 .map(userMapper::entityToDomain);
     }
-
-    @Override
-    public List<User> listFollowers(UserId userId) {
-        return userRepository.findAllFollowers(userId.getValue());
-    }
-
-    @Override
-    public boolean isFollower(UserId followerId, UserId followeeId) {
-        return userRepository.isFollower(followerId.getValue(), followeeId.getValue());
-    }
-
 }

@@ -7,6 +7,11 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
+  messages:
+    basename: messages
+    cache-duration: -1
+    encoding: UTF-8
+    fallback-to-system-locale: false
 server:
   tomcat:
     threads:

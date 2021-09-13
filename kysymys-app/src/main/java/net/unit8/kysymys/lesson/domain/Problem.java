@@ -7,6 +7,9 @@ import am.ik.yavi.arguments.Arguments3Validator;
 import am.ik.yavi.builder.ArgumentsValidatorBuilder;
 import lombok.Value;
 
+import java.net.URI;
+import java.net.URL;
+
 @Value
 public class Problem {
     public static final Arguments3Validator<ProblemId, ProblemName, ProblemRepository, Problem> validator = ArgumentsValidatorBuilder.of(Problem::new)
@@ -21,5 +24,9 @@ public class Problem {
 
     public static Problem of(ProblemId problemId, ProblemName name, ProblemRepository repository) {
         return validator.validated(problemId, name, repository);
+    }
+
+    public URI getProblemUrl() {
+        return repository.getProblemUrl();
     }
 }

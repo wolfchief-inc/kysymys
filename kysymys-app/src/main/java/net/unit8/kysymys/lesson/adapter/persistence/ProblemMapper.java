@@ -1,6 +1,5 @@
 package net.unit8.kysymys.lesson.adapter.persistence;
 
-import am.ik.yavi.arguments.Arguments;
 import net.unit8.kysymys.lesson.domain.Problem;
 import net.unit8.kysymys.lesson.domain.ProblemId;
 import net.unit8.kysymys.lesson.domain.ProblemName;
