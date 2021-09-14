@@ -36,9 +36,9 @@ public class OfferController {
                         RedirectAttributes redirectAttributes,
                         Locale locale) {
         OfferedToFollowEvent event = offerToFollowUseCase.handle(new OfferToFollowCommand(user.getId().getValue(), targetUserId));
-        redirectAttributes.addFlashAttribute("message", messageSource.getMessage(
+        redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
                 "message.offeredToFollow",
-                new Object[]{},
+                new Object[]{ },
                 locale
         ));
         return "redirect:/user/" + targetUserId;

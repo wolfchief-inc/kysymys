@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <title></title>
 </head>
 <body>
@@ -14,7 +14,7 @@
         <section class="section">
             <h2 class="title">New Problem</h2>
             <div class="block">
-                <form th:action="@{/admin/lesson/new}" method="post" th:object="${problemForm}">
+                <form th:action="@{/admin/lesson/new}" method="post" th:object="${form}">
                     <div class="field">
                         <label class="label">Name</label>
                         <div class="control">
@@ -47,11 +47,14 @@
                     </div>
                     <div class="field">
                         <label class="label">README</label>
-                        <div class="control">
+                        <div class="control has-icons-left">
                             <input class="input" type="text"
                                    th:classappend="${#fields.hasErrors('readmePath')} ? is-danger"
                                    th:field="*{readmePath}"
                                    placeholder="README path">
+                            <span class="icon is-small is-left">
+                                <i>/</i>
+                            </span>
                         </div>
                         <p th:if="${#fields.hasErrors('readmePath')}"  th:errors="*{readmePath}" class="help is-danger">This readme path is invalid</p>
                     </div>

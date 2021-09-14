@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{layout/template :: layout(~{::title},~{:: #content})}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <title></title>
+</head>
+<body>
+<div class="container">
+    <main id="content">
+        <section class="section" th:if="${notification} != null">
+            <div class="notification is-success is-light" th:text="${notification}">
+            </div>
+        </section>
+        <section class="section">
+            <div class="box">
+                <p>Problem: <span th:text="${answer.problem.name}">Problem1</span></p>
+                <p>Answer: <span th:text="|${usersMap.get(answer.answererId)} ${answer.answeredAt}|">Problem1</span></p>
+            </div>
+            <div>
+                <article class="media" th:each="comment : ${comments}">
+                    <div class="media-content">
+                        <div class="content">
+                            <p>
+                                <strong th:text="|${comment.commenterId} ${comment.commentedAt}|">Commenter 2021/10/10</strong>
+                                <span th:text="${comment.description}"></span>
+                            </p>
+                        </div>
+                    </div>
+                </article>
+                <article class="media">
+                    <div class="media-content">
+                        <form th:action="@{/answer/{id}/comment}" method="post">
+                            <div class="field">
+                                <p class="control">
+                                    <textarea class="textarea" placeholder="comment"></textarea>
+                                </p>
+                            </div>
+                            <nav class="level">
+                                <div class="level-left">
+                                    <div class="level-item">
+                                        <button type="submit" class="button is-info">Send</button>
+                                    </div>
+                                </div>
+                            </nav>
+                        </form>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

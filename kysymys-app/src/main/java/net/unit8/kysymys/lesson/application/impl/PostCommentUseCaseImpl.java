@@ -3,6 +3,7 @@ package net.unit8.kysymys.lesson.application.impl;
 import net.unit8.kysymys.lesson.application.*;
 import net.unit8.kysymys.lesson.domain.*;
 import net.unit8.kysymys.share.application.CurrentDateTimePort;
+import net.unit8.kysymys.share.application.GenerateCursorPort;
 import net.unit8.kysymys.user.domain.UserId;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -12,12 +13,14 @@ class PostCommentUseCaseImpl implements PostCommentUseCase {
     private final LoadAnswerPort loadAnswerPort;
     private final SaveCommentPort saveCommentPort;
     private final CurrentDateTimePort currentDateTimePort;
+    private final GenerateCursorPort generateCursorPort;
     private final TransactionTemplate tx;
 
-    PostCommentUseCaseImpl(LoadAnswerPort loadAnswerPort, SaveCommentPort saveCommentPort, CurrentDateTimePort currentDateTimePort, TransactionTemplate tx) {
+    PostCommentUseCaseImpl(LoadAnswerPort loadAnswerPort, SaveCommentPort saveCommentPort, CurrentDateTimePort currentDateTimePort, GenerateCursorPort generateCursorPort, TransactionTemplate tx) {
         this.loadAnswerPort = loadAnswerPort;
         this.saveCommentPort = saveCommentPort;
         this.currentDateTimePort = currentDateTimePort;
+        this.generateCursorPort = generateCursorPort;
         this.tx = tx;
     }
 
@@ -26,7 +29,7 @@ class PostCommentUseCaseImpl implements PostCommentUseCase {
         Answer answer = loadAnswerPort.load(AnswerId.of(command.getAnswerId()))
                 .orElseThrow(() -> new AnswerNotFound(command.getAnswerId()));
 
-        Comment comment = Comment.of(new CommentId(), answer, UserId.of(command.getCommenterId()),
+        Comment comment = Comment.of(CommentId.of(generateCursorPort.generateId()), answer, UserId.of(command.getCommenterId()),
                 Description.of(command.getDescription()),
                 currentDateTimePort.now());
         return tx.execute(status -> {

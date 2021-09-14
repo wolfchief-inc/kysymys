@@ -1,5 +1,6 @@
 package net.unit8.kysymys.lesson.adapter.persistence;
 
+import net.unit8.kysymys.lesson.application.DeleteProblemPort;
 import net.unit8.kysymys.lesson.application.GetProblemsPort;
 import net.unit8.kysymys.lesson.application.LoadProblemPort;
 import net.unit8.kysymys.lesson.application.SaveProblemPort;
@@ -12,7 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import java.util.Optional;
 
 @PersistenceAdapter
-public class ProblemPersistenceAdapter implements LoadProblemPort, SaveProblemPort, GetProblemsPort {
+public class ProblemPersistenceAdapter implements LoadProblemPort, SaveProblemPort, GetProblemsPort, DeleteProblemPort {
     private final ProblemRepository problemRepository;
     private final ProblemMapper problemMapper;
 
@@ -39,5 +40,10 @@ public class ProblemPersistenceAdapter implements LoadProblemPort, SaveProblemPo
         if (page > 0) page = page - 1;
         return problemRepository.findAll(PageRequest.of(page, 10))
                 .map(problemMapper::entityToDomain);
+    }
+
+    @Override
+    public void delete(ProblemId problemId) {
+        problemRepository.deleteById(problemId.getValue());
     }
 }

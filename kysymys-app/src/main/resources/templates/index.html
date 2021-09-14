@@ -11,6 +11,10 @@
 <body>
 <div class="container">
     <main id="content">
+        <section class="section" th:if="${notification} != null">
+            <div class="notification is-success is-light" th:text="${notification}">
+            </div>
+        </section>
         <section class="section">
             <div class="block">
                 <h3 th:text="#{caption.latest_problem}"></h3>
@@ -52,7 +56,7 @@
                                class="offer-name">name</span>
                         </td>
                         <td>
-                            <form action="@{/offer/accept/{id}(id=${offer.id})}">
+                            <form th:action="@{/offer/accept/{id}(id=${offer.id})}" method="post">
                                 <button type="submit" class="button">Accept</button>
                             </form>
                         </td>

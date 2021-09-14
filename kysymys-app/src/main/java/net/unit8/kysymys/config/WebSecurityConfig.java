@@ -30,8 +30,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers()
                 .xssProtection();
         http.authorizeRequests()
-                .antMatchers("/login", "/signup", "/h2/**", "/token/watch/*")
-                .permitAll()
+                .antMatchers("/login", "/signup", "/h2/**", "/token/watch/*").permitAll()
+                .antMatchers("/admin/lesson/**").hasAuthority("CREATE_PROBLEM")
                 .anyRequest().authenticated()// それ以外は認証が必要
                 .and()
                 .formLogin()

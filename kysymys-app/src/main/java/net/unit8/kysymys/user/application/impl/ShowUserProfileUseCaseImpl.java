@@ -8,6 +8,7 @@ import net.unit8.kysymys.user.domain.UserId;
 import net.unit8.kysymys.user.domain.UserProfileByOther;
 
 import java.util.List;
+import java.util.Optional;
 
 @UseCase
 class ShowUserProfileUseCaseImpl implements ShowUserProfileUseCase {
@@ -36,7 +37,8 @@ class ShowUserProfileUseCaseImpl implements ShowUserProfileUseCase {
                 .orElseThrow(() -> new UserNotFoundException(userId.getValue()));
 
         List<User> followers = getFollowersPort.listFollowers(userId);
-        FollowStatus followStatus = followStatus(hasAlreadyOfferedPort.hasAlreadyOffered(viewerUserId, userId),
+        FollowStatus followStatus = userId.equals(viewerUserId) ? null :
+                followStatus(hasAlreadyOfferedPort.hasAlreadyOffered(viewerUserId, userId),
                 followers.stream().anyMatch(follower -> follower.getId().equals(viewerUserId)));
 
         return new UserProfileByOther(

@@ -1,9 +1,13 @@
 package net.unit8.kysymys.web;
 
+import net.unit8.kysymys.lesson.application.ListFollowerAnswersQuery;
+import net.unit8.kysymys.lesson.application.ListFollowerAnswersUseCase;
+import net.unit8.kysymys.lesson.domain.Answer;
 import net.unit8.kysymys.user.application.SearchUsersQuery;
 import net.unit8.kysymys.user.application.SearchUsersUseCase;
 import net.unit8.kysymys.user.application.ShowUserProfileQuery;
 import net.unit8.kysymys.user.application.ShowUserProfileUseCase;
+import net.unit8.kysymys.user.domain.FollowStatus;
 import net.unit8.kysymys.user.domain.User;
 import net.unit8.kysymys.user.domain.UserProfileByOther;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -27,6 +32,8 @@ public class UserController {
     private ShowUserProfileUseCase showUserProfileUseCase;
     @Autowired
     private SearchUsersUseCase searchUsersUseCase;
+    @Autowired
+    private ListFollowerAnswersUseCase listFollowerAnswersUseCase;
 
     @GetMapping("/search")
     public String userSearch(@RequestParam(value = "q", required = false) String q,
@@ -53,9 +60,17 @@ public class UserController {
                 userId,
                 user.getId().getValue()
         ));
+
         model.addAttribute("user", profile.getUser());
         model.addAttribute("followers", profile.getFollower());
-        model.addAttribute("followStatus", profile.getFollowStatus());
+        model.addAttribute("isMyProfile", Objects.equals(userId, user.getId().getValue()));
+        model.addAttribute("followStatus", profile.getFollowStatus().orElse(null));
+
+        if (profile.getFollowStatus().filter(s -> s == FollowStatus.FOLLOWING).isPresent()) {
+            Page<Answer> answers = listFollowerAnswersUseCase.handle(new ListFollowerAnswersQuery(userId));
+            model.addAttribute("answers", answers);
+        }
+
         return "user/profile";
     }
 }

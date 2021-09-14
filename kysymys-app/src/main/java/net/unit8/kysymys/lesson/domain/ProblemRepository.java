@@ -43,11 +43,10 @@ public class ProblemRepository {
         return of(url, branch, "/README.md");
     }
 
-    public URI getProblemUrl() {
-        if (url.startsWith("https://github.com/")) {
-            String githubUrl = url.endsWith(".git") ? url.substring(0, url.length() - 4): url;
-            return URI.create(githubUrl + "/blob/" + branch + readmePath);
-        }
-        return URI.create(url);
+    public URL getProblemUrl() {
+        return RepositoryUrlBuilder.url(url)
+                .branch(branch)
+                .path(readmePath)
+                .build();
     }
 }

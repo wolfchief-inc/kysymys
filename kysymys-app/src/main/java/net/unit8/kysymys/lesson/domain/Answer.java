@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import net.unit8.kysymys.user.domain.UserId;
 
+import java.net.URL;
+
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Value
 public class Answer {
@@ -24,5 +26,11 @@ public class Answer {
 
     public static Answer of(AnswerId id, Problem problem, UserId answererId, AnswerRepository repository) {
         return validator.validated(Arguments.of(id, problem, answererId, repository));
+    }
+
+    public URL getAnswerUrl() {
+        return RepositoryUrlBuilder.url(repository.getUrl())
+                .commitHash(repository.getCommitHash())
+                .build();
     }
 }

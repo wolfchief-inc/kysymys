@@ -12,6 +12,10 @@
 <body>
 <div class="container">
     <main id="content">
+        <section class="section" th:if="${notification} != null">
+            <div class="notification is-success is-light" th:text="${notification}">
+            </div>
+        </section>
     <section class="section">
         <div class="block" th:if="${problems.hasContent()}">
             <table class="table">
@@ -35,14 +39,14 @@
                         <div class="field is-grouped">
                             <p class="control">
                                 <a class="button is-link is-small"
-                                   th:href="@{/admin/lesson/{id}(id=${problem.id})}"
+                                   th:href="@{/admin/lesson/edit/{id}(id=${problem.id})}"
                                    th:text="#{label.edit}">
                                     Edit
                                 </a>
                             </p>
                             <p class="control">
                                 <button class="button is-danger is-small"
-                                        th:href="@{/admin/lesson/{id}(id=${problem.id})}"
+                                        th:href="@{/admin/lesson/delete/{id}(id=${problem.id})}"
                                         th:text="#{label.delete}">
                                     Delete
                                 </button>

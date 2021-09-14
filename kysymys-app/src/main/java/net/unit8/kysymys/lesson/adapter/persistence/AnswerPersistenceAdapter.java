@@ -1,6 +1,7 @@
 package net.unit8.kysymys.lesson.adapter.persistence;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
+import net.unit8.kysymys.lesson.application.ListRecentAnswersPort;
 import net.unit8.kysymys.lesson.application.LoadAnswerPort;
 import net.unit8.kysymys.lesson.application.SaveAnswerPort;
 import net.unit8.kysymys.lesson.domain.Answer;
@@ -9,12 +10,14 @@ import net.unit8.kysymys.lesson.domain.ProblemId;
 import net.unit8.kysymys.steleotype.PersistenceAdapter;
 import net.unit8.kysymys.user.domain.UserId;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @PersistenceAdapter
-class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort {
+class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort, ListRecentAnswersPort {
     private final AnswerRepository answerRepository;
     private final SubmissionRepository submissionRepository;
     private final AnswerMapper answerMapper;
@@ -38,6 +41,13 @@ class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort {
         example.setProblem(problemExample);
         example.setAnswererId(answererId.getValue());
         return answerRepository.findOne(Example.of(example))
+                .map(answerMapper::entityToDomain);
+    }
+
+    @Override
+    public Page<Answer> listRecentAnswers(UserId answererId, int page, int size) {
+        if (page > 0) page = page - 1;
+        return answerRepository.findRecentAnswers(answererId.getValue(), PageRequest.of(page, size))
                 .map(answerMapper::entityToDomain);
     }
 

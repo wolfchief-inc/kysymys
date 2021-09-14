@@ -11,6 +11,10 @@
 <body>
 <div class="container">
     <main id="content">
+        <section class="section" th:if="${notification} != null">
+            <div class="notification is-success is-light" th:text="${notification}">
+            </div>
+        </section>
         <section class="section">
             <div class="block">
                 <p>Name:<span th:text="${user.name}">name</span></p>
@@ -24,18 +28,52 @@
                 </ul>
             </div>
 
-            <div class="block" th:switch="${followStatus}">
-                <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).UNFOLLOWING}">
-                    <form th:action="@{/offer/send/{id}(id=${user.id})}" method="post">
-                        <button type="submit" class="button">Offer</button>
-                    </form>
+            <div class="block" th:unless="${isMyProfile}">
+                <div th:switch="${followStatus}">
+                    <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).UNFOLLOWING}">
+                        <form th:action="@{/offer/send/{id}(id=${user.id})}" method="post">
+                            <button type="submit" class="button">Offer</button>
+                        </form>
+                    </div>
+                    <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).HAS_ALREADY_OFFERED}">
+                        <button type="button" class="button">In progress</button>
+                    </div>
+                    <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).FOLLOWING}">
+                        <button type="button" class="button">Following</button>
+                    </div>
                 </div>
-                <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).HAS_ALREADY_OFFERED}">
-                    <button type="button" class="button">In progress</button>
-                </div>
-                <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).FOLLOWING}">
-                    <button type="button" class="button">Following</button>
-                </div>
+            </div>
+        </section>
+
+        <section class="section" th:if="${answers != null && answers.hasContent()}">
+            <h3>Answers</h3>
+            <div class="block">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>問題</th>
+                        <th>解答</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="answer : ${answers}">
+                        <td>
+                            <a class="problem-name"
+                               th:text="${answer.problem.name}"
+                               th:href="@{/lesson/{id}(id=${answer.problem.id})}">
+                                問題1
+                            </a>
+                        </td>
+                        <td>
+                            <a class="answer-url"
+                               th:href="@{/answer/{id}(id=${answer.id})}"
+                               th:text="${answer.answerUrl}">url</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
             </div>
         </section>
     </main>

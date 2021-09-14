@@ -22,6 +22,9 @@ public interface UserRepository extends JpaRepository<UserJpaEntity, String> {
     @Query("SELECT f FROM user u INNER JOIN u.followers f WHERE u.id=:userId")
     List<UserJpaEntity> findAllFollowers(@Param("userId") String userId);
 
+    @Query("SELECT u FROM user u WHERE u.id IN (:ids)")
+    Set<UserJpaEntity> findAllByUserIds(@Param("ids") Set<String> ids);
+
     @Query("SELECT case when count(u) > 0 then true else false end FROM user u JOIN u.followers f WHERE u.id=:followerId AND f.id=:followeeId")
     boolean isFollower(@Param("followerId") String followerId,
                        @Param("followeeId") String followeeId);

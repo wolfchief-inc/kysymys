@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 class UserPersistenceAdapter implements UserDetailsService, LoadUserPort, SaveUserPort, ExistsEmailAddressPort, GetUsersPort {
@@ -55,6 +56,14 @@ class UserPersistenceAdapter implements UserDetailsService, LoadUserPort, SaveUs
             return userRepository.findByQuery(query, pageable)
                     .map(userMapper::entityToDomain);
         }
+    }
+
+    @Override
+    public Set<User> listByUserIds(Set<UserId> userIds) {
+        return userRepository.findAllByUserIds(userIds.stream().map(UserId::getValue).collect(Collectors.toSet()))
+                .stream()
+                .map(userMapper::entityToDomain)
+                .collect(Collectors.toSet());
     }
 
     @Override

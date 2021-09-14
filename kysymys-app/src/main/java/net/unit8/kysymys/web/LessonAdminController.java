@@ -5,14 +5,17 @@ import net.unit8.kysymys.lesson.application.*;
 import net.unit8.kysymys.lesson.domain.CreatedProblemEvent;
 import net.unit8.kysymys.lesson.domain.Problem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/lesson")
@@ -21,9 +24,18 @@ public class LessonAdminController {
     private CreateProblemUseCase createProblemUseCase;
 
     @Autowired
+    private UpdateProblemUseCase updateProblemUseCase;
+
+    @Autowired
+    private DeleteProblemUseCase deleteProblemUseCase;
+
+    @Autowired
     private GetProblemUseCase getProblemUseCase;
 
-    @ModelAttribute
+    @Autowired
+    private MessageSource messageSource;
+
+    @ModelAttribute(name = "form")
     private ProblemForm setupForm() {
         return new ProblemForm();
     }
@@ -36,7 +48,18 @@ public class LessonAdminController {
     @PostMapping("/new")
     public String create(@Validated ProblemForm form,
                          BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes,
+                         Locale locale,
                          Model model) {
+        Optional.ofNullable(form.getRepositoryUrl())
+                .map(String::trim)
+                .map(u -> u.replaceAll("[/]+$", ""))
+                .ifPresent(form::setRepositoryUrl);
+        Optional.ofNullable(form.getReadmePath())
+                .map(String::trim)
+                .map(p -> p.replaceAll("^[/]+", ""))
+                .ifPresent(form::setReadmePath);
+
         if (bindingResult.hasErrors()) {
             return newForm(model);
         }
@@ -48,6 +71,11 @@ public class LessonAdminController {
                     form.getBranch(), form.getReadmePath());
             CreatedProblemEvent event = createProblemUseCase.handle(command);
             model.addAttribute("problemId", event.getProblemId());
+            redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
+                    "message.createdProblem",
+                    new Object[]{ event.getProblemId() },
+                    locale
+            ));
             return "redirect:/lesson";
         } catch (ConstraintViolationsException e) {
             e.violations().forEach(violation -> {
@@ -61,11 +89,15 @@ public class LessonAdminController {
 
     @GetMapping("/edit/{problemId}")
     public String edit(@PathVariable("problemId") String problemId,
-                       Model model,
-                       HttpServletResponse response) {
+                       Model model) {
         Problem problem = getProblemUseCase.handle(problemId);
-        model.addAttribute(problem);
-        return "admin/lesson/edit";
+        ProblemForm form = (ProblemForm) model.getAttribute("form");
+        form.setName(problem.getName().getValue());
+        form.setRepositoryUrl(problem.getRepository().getUrl());
+        form.setBranch(problem.getRepository().getBranch());
+        form.setReadmePath(problem.getRepository().getReadmePath());
+        model.addAttribute("problemId", problemId);
+        return "admin/lesson/new";
     }
 
     @PostMapping("/edit/{problemId}")
@@ -74,6 +106,11 @@ public class LessonAdminController {
                          BindingResult bindingResult,
                          Model model) {
         Problem problem = getProblemUseCase.handle(problemId);
+        return "redirect:/lesson";
+    }
+
+    @PostMapping("/delete/{problemId}")
+    public String delete(@PathVariable("problemId") String problemId) {
         return "redirect:/lesson";
     }
 }

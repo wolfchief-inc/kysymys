@@ -26,7 +26,7 @@ public class Problem {
         return validator.validated(problemId, name, repository);
     }
 
-    public URI getProblemUrl() {
+    public URL getProblemUrl() {
         return repository.getProblemUrl();
     }
 }
