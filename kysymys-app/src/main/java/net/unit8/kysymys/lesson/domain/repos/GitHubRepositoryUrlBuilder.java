@@ -13,7 +13,11 @@ public class GitHubRepositoryUrlBuilder extends AbstractRepositoryUrlBuilder {
     @Override
     public URL build() {
         try {
-            return new URL(chopDotGitSuffix(url) + "/blob/" + branch + path);
+            if (commitHash != null) {
+                return new URL(chopDotGitSuffix(url) + "/tree/" + commitHash);
+            } else {
+                return new URL(chopDotGitSuffix(url) + "/blob/" + branch + path);
+            }
         } catch (MalformedURLException e) {
             throw new UncheckedIOException(e);
         }

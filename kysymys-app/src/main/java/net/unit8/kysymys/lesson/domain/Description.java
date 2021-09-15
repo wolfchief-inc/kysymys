@@ -10,7 +10,7 @@ import lombok.Value;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Description {
     public static final StringValidator<Description> validator = StringValidatorBuilder
-            .of("value", c -> c.notBlank().lessThanOrEqual(100).email())
+            .of("value", c -> c.notBlank().lessThanOrEqual(4000))
             .build()
             .andThen(Description::new);
     String value;

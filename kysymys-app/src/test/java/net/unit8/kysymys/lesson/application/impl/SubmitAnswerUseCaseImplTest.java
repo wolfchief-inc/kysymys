@@ -6,11 +6,13 @@ import net.unit8.kysymys.lesson.application.SaveAnswerPort;
 import net.unit8.kysymys.lesson.application.SubmitAnswerCommand;
 import net.unit8.kysymys.lesson.application.SubmitAnswerUseCase;
 import net.unit8.kysymys.lesson.domain.*;
+import net.unit8.kysymys.share.application.CurrentDateTimePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -19,17 +21,20 @@ class SubmitAnswerUseCaseImplTest {
     SubmitAnswerUseCase sut;
     SaveAnswerPort saveAnswerPort;
     LoadProblemPort loadProblemPort;
+    CurrentDateTimePort currentDateTimePort;
     TransactionTemplate tx;
 
     @BeforeEach
     void setup() {
         saveAnswerPort = mock(SaveAnswerPort.class);
         loadProblemPort = mock(LoadProblemPort.class);
+        currentDateTimePort = LocalDateTime::now;
         PlatformTransactionManager tm = mock(PlatformTransactionManager.class);
         tx = new TransactionTemplate(tm);
         sut = new SubmitAnswerUseCaseImpl(
                 saveAnswerPort,
                 loadProblemPort,
+                currentDateTimePort,
                 tx
         );
     }

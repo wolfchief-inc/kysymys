@@ -66,7 +66,7 @@ public class UserController {
         model.addAttribute("isMyProfile", Objects.equals(userId, user.getId().getValue()));
         model.addAttribute("followStatus", profile.getFollowStatus().orElse(null));
 
-        if (profile.getFollowStatus().filter(s -> s == FollowStatus.FOLLOWING).isPresent()) {
+        if (Objects.equals(userId, user.getId().getValue()) || profile.getFollowStatus().filter(s -> s == FollowStatus.FOLLOWING).isPresent()) {
             Page<Answer> answers = listFollowerAnswersUseCase.handle(new ListFollowerAnswersQuery(userId));
             model.addAttribute("answers", answers);
         }

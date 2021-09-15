@@ -18,14 +18,14 @@
         <section class="section">
             <div class="box">
                 <p>Problem: <span th:text="${answer.problem.name}">Problem1</span></p>
-                <p>Answer: <span th:text="|${usersMap.get(answer.answererId)} ${answer.answeredAt}|">Problem1</span></p>
+                <p>Answer: <span th:text="|${usersMap.get(answer.answererId).name} ${answer.lastAnsweredAt}|">Problem1</span></p>
             </div>
             <div>
                 <article class="media" th:each="comment : ${comments}">
                     <div class="media-content">
                         <div class="content">
                             <p>
-                                <strong th:text="|${comment.commenterId} ${comment.commentedAt}|">Commenter 2021/10/10</strong>
+                                <strong th:text="|${usersMap.get(comment.commenterId).name} ${comment.postedAt}|">Commenter 2021/10/10</strong>
                                 <span th:text="${comment.description}"></span>
                             </p>
                         </div>
@@ -33,10 +33,10 @@
                 </article>
                 <article class="media">
                     <div class="media-content">
-                        <form th:action="@{/answer/{id}/comment}" method="post">
+                        <form th:action="@{/answer/{id}/comment(id=${answer.id})}" method="post">
                             <div class="field">
                                 <p class="control">
-                                    <textarea class="textarea" placeholder="comment"></textarea>
+                                    <textarea class="textarea" name="description" placeholder="comment"></textarea>
                                 </p>
                             </div>
                             <nav class="level">

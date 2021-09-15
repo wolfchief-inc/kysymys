@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
+import java.time.LocalDateTime;
+
 @DataJpaTest
 @Import({AnswerPersistenceAdapter.class, ProblemPersistenceAdapter.class, AnswerMapper.class, ProblemMapper.class})
 class AnswerPersistenceAdapterTest {
@@ -38,7 +40,8 @@ class AnswerPersistenceAdapterTest {
                 AnswerRepository.of(
                         "https://github.com/kawasima/answer1",
                         "0123456789012345678901234567890123456789"
-                ));
+                ),
+                LocalDateTime.now());
         sut.save(answer1st);
         answerRepository.flush();
 
@@ -48,7 +51,8 @@ class AnswerPersistenceAdapterTest {
                 AnswerRepository.of(
                         "https://github.com/kawasima/answer1",
                         "1123456789012345678901234567890123456789"
-                ));
+                ),
+                LocalDateTime.now());
         sut.save(answer2nd);
         answerRepository.flush();
 

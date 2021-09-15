@@ -7,6 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/js/fontawesome.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <title th:replace="${title}">Kysymys</title>
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
@@ -21,7 +22,13 @@
             <div class="navbar-menu">
                 <div class="navbar-end">
                     <ul>
-                        <li class="is-active"></li>
+                        <li class="is-active">
+                            <a th:href="@{/user/{id}(id=${#authentication.principal.id})}">
+                                <span class="icon">
+                                    <i class="fas fa-user-circle"></i>
+                                </span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>

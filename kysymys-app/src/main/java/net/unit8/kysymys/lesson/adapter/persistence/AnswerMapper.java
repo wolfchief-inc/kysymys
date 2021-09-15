@@ -28,7 +28,8 @@ class AnswerMapper {
                 AnswerId.of(entity.getId()),
                 problemMapper.entityToDomain(entity.getProblem()),
                 UserId.of(entity.getAnswererId()),
-                AnswerRepository.of(entity.getRepositoryUrl(), entity.getLatestSubmission().getCommitHash())
+                AnswerRepository.of(entity.getRepositoryUrl(), entity.getLatestSubmission().getCommitHash()),
+                entity.getLatestSubmission().getSubmittedAt()
         );
     }
 }
