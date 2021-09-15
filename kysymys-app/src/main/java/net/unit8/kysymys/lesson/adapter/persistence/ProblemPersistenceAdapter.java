@@ -6,7 +6,7 @@ import net.unit8.kysymys.lesson.application.LoadProblemPort;
 import net.unit8.kysymys.lesson.application.SaveProblemPort;
 import net.unit8.kysymys.lesson.domain.Problem;
 import net.unit8.kysymys.lesson.domain.ProblemId;
-import net.unit8.kysymys.steleotype.PersistenceAdapter;
+import net.unit8.kysymys.stereotype.PersistenceAdapter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 

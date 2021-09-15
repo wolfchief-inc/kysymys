@@ -2,11 +2,10 @@ package net.unit8.kysymys.user.application.impl;
 
 import am.ik.yavi.core.ConstraintViolationsException;
 import net.unit8.kysymys.share.application.CurrentDateTimePort;
-import net.unit8.kysymys.steleotype.UseCase;
+import net.unit8.kysymys.stereotype.UseCase;
 import net.unit8.kysymys.user.application.*;
 import net.unit8.kysymys.user.domain.*;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 @UseCase
@@ -39,7 +38,9 @@ class OfferToFollowUseCaseImpl implements OfferToFollowUseCase {
         Offer offer = Offer.of(new OfferId(), offeringUser, targetUser, currentDateTimePort.now());
         return tx.execute(status -> {
             saveOfferPort.save(offer);
-            OfferedToFollowEvent event = new OfferedToFollowEvent(targetUser);
+            OfferedToFollowEvent event = new OfferedToFollowEvent(
+                    targetUser.getId().getValue(), targetUser.getName().getValue(),
+                    offeringUser.getId().getValue(), offeringUser.getName().getValue());
             applicationEventPublisher.publishEvent(event);
             return event;
         });

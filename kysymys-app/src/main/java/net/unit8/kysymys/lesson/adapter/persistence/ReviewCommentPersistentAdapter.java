@@ -1,13 +1,11 @@
 package net.unit8.kysymys.lesson.adapter.persistence;
 
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import net.unit8.kysymys.lesson.application.SaveCommentPort;
 import net.unit8.kysymys.lesson.application.impl.ListCommentPort;
 import net.unit8.kysymys.lesson.domain.AnswerId;
 import net.unit8.kysymys.lesson.domain.Comment;
-import net.unit8.kysymys.steleotype.PersistenceAdapter;
+import net.unit8.kysymys.stereotype.PersistenceAdapter;
 import org.springframework.data.domain.*;
-import org.springframework.util.comparator.Comparators;
 
 import java.util.Comparator;
 import java.util.List;

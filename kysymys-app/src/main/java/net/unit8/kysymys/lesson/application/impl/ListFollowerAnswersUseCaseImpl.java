@@ -4,7 +4,7 @@ import net.unit8.kysymys.lesson.application.ListFollowerAnswersQuery;
 import net.unit8.kysymys.lesson.application.ListFollowerAnswersUseCase;
 import net.unit8.kysymys.lesson.application.ListRecentAnswersPort;
 import net.unit8.kysymys.lesson.domain.Answer;
-import net.unit8.kysymys.steleotype.UseCase;
+import net.unit8.kysymys.stereotype.UseCase;
 import net.unit8.kysymys.user.domain.UserId;
 import org.springframework.data.domain.Page;
 

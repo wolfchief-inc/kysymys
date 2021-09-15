@@ -9,7 +9,7 @@ import net.unit8.kysymys.lesson.domain.Problem;
 import net.unit8.kysymys.lesson.domain.ProblemId;
 import net.unit8.kysymys.lesson.domain.ProblemName;
 import net.unit8.kysymys.lesson.domain.ProblemRepository;
-import net.unit8.kysymys.steleotype.UseCase;
+import net.unit8.kysymys.stereotype.UseCase;
 import org.springframework.transaction.support.TransactionTemplate;
 
 @UseCase

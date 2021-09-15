@@ -19,7 +19,7 @@ abstract class AbstractRepositoryUrlBuilder implements RepositoryUrlBuilder {
     }
 
     @Override
-    public RepositoryUrlBuilder commitHash(String branch) {
+    public RepositoryUrlBuilder commitHash(String commitHash) {
         this.commitHash = commitHash;
         return this;
     }

@@ -1,12 +1,11 @@
 package net.unit8.kysymys.user.application.impl;
 
-import net.unit8.kysymys.steleotype.UseCase;
+import net.unit8.kysymys.stereotype.UseCase;
 import net.unit8.kysymys.user.application.GetUsersPort;
 import net.unit8.kysymys.user.application.SearchUsersQuery;
 import net.unit8.kysymys.user.application.SearchUsersUseCase;
 import net.unit8.kysymys.user.domain.User;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
 
 @UseCase
 class SearchUsersUseCaseImpl implements SearchUsersUseCase {

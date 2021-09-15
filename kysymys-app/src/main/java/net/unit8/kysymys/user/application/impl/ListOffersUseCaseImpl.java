@@ -1,6 +1,6 @@
 package net.unit8.kysymys.user.application.impl;
 
-import net.unit8.kysymys.steleotype.UseCase;
+import net.unit8.kysymys.stereotype.UseCase;
 import net.unit8.kysymys.user.application.ListOffersPort;
 import net.unit8.kysymys.user.application.ListOffersQuery;
 import net.unit8.kysymys.user.application.ListOffersUseCase;

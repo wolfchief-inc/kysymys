@@ -97,20 +97,43 @@ public class LessonAdminController {
         form.setBranch(problem.getRepository().getBranch());
         form.setReadmePath(problem.getRepository().getReadmePath());
         model.addAttribute("problemId", problemId);
-        return "admin/lesson/new";
+
+        return "admin/lesson/edit";
     }
 
     @PostMapping("/edit/{problemId}")
     public String update(@PathVariable("problemId") String problemId,
                          @Validated ProblemForm form,
                          BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes,
+                         Locale locale,
                          Model model) {
         Problem problem = getProblemUseCase.handle(problemId);
+        UpdatedProblemEvent event = updateProblemUseCase.handle(new UpdateProblemCommand(
+                problemId,
+                form.getName(),
+                form.getRepositoryUrl(),
+                form.getBranch(),
+                form.getReadmePath()
+        ));
+        redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
+                "message.updatedProblem",
+                new Object[]{ event.getProblemId() },
+                locale
+        ));
         return "redirect:/lesson";
     }
 
     @PostMapping("/delete/{problemId}")
-    public String delete(@PathVariable("problemId") String problemId) {
+    public String delete(@PathVariable("problemId") String problemId,
+                         RedirectAttributes redirectAttributes,
+                         Locale locale) {
+        DeletedProblemEvent event = deleteProblemUseCase.handle(new DeleteProblemCommand(problemId));
+        redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
+                "message.deletedProblem",
+                new Object[]{ event.getProblemId() },
+                locale
+        ));
         return "redirect:/lesson";
     }
 }

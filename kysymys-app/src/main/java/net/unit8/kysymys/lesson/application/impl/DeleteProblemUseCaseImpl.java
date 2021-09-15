@@ -5,7 +5,7 @@ import net.unit8.kysymys.lesson.application.DeleteProblemPort;
 import net.unit8.kysymys.lesson.application.DeleteProblemUseCase;
 import net.unit8.kysymys.lesson.application.DeletedProblemEvent;
 import net.unit8.kysymys.lesson.domain.ProblemId;
-import net.unit8.kysymys.steleotype.UseCase;
+import net.unit8.kysymys.stereotype.UseCase;
 import org.springframework.transaction.support.TransactionTemplate;
 
 @UseCase

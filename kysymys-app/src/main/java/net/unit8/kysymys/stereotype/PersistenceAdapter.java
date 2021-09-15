@@ -1,4 +1,4 @@
-package net.unit8.kysymys.steleotype;
+package net.unit8.kysymys.stereotype;
 
 
 import org.springframework.core.annotation.AliasFor;

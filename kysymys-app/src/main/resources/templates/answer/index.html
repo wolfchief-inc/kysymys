@@ -18,16 +18,18 @@
         <section class="section">
             <div class="box">
                 <p>Problem: <span th:text="${answer.problem.name}">Problem1</span></p>
-                <p>Answer: <span th:text="|${usersMap.get(answer.answererId).name} ${answer.lastAnsweredAt}|">Problem1</span></p>
+                <p>Answer: <span th:text="|${usersMap.get(answer.answererId).name} ${#temporals.format(answer.lastAnsweredAt, 'yyyy/MM/dd HH:mm')}|">Problem1</span></p>
+                <p th:text="${answer.answerUrl}"></p>
             </div>
             <div>
                 <article class="media" th:each="comment : ${comments}">
                     <div class="media-content">
                         <div class="content">
                             <p>
-                                <strong th:text="|${usersMap.get(comment.commenterId).name} ${comment.postedAt}|">Commenter 2021/10/10</strong>
-                                <span th:text="${comment.description}"></span>
+                                <strong th:text="${usersMap.get(comment.commenterId).name}">Commenter</strong>
+                                <span th="${#temporals.format(comment.postedAt, 'yyyy/MM/dd HH:mm')}">2021/10/10</strong>
                             </p>
+                            <p th:text="${comment.description}></p>
                         </div>
                     </div>
                 </article>

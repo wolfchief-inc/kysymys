@@ -9,7 +9,7 @@ import net.unit8.kysymys.lesson.domain.AnswerId;
 import net.unit8.kysymys.lesson.domain.AnswerWithComments;
 import net.unit8.kysymys.lesson.domain.Comment;
 import net.unit8.kysymys.share.application.GenerateCursorPort;
-import net.unit8.kysymys.steleotype.UseCase;
+import net.unit8.kysymys.stereotype.UseCase;
 import net.unit8.kysymys.user.domain.UserId;
 
 import java.util.List;

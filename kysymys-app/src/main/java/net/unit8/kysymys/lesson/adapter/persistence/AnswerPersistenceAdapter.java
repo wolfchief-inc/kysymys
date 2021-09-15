@@ -7,7 +7,7 @@ import net.unit8.kysymys.lesson.application.SaveAnswerPort;
 import net.unit8.kysymys.lesson.domain.Answer;
 import net.unit8.kysymys.lesson.domain.AnswerId;
 import net.unit8.kysymys.lesson.domain.ProblemId;
-import net.unit8.kysymys.steleotype.PersistenceAdapter;
+import net.unit8.kysymys.stereotype.PersistenceAdapter;
 import net.unit8.kysymys.user.domain.UserId;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;

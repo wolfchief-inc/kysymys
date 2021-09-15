@@ -1,6 +1,6 @@
 package net.unit8.kysymys.user.application.impl;
 
-import net.unit8.kysymys.steleotype.UseCase;
+import net.unit8.kysymys.stereotype.UseCase;
 import net.unit8.kysymys.user.application.*;
 import net.unit8.kysymys.user.domain.FollowStatus;
 import net.unit8.kysymys.user.domain.User;
@@ -8,7 +8,6 @@ import net.unit8.kysymys.user.domain.UserId;
 import net.unit8.kysymys.user.domain.UserProfileByOther;
 
 import java.util.List;
-import java.util.Optional;
 
 @UseCase
 class ShowUserProfileUseCaseImpl implements ShowUserProfileUseCase {

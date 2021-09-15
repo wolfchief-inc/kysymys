@@ -1,14 +1,12 @@
 package net.unit8.kysymys.user.adapter.persistence;
 
-import net.unit8.kysymys.steleotype.PersistenceAdapter;
+import net.unit8.kysymys.stereotype.PersistenceAdapter;
 import net.unit8.kysymys.user.application.*;
 import net.unit8.kysymys.user.domain.Offer;
 import net.unit8.kysymys.user.domain.OfferId;
 import net.unit8.kysymys.user.domain.UserId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 

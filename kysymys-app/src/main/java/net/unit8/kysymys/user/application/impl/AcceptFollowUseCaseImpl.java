@@ -1,11 +1,10 @@
 package net.unit8.kysymys.user.application.impl;
 
-import net.unit8.kysymys.steleotype.UseCase;
+import net.unit8.kysymys.stereotype.UseCase;
 import net.unit8.kysymys.user.application.*;
 import net.unit8.kysymys.user.domain.AcceptedFollowEvent;
 import net.unit8.kysymys.user.domain.Offer;
 import net.unit8.kysymys.user.domain.OfferId;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 @UseCase
