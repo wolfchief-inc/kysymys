@@ -15,9 +15,19 @@
             <div class="notification is-success is-light" th:text="${notification}">
             </div>
         </section>
+        <section class="section" th:if="${whatsNews.hasContent()}">
+            <div class="block">
+                <h3 class="title" th:text="#{caption.whats_news}"></h3>
+                <div class="content">
+                    <ul th:each="whatsNew : ${whatsNews}">
+                        <li th:text="${whatsNew.message}">おしらせ</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
         <section class="section">
             <div class="block">
-                <h3 th:text="#{caption.latest_problem}"></h3>
+                <h3 class="title" th:text="#{caption.latest_problem}"></h3>
                 <table class="table" th:if="${problems.hasContent()}">
                     <thead>
                     <tr>
@@ -41,7 +51,7 @@
         </section>
         <section class="section">
             <div class="block">
-                <h3 th:text="#{caption.list_offers}"></h3>
+                <h3 class="title" th:text="#{caption.list_offers}"></h3>
                 <table class="table" th:if="${offers.hasContent()}">
                     <thead>
                     <tr>
@@ -52,7 +62,7 @@
                     <tbody>
                     <tr th:each="offer : ${offers}">
                         <td>
-                            <span th:text="${offer.targetUser.name}"
+                            <span th:text="${offer.offeringUser.name}"
                                class="offer-name">name</span>
                         </td>
                         <td>

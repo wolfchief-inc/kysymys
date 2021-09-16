@@ -17,31 +17,39 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 @Configuration
 public class ThymeleafConfig implements ApplicationContextAware, EnvironmentAware {
     @Bean("mailTemplateEngine")
-    public TemplateEngine textTemplateEngine() {
+    public TemplateEngine mailTemplateEngine() {
         final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.addTemplateResolver(textTemplateResolver());
-        templateEngine.setTemplateEngineMessageSource(textMessageSource());
+        templateEngine.addTemplateResolver(mailTemplateResolver());
         return templateEngine;
     }
 
-    private ITemplateResolver textTemplateResolver() {
+    @Bean("notificationTemplateEngine")
+    public TemplateEngine notificationTemplateEngine() {
+        final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.addTemplateResolver(notificationTemplateResolver());
+        return templateEngine;
+    }
+
+    private ITemplateResolver mailTemplateResolver() {
         final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setOrder(Integer.valueOf(1));
-        templateResolver.setPrefix("/mail/");
+        templateResolver.setPrefix("/templates/mail/");
         templateResolver.setSuffix(".txt");
         templateResolver.setTemplateMode(TemplateMode.TEXT);
         templateResolver.setCharacterEncoding("utf-8");
         templateResolver.setCacheable(false);
         return templateResolver;
     }
-
-    @Bean("mail")
-    public ResourceBundleMessageSource textMessageSource() {
-        final ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("mail/Messages");
-        return messageSource;
+    private ITemplateResolver notificationTemplateResolver() {
+        final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setOrder(Integer.valueOf(1));
+        templateResolver.setPrefix("/templates/notification/");
+        templateResolver.setSuffix(".txt");
+        templateResolver.setTemplateMode(TemplateMode.TEXT);
+        templateResolver.setCharacterEncoding("utf-8");
+        templateResolver.setCacheable(false);
+        return templateResolver;
     }
-
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

@@ -9,10 +9,12 @@ import net.unit8.kysymys.lesson.domain.*;
 import net.unit8.kysymys.share.application.CurrentDateTimePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -23,20 +25,23 @@ class SubmitAnswerUseCaseImplTest {
     LoadProblemPort loadProblemPort;
     CurrentDateTimePort currentDateTimePort;
     TransactionTemplate tx;
+    ApplicationEventPublisher applicationEventPublisher;
 
     @BeforeEach
     void setup() {
         saveAnswerPort = mock(SaveAnswerPort.class);
         loadProblemPort = mock(LoadProblemPort.class);
         currentDateTimePort = LocalDateTime::now;
+        applicationEventPublisher = mock(ApplicationEventPublisher.class);
+
         PlatformTransactionManager tm = mock(PlatformTransactionManager.class);
         tx = new TransactionTemplate(tm);
         sut = new SubmitAnswerUseCaseImpl(
                 saveAnswerPort,
                 loadProblemPort,
                 currentDateTimePort,
-                tx
-        );
+                tx,
+                applicationEventPublisher);
     }
 
     @Test
@@ -52,6 +57,8 @@ class SubmitAnswerUseCaseImplTest {
         SubmitAnswerCommand command = new SubmitAnswerCommand(
                 problemId,
                 answererId,
+                "answerer",
+                List.of(),
                 "https://github.com/kawasima/answer1.git",
                 "0123456789012345678901234567890123456789"
         );

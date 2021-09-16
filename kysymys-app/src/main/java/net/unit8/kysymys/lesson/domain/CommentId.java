@@ -8,7 +8,7 @@ import lombok.Value;
 @Value
 public class CommentId {
     public static final StringValidator<CommentId> validator = StringValidatorBuilder
-            .of("value", c -> c.notBlank().lessThanOrEqual(40))
+            .of("value", c -> c.notBlank().greaterThanOrEqual(32).lessThanOrEqual(32))
             .build()
             .andThen(CommentId::new);
 

@@ -5,6 +5,6 @@ import net.unit8.kysymys.user.domain.UserId;
 
 @Value
 public class GetWhatsNewsQuery {
-    UserId userId;
+    String userId;
     int size;
 }

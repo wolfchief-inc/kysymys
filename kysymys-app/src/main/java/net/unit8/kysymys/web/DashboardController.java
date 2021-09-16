@@ -3,6 +3,9 @@ package net.unit8.kysymys.web;
 import net.unit8.kysymys.lesson.application.ListProblemsQuery;
 import net.unit8.kysymys.lesson.application.ListProblemsUseCase;
 import net.unit8.kysymys.lesson.domain.Problem;
+import net.unit8.kysymys.notification.application.GetWhatsNewsQuery;
+import net.unit8.kysymys.notification.application.GetWhatsNewsUseCase;
+import net.unit8.kysymys.notification.domain.WhatsNew;
 import net.unit8.kysymys.user.application.ListOffersQuery;
 import net.unit8.kysymys.user.application.ListOffersUseCase;
 import net.unit8.kysymys.user.domain.Offer;
@@ -17,6 +20,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class DashboardController {
     @Autowired
+    private GetWhatsNewsUseCase getWhatsNewsUseCase;
+
+    @Autowired
     private ListProblemsUseCase listProblemsUseCase;
 
     @Autowired
@@ -25,6 +31,9 @@ public class DashboardController {
     @GetMapping("/")
     public String index(Model model,
                         @AuthenticationPrincipal User user) {
+        Page<WhatsNew> whatsNews = getWhatsNewsUseCase.handle(new GetWhatsNewsQuery(user.getId().getValue(), 5));
+        model.addAttribute("whatsNews", whatsNews);
+
         Page<Problem> problems = listProblemsUseCase.handle(new ListProblemsQuery(0, 5));
         model.addAttribute("problems", problems);
 

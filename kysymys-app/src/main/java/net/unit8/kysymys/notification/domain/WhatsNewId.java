@@ -8,7 +8,7 @@ import lombok.Value;
 @Value
 public class WhatsNewId {
     public static final StringValidator<WhatsNewId> validator = StringValidatorBuilder
-            .of("value", c -> c.notBlank().greaterThanOrEqual(21).lessThanOrEqual(21))
+            .of("value", c -> c.notBlank().greaterThanOrEqual(32).lessThanOrEqual(32))
             .build()
             .andThen(WhatsNewId::new);
 

@@ -1,0 +1,1 @@
+[# th:utext=${answererName} /]さんが問題[#/]の解答を提出しました。

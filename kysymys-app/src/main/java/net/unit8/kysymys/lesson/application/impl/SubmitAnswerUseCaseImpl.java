@@ -6,6 +6,7 @@ import net.unit8.kysymys.lesson.application.*;
 import net.unit8.kysymys.lesson.domain.*;
 import net.unit8.kysymys.share.application.CurrentDateTimePort;
 import net.unit8.kysymys.user.domain.UserId;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -15,12 +16,14 @@ public class SubmitAnswerUseCaseImpl implements SubmitAnswerUseCase {
     private final LoadProblemPort loadProblemPort;
     private final CurrentDateTimePort currentDateTimePort;
     private final TransactionTemplate tx;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public SubmitAnswerUseCaseImpl(SaveAnswerPort saveAnswerPort, LoadProblemPort loadProblemPort, CurrentDateTimePort currentDateTimePort, TransactionTemplate tx) {
+    public SubmitAnswerUseCaseImpl(SaveAnswerPort saveAnswerPort, LoadProblemPort loadProblemPort, CurrentDateTimePort currentDateTimePort, TransactionTemplate tx, ApplicationEventPublisher applicationEventPublisher) {
         this.saveAnswerPort = saveAnswerPort;
         this.loadProblemPort = loadProblemPort;
         this.currentDateTimePort = currentDateTimePort;
         this.tx = tx;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -39,9 +42,17 @@ public class SubmitAnswerUseCaseImpl implements SubmitAnswerUseCase {
                 Answer.validator.validated(answerId, problem, userId, repository, currentDateTimePort.now())
         ).orElseThrow(ConstraintViolationsException::new);
 
-        return tx.execute(status -> {
+        SubmittedAnswerEvent event = tx.execute(status -> {
             saveAnswerPort.save(answer);
-            return new SubmittedAnswerEvent(answer.getId());
+            return new SubmittedAnswerEvent(answer.getId().getValue(),
+                    problem.getId().getValue(),
+                    problem.getName().getValue(),
+                    command.getAnswererId(),
+                    command.getAnswererName(),
+                    command.getFollowers()
+                    );
         });
+        applicationEventPublisher.publishEvent(event);
+        return event;
     }
 }
