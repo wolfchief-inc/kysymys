@@ -39,9 +39,9 @@ public class ApolloController {
             List<User> followers = listFollowersUseCase.handle(user.getId().getValue());
             submitAnswerUseCase.handle(new SubmitAnswerCommand(submitAnswer.getProblemId(),
                     user.getId().getValue(),
-                    user.getName().getValue(),
+                    user.getName(),
                     followers.stream().map(u -> new SubmitAnswerCommand.Follower(
-                            u.getId().getValue(), u.getName().getValue(), u.getEmail().getValue()
+                            u.getId().getValue(), u.getName(), u.getEmail().getValue()
                     )).collect(Collectors.toList()),
                     submitAnswer.getRepositoryUrl(),
                     submitAnswer.getCommitHash()));

@@ -49,10 +49,10 @@
                 <a th:href="@{/lesson/}">More...</a>
             </div>
         </section>
-        <section class="section">
+        <section class="section" th:if="${offers.hasContent()}">
             <div class="block">
                 <h3 class="title" th:text="#{caption.list_offers}"></h3>
-                <table class="table" th:if="${offers.hasContent()}">
+                <table class="table">
                     <thead>
                     <tr>
                         <th>From</th>

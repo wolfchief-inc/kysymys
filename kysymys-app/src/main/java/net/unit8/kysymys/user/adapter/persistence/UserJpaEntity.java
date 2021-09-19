@@ -19,7 +19,7 @@ public class UserJpaEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @ManyToMany

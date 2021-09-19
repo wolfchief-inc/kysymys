@@ -39,8 +39,8 @@ class OfferToFollowUseCaseImpl implements OfferToFollowUseCase {
         return tx.execute(status -> {
             saveOfferPort.save(offer);
             OfferedToFollowEvent event = new OfferedToFollowEvent(
-                    targetUser.getId().getValue(), targetUser.getName().getValue(),
-                    offeringUser.getId().getValue(), offeringUser.getName().getValue());
+                    targetUser.getId().getValue(), targetUser.getName(),
+                    offeringUser.getId().getValue(), offeringUser.getName());
             applicationEventPublisher.publishEvent(event);
             return event;
         });

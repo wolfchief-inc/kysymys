@@ -75,6 +75,17 @@
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-java8time</artifactId>
         </dependency>
+        <!--
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>com.talanlabs</groupId>
+            <artifactId>avatar-generator-8bit</artifactId>
+            <version>1.1.0</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

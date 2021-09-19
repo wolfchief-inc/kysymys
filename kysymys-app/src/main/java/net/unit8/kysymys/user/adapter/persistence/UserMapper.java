@@ -11,7 +11,7 @@ class UserMapper {
     public UserJpaEntity domainToEntity(User member) {
         UserJpaEntity entity = new UserJpaEntity();
         entity.setId(member.getId().getValue());
-        entity.setName(member.getName().getValue());
+        entity.setName(member.getName());
         entity.setEmail(member.getEmail().toString());
         entity.setPassword(member.getPassword());
         return entity;
@@ -22,7 +22,9 @@ class UserMapper {
                 UserId.of(entity.getId()),
                 EmailAddress.of(entity.getEmail()),
                 UserName.of(entity.getName()),
-                Password.ofEncoded(entity.getPassword()),
+                Optional.ofNullable(entity.getPassword())
+                        .map(Password::ofEncoded)
+                        .orElse(Password.notSet()),
                 Roles.of(entity.getRoles())
         );
     }

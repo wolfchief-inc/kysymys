@@ -16,11 +16,31 @@
             </div>
         </section>
         <section class="section">
-            <div class="block">
-                <p>Name:<span th:text="${user.name}">name</span></p>
-                <form>
-
-                </form>
+            <div class="media">
+                <div class="media-left">
+                    <figure class="image is-64x64">
+                        <img th:src="@{/avatar/{id}(id=${user.id})}">
+                    </figure>
+                </div>
+                <div class="media-content">
+                    <nav class="level">
+                        <div class="level-item">
+                            <div>
+                                <p class="heading">Display name</p>
+                                <p class="title" th:text="${user.name}">name</p>
+                            </div>
+                        </div>
+                        <div class="level-item">
+                            <div>
+                                <p class="heading">EMAIL</p>
+                                <p class="title" th:text="${user.email}">email</p>
+                            </div>
+                        </div>
+                    </nav>
+                    <a class="button" th:href="@{/user/{id}/edit(id=${user.id})}">
+                        <span>Edit</span>
+                    </a>
+                </div>
             </div>
             <div class="block">
                 <ul th:each="follower : ${follower}">
@@ -46,13 +66,13 @@
         </section>
 
         <section class="section" th:if="${answers != null && answers.hasContent()}">
-            <h3>Answers</h3>
+            <h3 class="title is-h4">Answers</h3>
             <div class="block">
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>問題</th>
-                        <th>解答</th>
+                        <th th:text="#{label.problem}">Problem</th>
+                        <th th:text="#{label.answer}">Answer</th>
                         <th></th>
                     </tr>
                     </thead>

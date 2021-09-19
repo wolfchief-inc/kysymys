@@ -25,4 +25,8 @@ public class Password {
     public static Password ofRaw(String value) {
         return validator.andThen(s -> new Password(s, true)).validated(value);
     }
+
+    public static Password notSet() {
+        return new Password(null, true);
+    }
 }

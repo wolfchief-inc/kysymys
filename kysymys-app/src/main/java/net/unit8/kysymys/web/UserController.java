@@ -3,10 +3,7 @@ package net.unit8.kysymys.web;
 import net.unit8.kysymys.lesson.application.ListFollowerAnswersQuery;
 import net.unit8.kysymys.lesson.application.ListFollowerAnswersUseCase;
 import net.unit8.kysymys.lesson.domain.Answer;
-import net.unit8.kysymys.user.application.SearchUsersQuery;
-import net.unit8.kysymys.user.application.SearchUsersUseCase;
-import net.unit8.kysymys.user.application.ShowUserProfileQuery;
-import net.unit8.kysymys.user.application.ShowUserProfileUseCase;
+import net.unit8.kysymys.user.application.*;
 import net.unit8.kysymys.user.domain.FollowStatus;
 import net.unit8.kysymys.user.domain.User;
 import net.unit8.kysymys.user.domain.UserProfileByOther;
@@ -15,10 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -34,6 +29,9 @@ public class UserController {
     private SearchUsersUseCase searchUsersUseCase;
     @Autowired
     private ListFollowerAnswersUseCase listFollowerAnswersUseCase;
+
+    @Autowired
+    private UpdateProfileUseCase updateProfileUseCase;
 
     @GetMapping("/search")
     public String userSearch(@RequestParam(value = "q", required = false) String q,
@@ -73,4 +71,41 @@ public class UserController {
 
         return "user/profile";
     }
+
+    @GetMapping("/{userId:^(?!search).*}/edit")
+    public String edit(@PathVariable("userId") String userId,
+                       @AuthenticationPrincipal User user,
+                       Model model) {
+        model.addAttribute("userId", userId);
+        if (!model.containsAttribute("form")) {
+            UserProfileByOther profile = showUserProfileUseCase.handle(new ShowUserProfileQuery(
+                    userId,
+                    user.getId().getValue()
+            ));
+            EditUserForm form = new EditUserForm();
+            form.setName(user.getName());
+            model.addAttribute("form", form);
+        }
+
+        return "user/edit";
+    }
+
+    @PostMapping("/{userId:^(?!search).*}/edit")
+    public String update(@PathVariable("userId") String userId,
+                       @AuthenticationPrincipal User user,
+                       EditUserForm form,
+                       BindingResult bindingResult,
+                       Model model) {
+        if (bindingResult.hasErrors()) {
+            return edit(userId, user, model);
+        }
+        updateProfileUseCase.handle(new UpdateProfileCommand(
+                userId,
+                form.getName(),
+                form.getNewPassword(),
+                form.getOldPassword()
+        ));
+        return "redirect:/user/" + userId;
+    }
+
 }
