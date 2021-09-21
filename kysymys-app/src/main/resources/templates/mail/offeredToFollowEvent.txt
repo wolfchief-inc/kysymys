@@ -1,0 +1,2 @@
+A request to follow from [# th:utext=${offeringUserName} /] to you.
+

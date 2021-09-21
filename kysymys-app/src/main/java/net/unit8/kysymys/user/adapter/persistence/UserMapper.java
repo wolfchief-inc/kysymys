@@ -4,7 +4,6 @@ import net.unit8.kysymys.user.domain.*;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 class UserMapper {

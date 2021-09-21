@@ -91,7 +91,10 @@ public class LessonAdminController {
     public String edit(@PathVariable("problemId") String problemId,
                        Model model) {
         Problem problem = getProblemUseCase.handle(problemId);
-        ProblemForm form = (ProblemForm) model.getAttribute("form");
+        ProblemForm form = Optional.ofNullable(model.getAttribute("form"))
+                .filter(ProblemForm.class::isInstance)
+                .map(ProblemForm.class::cast)
+                .orElseGet(ProblemForm::new);
         form.setName(problem.getName().getValue());
         form.setRepositoryUrl(problem.getRepository().getUrl());
         form.setBranch(problem.getRepository().getBranch());
@@ -128,12 +131,20 @@ public class LessonAdminController {
     public String delete(@PathVariable("problemId") String problemId,
                          RedirectAttributes redirectAttributes,
                          Locale locale) {
-        DeletedProblemEvent event = deleteProblemUseCase.handle(new DeleteProblemCommand(problemId));
-        redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
-                "message.deletedProblem",
-                new Object[]{ event.getProblemId() },
-                locale
-        ));
+        try {
+            DeletedProblemEvent event = deleteProblemUseCase.handle(new DeleteProblemCommand(problemId));
+            redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
+                    "message.deletedProblem",
+                    new Object[]{event.getProblemId()},
+                    locale
+            ));
+        } catch (AlreadyHasAnswersException e) {
+            redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
+                    "message.fail_to_delete_problem",
+                    new Object[]{},
+                    locale
+            ));
+        }
         return "redirect:/lesson";
     }
 }

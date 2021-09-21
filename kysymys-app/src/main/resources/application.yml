@@ -3,6 +3,8 @@ spring:
     active:
       - dev
       - local
+  application:
+    name: kysymys
   servlet:
     multipart:
       max-file-size: 100MB
@@ -16,3 +18,6 @@ server:
   tomcat:
     threads:
       max: 255
+kysymys:
+  notification:
+    fromAddress: kysymys@exmample.com

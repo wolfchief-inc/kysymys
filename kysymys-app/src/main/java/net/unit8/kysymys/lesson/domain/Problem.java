@@ -7,7 +7,6 @@ import am.ik.yavi.arguments.Arguments3Validator;
 import am.ik.yavi.builder.ArgumentsValidatorBuilder;
 import lombok.Value;
 
-import java.net.URI;
 import java.net.URL;
 
 @Value

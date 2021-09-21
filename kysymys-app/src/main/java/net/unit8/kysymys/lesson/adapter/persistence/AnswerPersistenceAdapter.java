@@ -1,6 +1,7 @@
 package net.unit8.kysymys.lesson.adapter.persistence;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
+import net.unit8.kysymys.lesson.application.CountAnswersPort;
 import net.unit8.kysymys.lesson.application.ListRecentAnswersPort;
 import net.unit8.kysymys.lesson.application.LoadAnswerPort;
 import net.unit8.kysymys.lesson.application.SaveAnswerPort;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @PersistenceAdapter
-class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort, ListRecentAnswersPort {
+class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort, ListRecentAnswersPort, CountAnswersPort {
     private final AnswerRepository answerRepository;
     private final SubmissionRepository submissionRepository;
     private final AnswerMapper answerMapper;
@@ -68,5 +69,14 @@ class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort, ListRe
 
         answerEntity.setLatestSubmission(submissionEntity);
         answerRepository.save(answerEntity);
+    }
+
+    @Override
+    public long countByProblemId(ProblemId problemId) {
+        AnswerJpaEntity example = new AnswerJpaEntity();
+        ProblemJpaEntity problemExample = new ProblemJpaEntity();
+        problemExample.setId(problemId.getValue());
+        example.setProblem(problemExample);
+        return answerRepository.count(Example.of(example));
     }
 }

@@ -15,7 +15,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <start-class>net.unit8.kysymys.App</start-class>
-        <java.version>16</java.version>
+        <java.version>11</java.version>
         <lombok.version>1.18.20</lombok.version>
     </properties>
 
@@ -82,11 +82,6 @@
         </dependency>
         -->
         <dependency>
-            <groupId>com.talanlabs</groupId>
-            <artifactId>avatar-generator-8bit</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
@@ -119,6 +114,36 @@
                 <dependency>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-devtools</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>production</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>production</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <version>3.1.4</version>
+                        <configuration>
+                            <to>
+                                <image>060254284576.dkr.ecr.ap-northeast-1.amazonaws.com/kysymys-app</image>
+                            </to>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-aws-secrets-manager-config</artifactId>
+                    <version>2.2.6.RELEASE</version>
                 </dependency>
             </dependencies>
         </profile>

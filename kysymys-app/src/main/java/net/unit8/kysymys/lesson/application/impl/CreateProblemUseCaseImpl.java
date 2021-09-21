@@ -1,6 +1,5 @@
 package net.unit8.kysymys.lesson.application.impl;
 
-import am.ik.yavi.arguments.Arguments;
 import am.ik.yavi.core.ConstraintViolationsException;
 import net.unit8.kysymys.lesson.application.CreateProblemCommand;
 import net.unit8.kysymys.lesson.application.CreateProblemUseCase;

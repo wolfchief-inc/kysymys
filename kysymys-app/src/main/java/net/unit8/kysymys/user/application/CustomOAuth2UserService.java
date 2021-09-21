@@ -1,6 +1,5 @@
 package net.unit8.kysymys.user.application;
 
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import net.unit8.kysymys.user.domain.EmailAddress;
 import net.unit8.kysymys.user.domain.User;
 import net.unit8.kysymys.user.domain.UserId;

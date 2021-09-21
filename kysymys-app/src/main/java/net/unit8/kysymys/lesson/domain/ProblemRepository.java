@@ -4,14 +4,10 @@ import am.ik.yavi.arguments.Arguments3Validator;
 import am.ik.yavi.arguments.ArgumentsValidators;
 import am.ik.yavi.arguments.StringValidator;
 import am.ik.yavi.builder.StringValidatorBuilder;
-import am.ik.yavi.builder.ValidatorBuilder;
-import am.ik.yavi.core.Validator;
-import am.ik.yavi.fn.Validations;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-import java.net.URI;
 import java.net.URL;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

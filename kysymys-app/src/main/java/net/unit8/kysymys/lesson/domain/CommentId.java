@@ -2,7 +2,6 @@ package net.unit8.kysymys.lesson.domain;
 
 import am.ik.yavi.arguments.StringValidator;
 import am.ik.yavi.builder.StringValidatorBuilder;
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import lombok.Value;
 
 @Value

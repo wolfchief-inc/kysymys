@@ -1,7 +1,5 @@
 package net.unit8.kysymys.user.adapter.persistence;
 
-import net.unit8.kysymys.user.domain.Offer;
-import net.unit8.kysymys.user.domain.UserId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,6 @@
 package net.unit8.kysymys.notification.adapter.persistence;
 
 import lombok.Data;
-import net.unit8.kysymys.user.adapter.persistence.UserJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;

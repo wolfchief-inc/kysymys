@@ -1,8 +1,5 @@
 package net.unit8.kysymys.lesson.adapter.persistence;
 
-import net.unit8.kysymys.lesson.domain.AnswerId;
-import net.unit8.kysymys.lesson.domain.Comment;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

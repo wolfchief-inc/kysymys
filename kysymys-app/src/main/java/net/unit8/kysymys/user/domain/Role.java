@@ -12,7 +12,7 @@ public enum Role {
                 .map(Permission::of)
                 .collect(Collectors.toSet()));
     }
-    private Permissions permissions;
+    private final Permissions permissions;
 
     public Permissions getPermissions() {
         return permissions;

@@ -4,7 +4,6 @@ import net.unit8.kysymys.lesson.application.PostCommentCommand;
 import net.unit8.kysymys.lesson.application.PostCommentUseCase;
 import net.unit8.kysymys.lesson.application.ShowAnswerQuery;
 import net.unit8.kysymys.lesson.application.ShowAnswerUseCase;
-import net.unit8.kysymys.lesson.domain.Answer;
 import net.unit8.kysymys.lesson.domain.AnswerWithComments;
 import net.unit8.kysymys.lesson.domain.Comment;
 import net.unit8.kysymys.user.application.ListUsersUseCase;

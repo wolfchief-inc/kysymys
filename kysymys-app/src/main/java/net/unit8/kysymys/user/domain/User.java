@@ -2,8 +2,6 @@ package net.unit8.kysymys.user.domain;
 
 import am.ik.yavi.arguments.*;
 import am.ik.yavi.builder.ArgumentsValidatorBuilder;
-import am.ik.yavi.builder.ValidatorBuilder;
-import am.ik.yavi.core.ValueValidator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter

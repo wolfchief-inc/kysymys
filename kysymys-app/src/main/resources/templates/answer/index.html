@@ -27,9 +27,9 @@
                         <div class="content">
                             <p>
                                 <strong th:text="${usersMap.get(comment.commenterId).name}">Commenter</strong>
-                                <span th="${#temporals.format(comment.postedAt, 'yyyy/MM/dd HH:mm')}">2021/10/10</strong>
+                                <span th="${#temporals.format(comment.postedAt, 'yyyy/MM/dd HH:mm')}">2021/10/10</span>
                             </p>
-                            <p th:text="${comment.description}></p>
+                            <p th:text="${comment.description}"></p>
                         </div>
                     </div>
                 </article>

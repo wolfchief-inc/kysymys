@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
     <title></title>
 </head>
 <body>
@@ -45,11 +45,13 @@
                                 </a>
                             </p>
                             <p class="control">
-                                <button class="button is-danger is-small"
-                                        th:href="@{/admin/lesson/delete/{id}(id=${problem.id})}"
-                                        th:text="#{label.delete}">
-                                    Delete
-                                </button>
+                            <form th:action="@{/admin/lesson/delete/{id}(id=${problem.id})}" method="POST">
+                            <button class="button is-danger is-small"
+                                    th:text="#{label.delete}">
+                                Delete
+                            </button>
+
+                        </form>
                             </p>
                         </div>
                     </td>

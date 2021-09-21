@@ -18,9 +18,31 @@
         <section class="section">
             <div class="media">
                 <div class="media-left">
+                    <div class="block">
                     <figure class="image is-64x64">
                         <img th:src="@{/avatar/{id}(id=${user.id})}">
                     </figure>
+                    </div>
+                    <div class="block" th:if="${isMyProfile}">
+                        <a class="button is-small" th:href="@{/user/{id}/edit(id=${user.id})}">
+                            <span>Edit</span>
+                        </a>
+                    </div>
+                    <div class="block" th:unless="${isMyProfile}">
+                        <div th:switch="${followStatus}">
+                            <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).UNFOLLOWING}">
+                                <form th:action="@{/offer/send/{id}(id=${user.id})}" method="post">
+                                    <button type="submit" class="button is-primary is-rounded">Connect</button>
+                                </form>
+                            </div>
+                            <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).HAS_ALREADY_OFFERED}">
+                                <button type="button" class="button is-rounded">In progress</button>
+                            </div>
+                            <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).FOLLOWING}">
+                                <button type="button" class="button is-success is-rounded">Following</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="media-content">
                     <nav class="level">
@@ -37,9 +59,6 @@
                             </div>
                         </div>
                     </nav>
-                    <a class="button" th:href="@{/user/{id}/edit(id=${user.id})}">
-                        <span>Edit</span>
-                    </a>
                 </div>
             </div>
             <div class="block">
@@ -48,21 +67,6 @@
                 </ul>
             </div>
 
-            <div class="block" th:unless="${isMyProfile}">
-                <div th:switch="${followStatus}">
-                    <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).UNFOLLOWING}">
-                        <form th:action="@{/offer/send/{id}(id=${user.id})}" method="post">
-                            <button type="submit" class="button">Offer</button>
-                        </form>
-                    </div>
-                    <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).HAS_ALREADY_OFFERED}">
-                        <button type="button" class="button">In progress</button>
-                    </div>
-                    <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).FOLLOWING}">
-                        <button type="button" class="button">Following</button>
-                    </div>
-                </div>
-            </div>
         </section>
 
         <section class="section" th:if="${answers != null && answers.hasContent()}">

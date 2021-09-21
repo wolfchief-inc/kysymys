@@ -14,10 +14,10 @@ import java.util.Objects;
 
 @Component
 class FlakeAdapter implements GenerateCursorPort {
-    private Clock clock;
+    private final Clock clock;
     private int sequence;
     private long lastTime;
-    private byte[] macAddress;
+    private final byte[] macAddress;
 
     public FlakeAdapter() {
         clock = Clock.systemUTC();

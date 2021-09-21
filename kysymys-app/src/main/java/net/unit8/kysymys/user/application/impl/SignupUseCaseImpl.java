@@ -29,7 +29,7 @@ class SignupUseCaseImpl implements SignupUseCase {
     public CreatedUserEvent handle(SignupCommand command) {
         EmailAddress email = EmailAddress.of(command.getEmail());
         if (existsEmailAddressPort.exists(email)) {
-            throw new EmailAlreadyTakenException(command.getEmail().toString());
+            throw new EmailAlreadyTakenException(command.getEmail());
         }
 
         Password password = Password.ofEncoded(passwordEncoder.encode(command.getPassword()));

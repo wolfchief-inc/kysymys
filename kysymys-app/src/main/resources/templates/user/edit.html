@@ -19,6 +19,23 @@
                 </h2>
             </div>
             <div class="block">
+                <div class="columns">
+                    <div class="column">
+                        <figure class="image is-64x64">
+                            <img id="img-avatar" th:src="@{/avatar/{id}(id=${userId})}">
+                        </figure>
+                    </div>
+                    <div class="column">
+                        <button class="button" type="button" id="btn-change-avatar">
+                            <span class="icon">
+                                <i class="fas fa-redo"></i>
+                            </span>
+                            <span>Change avatar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="block">
                 <form th:action="@{/user/{id}/edit(id=${userId})}" method="post" th:object="${form}">
                     <div class="field">
                         <label class="label">Name</label>
@@ -52,6 +69,22 @@
                 </form>
             </div>
         </section>
+        <script>
+        /*<![CDATA[*/
+
+        document.querySelector("#btn-change-avatar").addEventListener("click", function(e) {
+          fetch('[[@{/avatar/{id}(id=${userId})}]]', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: '_csrf=' + document.querySelector("input[name=_csrf]").value
+          })
+          .then(response => response.blob())
+          .then(blob => {
+            document.querySelector('#img-avatar').src = URL.createObjectURL(blob)
+          })
+        });
+        /*]]>*/
+        </script>
     </main>
 </div>
 </body>

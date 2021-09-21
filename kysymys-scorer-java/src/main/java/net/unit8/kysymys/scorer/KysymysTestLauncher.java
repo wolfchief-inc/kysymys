@@ -3,7 +3,6 @@ package net.unit8.kysymys.scorer;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.launcher.Launcher;
 import org.junit.platform.launcher.TestPlan;
-import org.junit.platform.launcher.core.LauncherConfig;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 
@@ -11,7 +10,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -22,11 +20,7 @@ public class KysymysTestLauncher {
         String kysymysUrl = System.getProperty("KYSYMYS_URL");
         String submissionId = System.getProperty("KYSYMYS_SUBMISSION_ID");
         String token = System.getProperty("KYSYMYS_TOKEN");
-        boolean standalone = false;
-
-        if (kysymysUrl == null || submissionId == null || token == null) {
-            standalone = true;
-        }
+        boolean standalone = kysymysUrl == null || submissionId == null || token == null;
 
         Launcher launcher = LauncherFactory.create();
         TestPlan plan = launcher.discover(LauncherDiscoveryRequestBuilder

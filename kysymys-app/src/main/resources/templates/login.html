@@ -11,66 +11,71 @@
 <body>
 <div class="container">
     <main id="content">
-<section class="hero is-fullheight">
-    <div class="hero-body">
-        <div class="container has-text-centered">
-            <div class="column is-4 is-offset-4">
-                <p class="subtitle has-text-black">Please login to proceed.</p>
-                <div class="box">
-                    <form th:action="@{/login}" method="post">
-                        <div class="field">
-                            <div class="control">
-                                <input class="input is-large" type="email" name="username" placeholder="Your Email" autofocus="">
+        <section class="hero is-fullheight">
+            <div class="hero-body">
+                <div class="container has-text-centered">
+                    <div class="columns">
+                        <div class="column is-half is-offset-one-quarter">
+                            <div th:if="${param.error} != null">
+                                <div class="notification is-danger is-light">Invalid username and password</div>
+                            </div>
+                            <p class="subtitle has-text-black" th:if="${param.error} == null">Please login to proceed.</p>
+                            <div class="box">
+                                <form th:action="@{/login}" method="post">
+                                    <div class="field">
+                                        <div class="control">
+                                            <input class="input is-large" type="email" name="username" placeholder="Your Email" autofocus="">
+                                        </div>
+                                    </div>
+
+                                    <div class="field">
+                                        <div class="control">
+                                            <input class="input is-large" type="password" name="password" placeholder="Your Password">
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label class="checkbox">
+                                            <input type="checkbox">
+                                            Remember me
+                                        </label>
+                                    </div>
+                                    <button class="button is-block is-info is-large is-fullwidth">
+                                        <span>Login</span>
+                                        <span class="icon is-small">
+                                            <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                                        </span>
+                                    </button>
+                                </form>
+
+                                <div class="is-divider" data-content="OR"></div>
+                                <a class="button" th:href="@{/oauth2/authorize/github}">
+                                    <span class="icon">
+                                        <i class="fab fa-github"></i>
+                                    </span>
+                                    <span>GitHub</span>
+                                </a>
+                            </div>
+                            <div class="box" th:if="${#arrays.contains(@environment.getActiveProfiles(),'dev')}">
+                                <div class="field is-grouped">
+                                    <p class="control">
+                                    <form th:action="@{/login}" method="post">
+                                        <input type="hidden" name="username" value="student1@example.com"/>
+                                        <input type="hidden" name="password" value="password"/>
+                                        <button type="submit" class="button">Student</button>
+                                    </form>
+                                    <form th:action="@{/login}" method="post">
+                                        <input type="hidden" name="username" value="teacher1@example.com"/>
+                                        <input type="hidden" name="password" value="password"/>
+                                        <button type="submit" class="button">Teacher</button>
+                                    </form>
+                                    </p>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="field">
-                            <div class="control">
-                                <input class="input is-large" type="password" name="password" placeholder="Your Password">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="checkbox">
-                                <input type="checkbox">
-                                Remember me
-                            </label>
-                        </div>
-                        <button class="button is-block is-info is-large is-fullwidth">
-                            <span>Login</span>
-                            <span class="icon is-small">
-                                <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
-                            </span>
-                        </button>
-                    </form>
-
-                    <div class="is-divider" data-content="OR"></div>
-                    <a class="button" th:href="@{/oauth2/authorize/github}">
-                        <span class="icon">
-                            <i class="fab fa-github"></i>
-                        </span>
-                        <span>GitHub</span>
-                    </a>
-                </div>
-                <div class="box" th:if="${#arrays.contains(@environment.getActiveProfiles(),'dev')}">
-                    <div class="field is-grouped">
-                        <p class="control">
-                        <form th:action="@{/login}" method="post">
-                            <input type="hidden" name="username" value="student1@example.com"/>
-                            <input type="hidden" name="password" value="password"/>
-                            <button type="submit" class="button">Student</button>
-                        </form>
-                        <form th:action="@{/login}" method="post">
-                            <input type="hidden" name="username" value="teacher1@example.com"/>
-                            <input type="hidden" name="password" value="password"/>
-                            <button type="submit" class="button">Teacher</button>
-                        </form>
-                        </p>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
     </main>
 </div>
 </body>
