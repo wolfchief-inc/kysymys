@@ -1,0 +1,12 @@
+spring:
+  mail:
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          port: ${MAIL_PORT}
+          auth: true
+          starttls:
+            enable: true
+            required: true

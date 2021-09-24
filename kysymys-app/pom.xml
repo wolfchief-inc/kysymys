@@ -67,20 +67,15 @@
             <artifactId>yavi</artifactId>
             <version>0.8.3</version>
         </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-java8time</artifactId>
         </dependency>
-        <!--
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
-        -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -115,6 +110,10 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-devtools</artifactId>
                 </dependency>
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                </dependency>
             </dependencies>
         </profile>
         <profile>
@@ -126,6 +125,15 @@
                 </property>
             </activation>
             <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <excludes>
+                            <exclude>**/application-dev.yml</exclude>
+                            <exclude>**/application-local.yml</exclude>
+                        </excludes>
+                    </resource>
+                </resources>
                 <plugins>
                     <plugin>
                         <groupId>com.google.cloud.tools</groupId>
@@ -133,17 +141,25 @@
                         <version>3.1.4</version>
                         <configuration>
                             <to>
-                                <image>060254284576.dkr.ecr.ap-northeast-1.amazonaws.com/kysymys-app</image>
+                                <image>${aws.account.id}.dkr.ecr.ap-northeast-1.amazonaws.com/kysymys-app</image>
                             </to>
                         </configuration>
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>postgres</id>
+            <activation>
+                <property>
+                    <name>db</name>
+                    <value>postgres</value>
+                </property>
+            </activation>
             <dependencies>
                 <dependency>
-                    <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-starter-aws-secrets-manager-config</artifactId>
-                    <version>2.2.6.RELEASE</version>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
                 </dependency>
             </dependencies>
         </profile>

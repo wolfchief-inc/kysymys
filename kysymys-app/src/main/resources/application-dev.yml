@@ -8,9 +8,6 @@ spring:
     console:
       enabled: true
       path: /h2
-  mail:
-    host: smtp.mailtrap.io
-    port: 2525
 
 management:
   endpoints:

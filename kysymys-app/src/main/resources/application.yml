@@ -1,8 +1,7 @@
 spring:
   profiles:
     active:
-      - dev
-      - local
+      - aws
   application:
     name: kysymys
   servlet:
@@ -14,10 +13,35 @@ spring:
     cache-duration: -1
     encoding: UTF-8
     fallback-to-system-locale: false
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER:sa}
+    password: ${DB_PASSWD:""}
+    driver-class-name: ${DB_DRIVER}
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USER}
+    password: ${MAIL_PASSWD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: ${GITHUB_CLIENT_ID}
+            clientSecret: ${GITHUB_CLIENT_SECRET}
 server:
   tomcat:
     threads:
       max: 255
+  forward-headers-strategy: NATIVE
+management:
+  health:
+    mail:
+      enabled: false
 kysymys:
   notification:
-    fromAddress: kysymys@exmample.com
+    fromAddress: kysymys@wolfchief.jp

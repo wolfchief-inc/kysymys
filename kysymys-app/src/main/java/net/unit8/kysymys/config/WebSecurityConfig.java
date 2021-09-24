@@ -36,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .xssProtection();
 
         http.authorizeRequests()
-                .antMatchers("/login", "/login/oauth2", "/signup", "/h2/**", "/token/watch/*").permitAll()
+                .antMatchers("/login", "/login/oauth2", "/signup", "/h2/**", "/token/watch/*", "/actuator/health").permitAll()
                 .antMatchers("/admin/lesson/**").hasAuthority("CREATE_PROBLEM")
                 .anyRequest().authenticated();
 
