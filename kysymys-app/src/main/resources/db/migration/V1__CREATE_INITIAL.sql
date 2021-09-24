@@ -31,7 +31,8 @@ CREATE TABLE problems (
   id VARCHAR(255) NOT NULL,
   name VARCHAR(255) NOT NULL,
   repository_url VARCHAR(255) NOT NULL,
-  branch VARCHAR(255),
+  branch VARCHAR(255) NOT NULL,
+  readme_path VARCHAR(255) NOT NULL,
   runner VARCHAR(255),
   CONSTRAINT pk_problems PRIMARY KEY (id)
 );

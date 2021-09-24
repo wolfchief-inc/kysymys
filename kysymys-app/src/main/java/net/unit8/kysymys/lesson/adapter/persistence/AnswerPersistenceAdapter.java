@@ -2,7 +2,7 @@ package net.unit8.kysymys.lesson.adapter.persistence;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import net.unit8.kysymys.lesson.application.CountAnswersPort;
-import net.unit8.kysymys.lesson.application.ListRecentAnswersPort;
+import net.unit8.kysymys.lesson.application.ListAnswersPort;
 import net.unit8.kysymys.lesson.application.LoadAnswerPort;
 import net.unit8.kysymys.lesson.application.SaveAnswerPort;
 import net.unit8.kysymys.lesson.domain.Answer;
@@ -15,10 +15,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @PersistenceAdapter
-class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort, ListRecentAnswersPort, CountAnswersPort {
+class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort, ListAnswersPort, CountAnswersPort {
     private final AnswerRepository answerRepository;
     private final SubmissionRepository submissionRepository;
     private final AnswerMapper answerMapper;
@@ -50,6 +52,14 @@ class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort, ListRe
         if (page > 0) page = page - 1;
         return answerRepository.findRecentAnswers(answererId.getValue(), PageRequest.of(page, size))
                 .map(answerMapper::entityToDomain);
+    }
+
+    @Override
+    public List<Answer> listUserAnswersByProblemIds(UserId userId, List<ProblemId> problemIds) {
+        return answerRepository.findAllByAnswererIdAndProblemIdIn(userId.getValue(), problemIds.stream().map(ProblemId::getValue).collect(Collectors.toList()))
+                .stream()
+                .map(answerMapper::entityToDomain)
+                .collect(Collectors.toList());
     }
 
     @Override

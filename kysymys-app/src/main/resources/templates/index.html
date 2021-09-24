@@ -33,15 +33,27 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
+                        <th>Your answer</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="problem : ${problems}">
-                        <td></td>
+                        <td th:text="${problem.id}"></td>
                         <td>
-                            <a th:text="${problem.name}"
-                               class="problem-name"
-                               th:href="${problem.problemUrl}">name</a>
+                            <a class="problem-name"
+                               th:href="${problem.problemUrl}"
+                               target="_blank">
+                                <span th:text="${problem.name}">name</span>
+                                <span class="icon is-small">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </span>
+                            </a>
+                        </td>
+                        <td>
+                            <span th:text="${answers.get(problem.id).answerUrl}">answer url</span>
+                            (
+                            <span th:text="${#temporals.format(answers.get(problem.id).lastAnsweredAt, 'yyyy/MM/dd HH:mm')}">2020/11/11 00:00:00</span>
+                            )
                         </td>
                     </tr>
                     </tbody>

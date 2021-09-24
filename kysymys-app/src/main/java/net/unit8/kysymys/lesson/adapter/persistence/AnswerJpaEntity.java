@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Data
 public class AnswerJpaEntity {
     @Id
+    @Column(name = "id", length = 21)
     private String id;
 
     @ManyToOne(cascade = CascadeType.REMOVE)

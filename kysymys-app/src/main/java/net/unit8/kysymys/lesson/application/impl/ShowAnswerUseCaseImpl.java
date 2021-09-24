@@ -1,9 +1,6 @@
 package net.unit8.kysymys.lesson.application.impl;
 
-import net.unit8.kysymys.lesson.application.AnswerNotFound;
-import net.unit8.kysymys.lesson.application.LoadAnswerPort;
-import net.unit8.kysymys.lesson.application.ShowAnswerQuery;
-import net.unit8.kysymys.lesson.application.ShowAnswerUseCase;
+import net.unit8.kysymys.lesson.application.*;
 import net.unit8.kysymys.lesson.domain.Answer;
 import net.unit8.kysymys.lesson.domain.AnswerId;
 import net.unit8.kysymys.lesson.domain.AnswerWithComments;

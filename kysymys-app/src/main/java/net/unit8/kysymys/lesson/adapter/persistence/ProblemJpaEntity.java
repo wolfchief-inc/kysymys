@@ -12,6 +12,7 @@ import javax.persistence.Table;
 @Data
 public class ProblemJpaEntity {
     @Id
+    @Column(name = "id", length = 21)
     private String id;
 
     @Column(name = "name", nullable = false)
@@ -20,8 +21,11 @@ public class ProblemJpaEntity {
     @Column(name = "repository_url", nullable = false)
     private String repositoryUrl;
 
-    @Column(name = "branch")
+    @Column(name = "branch", nullable = false)
     private String branch;
+
+    @Column(name = "readme_path")
+    private String readmePath;
 
     @Column(name = "runner")
     private String runner;

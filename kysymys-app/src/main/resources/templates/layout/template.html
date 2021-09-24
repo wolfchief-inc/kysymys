@@ -27,12 +27,12 @@
                 <div class="navbar-end">
                     <ul>
                         <li th:if="${#authorization.expression('isAuthenticated()')}">
-                            <button class="dropdown is-right">
+                            <button class="dropdown is-right button">
                                 <div class="dropdown-trigger">
                                     <div class="columns is-1">
                                         <div class="column">
-                                            <figure>
-                                                <img class="image is-32x32" th:src="@{/avatar/{id}(id=${#authentication.principal.id})}" />
+                                            <figure class="image is-32x32">
+                                                <img th:src="@{/avatar/{id}(id=${#authentication.principal.id})}" />
                                             </figure>
                                         </div>
                                         <div class="column">

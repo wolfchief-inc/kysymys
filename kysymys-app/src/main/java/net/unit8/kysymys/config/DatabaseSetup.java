@@ -54,26 +54,14 @@ public class DatabaseSetup implements InitializingBean {
         ProblemJpaEntity problem1 = new ProblemJpaEntity();
         problem1.setId(problem1Id);
         problem1.setName("Problem1");
-        problem1.setRepositoryUrl("https://github.com/kawasima/problem1");
-        problem1.setBranch("main");
+        problem1.setRepositoryUrl("https://bitbucket.org/kawasima/java-novice");
+        problem1.setBranch("master");
+        problem1.setReadmePath("/README.exam1.md");
 
-        AnswerJpaEntity answer1 = new AnswerJpaEntity();
-        answer1.setId(NanoIdUtils.randomNanoId());
-        answer1.setAnswererId(teacher1.getId());
-        answer1.setProblem(problem1);
-        answer1.setRepositoryUrl("https://github.com/kawasima/answer1");
-
-        SubmissionJpaEntity submission1 = new SubmissionJpaEntity();
-        submission1.setId(NanoIdUtils.randomNanoId());
-        submission1.setAnswer(answer1);
-        submission1.setCommitHash("0123456789012345678901234567890123456789");
-        submission1.setSubmittedAt(LocalDateTime.now());
-        answer1.setLatestSubmission(submission1);
         tx.execute(status -> {
             userRepository.save(teacher1);
             userRepository.save(student1);
             problemRepository.save(problem1);
-            answerRepository.save(answer1);
             return null;
         });
     }

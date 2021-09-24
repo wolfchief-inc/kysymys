@@ -14,6 +14,7 @@ class ProblemMapper {
         entity.setName(problem.getName().getValue());
         entity.setRepositoryUrl(problem.getRepository().getUrl());
         entity.setBranch(problem.getRepository().getBranch());
+        entity.setReadmePath(problem.getRepository().getReadmePath());
         return entity;
     }
 
@@ -23,7 +24,7 @@ class ProblemMapper {
                 ProblemId.of(entity.getId()),
                 ProblemName.of(entity.getName()),
                 ProblemRepository.of(entity.getRepositoryUrl(),
-                        entity.getBranch())
+                        entity.getBranch(), entity.getReadmePath())
         );
     }
 }
