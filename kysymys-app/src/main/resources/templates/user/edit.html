@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <title></title>
+    <title th:text="|Edit user - KYSYMYS|">KYSYMYS</title>
 </head>
 <body>
 <div class="container">
@@ -22,7 +22,7 @@
                 <div class="columns">
                     <div class="column">
                         <figure class="image is-64x64">
-                            <img id="img-avatar" th:src="@{/avatar/{id}(id=${userId})}">
+                            <img id="img-avatar" src="" th:src="@{/avatar/{id}(id=${userId})}">
                         </figure>
                     </div>
                     <div class="column">

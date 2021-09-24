@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <title></title>
+    <title th:text="|Answer:${answer.id} - KYSYMYS|">KYSYMYS</title>
 </head>
 <body>
 <div class="container">
@@ -19,15 +19,20 @@
             <div class="box">
                 <p>Problem: <span th:text="${answer.problem.name}">Problem1</span></p>
                 <p>Answer: <span th:text="|${usersMap.get(answer.answererId).name} ${#temporals.format(answer.lastAnsweredAt, 'yyyy/MM/dd HH:mm')}|">Problem1</span></p>
-                <p th:text="${answer.answerUrl}"></p>
+                <p><a th:href="${answer.answerUrl}" th:text="${answer.answerUrl}">answer</a></p>
             </div>
             <div>
                 <article class="media" th:each="comment : ${comments}">
+                    <figure class="media-left">
+                        <p class="image is-64x64">
+                            <img src="" th:src="@{/avatar/{id}(id=${usersMap.get(comment.commenterId).id})}">
+                        </p>
+                    </figure>
                     <div class="media-content">
                         <div class="content">
                             <p>
                                 <strong th:text="${usersMap.get(comment.commenterId).name}">Commenter</strong>
-                                <span th="${#temporals.format(comment.postedAt, 'yyyy/MM/dd HH:mm')}">2021/10/10</span>
+                                <span th:text="${#temporals.format(comment.postedAt, 'yyyy/MM/dd HH:mm')}">2021/10/10</span>
                             </p>
                             <p th:text="${comment.description}"></p>
                         </div>

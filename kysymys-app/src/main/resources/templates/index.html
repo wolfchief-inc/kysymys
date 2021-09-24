@@ -5,8 +5,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
-    <title></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <title th:text="|Home - KYSYMYS|">KYSYMYS</title>
 </head>
 <body>
 <div class="container">
@@ -50,10 +50,12 @@
                             </a>
                         </td>
                         <td>
-                            <span th:text="${answers.get(problem.id).answerUrl}">answer url</span>
-                            (
-                            <span th:text="${#temporals.format(answers.get(problem.id).lastAnsweredAt, 'yyyy/MM/dd HH:mm')}">2020/11/11 00:00:00</span>
-                            )
+                            <div th:if="${answers.get(problem.id) != null}">
+                                <a th:href="@{/answer/{id}(id=${answers.get(problem.id).id})}"
+                                   th:text="${#temporals.format(answers.get(problem.id).lastAnsweredAt, 'yyyy/MM/dd HH:mm')}">
+                                    2020/11/11 00:00:00
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     </tbody>

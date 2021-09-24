@@ -13,7 +13,7 @@ spring:
   datasource:
     url: ${DB_URL}
     username: ${DB_USER:sa}
-    password: ${DB_PASSWD:""}
+    password: ${DB_PASSWD:}
     driver-class-name: ${DB_DRIVER}
   mail:
     host: ${MAIL_HOST}

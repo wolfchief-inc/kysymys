@@ -31,7 +31,7 @@ public class ThymeleafConfig implements ApplicationContextAware, EnvironmentAwar
 
     private ITemplateResolver mailTemplateResolver() {
         final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setOrder(Integer.valueOf(1));
+        templateResolver.setOrder(1);
         templateResolver.setPrefix("/templates/mail/");
         templateResolver.setSuffix(".txt");
         templateResolver.setTemplateMode(TemplateMode.TEXT);
@@ -41,7 +41,7 @@ public class ThymeleafConfig implements ApplicationContextAware, EnvironmentAwar
     }
     private ITemplateResolver notificationTemplateResolver() {
         final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setOrder(Integer.valueOf(1));
+        templateResolver.setOrder(1);
         templateResolver.setPrefix("/templates/notification/");
         templateResolver.setSuffix(".txt");
         templateResolver.setTemplateMode(TemplateMode.TEXT);

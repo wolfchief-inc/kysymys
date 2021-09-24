@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <title>ログイン</title>
+    <title th:text="|Login - KYSYMYS|">KYSYMYS</title>
 </head>
 <body>
 <div class="container">
@@ -57,18 +57,20 @@
                             </div>
                             <div class="box" th:if="${#arrays.contains(@environment.getActiveProfiles(),'dev')}">
                                 <div class="field is-grouped">
-                                    <p class="control">
                                     <form th:action="@{/login}" method="post">
-                                        <input type="hidden" name="username" value="student1@example.com"/>
-                                        <input type="hidden" name="password" value="password"/>
-                                        <button type="submit" class="button">Student</button>
+                                        <p class="control">
+                                            <input type="hidden" name="username" value="student1@example.com"/>
+                                            <input type="hidden" name="password" value="password"/>
+                                            <button type="submit" class="button">Student</button>
+                                        </p>
                                     </form>
                                     <form th:action="@{/login}" method="post">
-                                        <input type="hidden" name="username" value="teacher1@example.com"/>
-                                        <input type="hidden" name="password" value="password"/>
-                                        <button type="submit" class="button">Teacher</button>
+                                        <p class="control">
+                                            <input type="hidden" name="username" value="teacher1@example.com"/>
+                                            <input type="hidden" name="password" value="password"/>
+                                            <button type="submit" class="button">Teacher</button>
+                                        </p>
                                     </form>
-                                    </p>
                                 </div>
                             </div>
                         </div>

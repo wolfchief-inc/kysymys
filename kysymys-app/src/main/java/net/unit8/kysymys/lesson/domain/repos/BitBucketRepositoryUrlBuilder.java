@@ -12,7 +12,11 @@ public class BitBucketRepositoryUrlBuilder extends AbstractRepositoryUrlBuilder 
     @Override
     public URL build() {
         try {
-            return new URL(chopDotGitSuffix(url) + "/src/" + branch + path);
+            if (commitHash != null) {
+                return new URL(chopDotGitSuffix(url) + "/src/" + commitHash);
+            } else {
+                return new URL(chopDotGitSuffix(url) + "/src/" + branch + path);
+            }
         } catch (MalformedURLException e) {
             throw new UncheckedIOException(e);
         }

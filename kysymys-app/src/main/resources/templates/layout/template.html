@@ -27,12 +27,12 @@
                 <div class="navbar-end">
                     <ul>
                         <li th:if="${#authorization.expression('isAuthenticated()')}">
-                            <button class="dropdown is-right button">
+                            <div class="dropdown is-right button">
                                 <div class="dropdown-trigger">
                                     <div class="columns is-1">
                                         <div class="column">
                                             <figure class="image is-32x32">
-                                                <img th:src="@{/avatar/{id}(id=${#authentication.principal.id})}" />
+                                                <img src="" th:src="@{/avatar/{id}(id=${#authentication.principal.id})}" />
                                             </figure>
                                         </div>
                                         <div class="column">
@@ -53,7 +53,7 @@
                                         </a>
                                     </div>
                                 </div>
-                            </button>
+                            </div>
                          </li>
                     </ul>
                 </div>
@@ -71,7 +71,6 @@ dropdown.addEventListener('click', function(e) {
   dropdown.classList.toggle('is-active');
 });
 dropdown.addEventListener('blur', function(e) {
-  e.stopPropagation();
   dropdown.classList.remove('is-active');
 });
 </script>

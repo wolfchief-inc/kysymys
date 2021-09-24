@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
-    <title></title>
+    <title th:text="|Lessons - KYSYMYS|">KYSYMYS</title>
 </head>
 <body>
 <div class="container">
@@ -22,7 +22,8 @@
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>名前</th>
+                    <th>Name</th>
+                    <th>Your Answer</th>
                     <th sec:authorize="hasAuthority('CREATE_PROBLEM')"
                         th:text="#{label.operation}">Operation</th>
                 </tr>
@@ -35,6 +36,14 @@
                            th:href="${problem.problemUrl}"
                            th:text="${problem.name}">name</a>
                     </td>
+                    <td>
+                        <div th:if="${answers.get(problem.id) != null}">
+                            <a th:href="@{/answer/{id}(id=${answers.get(problem.id).id})}"
+                               th:text="${#temporals.format(answers.get(problem.id).lastAnsweredAt, 'yyyy/MM/dd HH:mm')}">
+                                2020/11/11 00:00:00
+                            </a>
+                        </div>
+                    </td>
                     <td sec:authorize="hasAuthority('CREATE_PROBLEM')">
                         <div class="field is-grouped">
                             <p class="control">
@@ -44,15 +53,14 @@
                                     Edit
                                 </a>
                             </p>
-                            <p class="control">
                             <form th:action="@{/admin/lesson/delete/{id}(id=${problem.id})}" method="POST">
-                            <button class="button is-danger is-small"
-                                    th:text="#{label.delete}">
-                                Delete
-                            </button>
-
-                        </form>
-                            </p>
+                                <p class="control">
+                                    <button class="button is-danger is-small"
+                                            th:text="#{label.delete}">
+                                        Delete
+                                    </button>
+                                </p>
+                            </form>
                         </div>
                     </td>
                 </tr>

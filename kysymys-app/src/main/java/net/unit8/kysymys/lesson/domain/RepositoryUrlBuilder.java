@@ -17,7 +17,7 @@ public interface RepositoryUrlBuilder {
         return new GenericRepositoryUrlBuilder(url);
     }
     RepositoryUrlBuilder branch(String branch);
-    RepositoryUrlBuilder commitHash(String branch);
+    RepositoryUrlBuilder commitHash(String commitHash);
     RepositoryUrlBuilder path(String branch);
     URL build();
 }

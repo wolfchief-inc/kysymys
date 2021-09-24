@@ -16,10 +16,8 @@ public class WebConfig implements WebMvcConfigurer {
         executor.setQueueCapacity(100);
         executor.setMaxPoolSize(25);
         return executor;
-
     }
 
-    //Configure asynchronous support, set up a workthread pool for asynchronous execution of business logic, and set the default timeout time to 60 seconds
     @Override
     public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
         configurer.setTaskExecutor(mvcTaskExecutor());
