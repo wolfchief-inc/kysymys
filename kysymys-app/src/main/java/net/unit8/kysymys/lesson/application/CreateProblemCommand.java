@@ -8,4 +8,5 @@ public class CreateProblemCommand {
     String repositoryUrl;
     String branch;
     String readmePath;
+    String creatorId;
 }

@@ -4,8 +4,10 @@ import am.ik.yavi.core.ConstraintViolationsException;
 import net.unit8.kysymys.lesson.application.*;
 import net.unit8.kysymys.lesson.domain.CreatedProblemEvent;
 import net.unit8.kysymys.lesson.domain.Problem;
+import net.unit8.kysymys.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -48,6 +50,7 @@ public class LessonAdminController {
     @PostMapping("/new")
     public String create(@Validated ProblemForm form,
                          BindingResult bindingResult,
+                         @AuthenticationPrincipal User user,
                          RedirectAttributes redirectAttributes,
                          Locale locale,
                          Model model) {
@@ -68,7 +71,8 @@ public class LessonAdminController {
             CreateProblemCommand command = new CreateProblemCommand(
                     form.getName(),
                     form.getRepositoryUrl(),
-                    form.getBranch(), form.getReadmePath());
+                    form.getBranch(), form.getReadmePath(),
+                    user.getId().getValue());
             CreatedProblemEvent event = createProblemUseCase.handle(command);
             model.addAttribute("problemId", event.getProblemId());
             redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(

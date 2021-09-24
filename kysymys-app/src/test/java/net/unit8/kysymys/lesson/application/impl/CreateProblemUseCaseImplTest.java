@@ -1,5 +1,6 @@
 package net.unit8.kysymys.lesson.application.impl;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import net.unit8.kysymys.lesson.application.CreateProblemCommand;
 import net.unit8.kysymys.lesson.application.CreateProblemUseCase;
 import net.unit8.kysymys.lesson.application.SaveProblemPort;
@@ -32,7 +33,8 @@ class CreateProblemUseCaseImplTest {
                  "problem1",
                  "https://github.com/kawasima/problem1.git",
                  "main",
-                 "/README.md"
+                 "/README.md",
+                 NanoIdUtils.randomNanoId()
          );
          CreatedProblemEvent event = sut.handle(command);
          verify(saveProblemPort).save(any());

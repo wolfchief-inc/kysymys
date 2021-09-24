@@ -33,7 +33,7 @@ class CreateProblemUseCaseImpl implements CreateProblemUseCase {
 
         return tx.execute(status -> {
             saveProblemPort.save(problem);
-            return new CreatedProblemEvent(problem.getId());
+            return new CreatedProblemEvent(problem.getId().getValue(), command.getCreatorId());
         });
     }
 }

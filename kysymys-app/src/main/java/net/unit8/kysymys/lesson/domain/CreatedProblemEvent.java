@@ -4,5 +4,6 @@ import lombok.Value;
 
 @Value
 public class CreatedProblemEvent {
-    ProblemId problemId;
+    String problemId;
+    String creatorId;
 }
