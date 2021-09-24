@@ -1,7 +1,4 @@
 spring:
-  profiles:
-    active:
-      - aws
   application:
     name: kysymys
   servlet:

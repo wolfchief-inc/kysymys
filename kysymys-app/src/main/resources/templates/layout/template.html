@@ -27,7 +27,7 @@
                 <div class="navbar-end">
                     <ul>
                         <li th:if="${#authorization.expression('isAuthenticated()')}">
-                            <div class="dropdown is-right">
+                            <button class="dropdown is-right">
                                 <div class="dropdown-trigger">
                                     <div class="columns is-1">
                                         <div class="column">
@@ -53,7 +53,7 @@
                                         </a>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
                          </li>
                     </ul>
                 </div>
@@ -69,6 +69,10 @@ const dropdown = document.querySelector('.dropdown');
 dropdown.addEventListener('click', function(e) {
   e.stopPropagation();
   dropdown.classList.toggle('is-active');
+});
+dropdown.addEventListener('blur', function(e) {
+  e.stopPropagation();
+  dropdown.classList.remove('is-active');
 });
 </script>
 </body>
