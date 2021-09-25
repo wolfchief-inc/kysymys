@@ -14,7 +14,7 @@
         <section class="section">
             <h2 class="title">New Problem</h2>
             <div class="block">
-                <form th:action="@{/admin/lesson/new}" method="post" th:object="${form}">
+                <form th:action="@{/admin/lesson/new}" method="post" th:object="${problemForm}">
                     <div class="field">
                         <label class="label">Name</label>
                         <div class="control">

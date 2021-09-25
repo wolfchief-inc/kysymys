@@ -22,7 +22,7 @@ public class AnswerJpaEntity {
     @Column(name = "repository_url")
     private String repositoryUrl;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "answer")
     @JoinTable(name = "latest_submissions",
             joinColumns =
                     { @JoinColumn(name = "answer_id", referencedColumnName = "id")},

@@ -8,7 +8,7 @@ import lombok.Value;
 @Value
 public class UserId {
     public static final StringValidator<UserId> validator = StringValidatorBuilder
-            .of("value", c -> c.notBlank().greaterThanOrEqual(21).lessThanOrEqual(21))
+            .of("UserId", c -> c.notBlank().greaterThanOrEqual(21).lessThanOrEqual(21))
             .build()
             .andThen(UserId::new);
 

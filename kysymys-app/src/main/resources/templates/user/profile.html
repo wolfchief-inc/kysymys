@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.springframework.org/schema/security"
       th:replace="~{layout/template :: layout(~{::title},~{:: #content})}">
 <head>
     <meta charset="utf-8">
@@ -32,16 +33,23 @@
                         <div th:switch="${followStatus}">
                             <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).UNFOLLOWING}">
                                 <form th:action="@{/offer/send/{id}(id=${user.id})}" method="post">
-                                    <button type="submit" class="button is-primary is-rounded">Connect</button>
+                                    <button type="submit" class="button is-primary is-rounded is-small">Connect</button>
                                 </form>
                             </div>
                             <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).HAS_ALREADY_OFFERED}">
-                                <button type="button" class="button is-rounded">In progress</button>
+                                <button type="button" class="button is-rounded is-small">In progress</button>
                             </div>
                             <div th:case="${T(net.unit8.kysymys.user.domain.FollowStatus).FOLLOWING}">
-                                <button type="button" class="button is-success is-rounded">Following</button>
+                                <button type="button" class="button is-success is-rounded is-small">Following</button>
                             </div>
                         </div>
+                    </div>
+                    <div class="block" sec:authorize="hasAuthority('GRANT_TEACHER_ROLE')" th:unless="${#sets.contains(user.roles, T(net.unit8.kysymys.user.domain.Role).TEACHER)}">
+                        <form th:action="@{/user/{id}/grant/teacher(id=${user.id})}" method="post">
+                            <button type="submit" class="button is-small">
+                                Grant Teacher Role
+                            </button>
+                        </form>
                     </div>
                 </div>
                 <div class="media-content">

@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="block">
-                <form th:action="@{/user/{id}/edit(id=${userId})}" method="post" th:object="${form}">
+                <form th:action="@{/user/{id}/edit(id=${userId})}" method="post" th:object="${editUserForm}">
                     <div class="field">
                         <label class="label">Name</label>
                         <div class="control">

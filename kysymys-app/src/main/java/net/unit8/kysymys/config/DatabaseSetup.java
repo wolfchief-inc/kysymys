@@ -2,6 +2,7 @@ package net.unit8.kysymys.config;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import net.unit8.kysymys.lesson.adapter.persistence.*;
+import net.unit8.kysymys.lesson.domain.ProblemStatus;
 import net.unit8.kysymys.user.adapter.persistence.UserJpaEntity;
 import net.unit8.kysymys.user.adapter.persistence.UserRepository;
 import net.unit8.kysymys.user.domain.UserId;
@@ -10,22 +11,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Component
 public class DatabaseSetup implements InitializingBean {
     private final UserRepository userRepository;
     private final ProblemRepository problemRepository;
-    private final AnswerRepository answerRepository;
-    private final SubmissionRepository submissionRepository;
+    private final ProblemLifecycleRepository problemLifecycleRepository;
     private final TransactionTemplate tx;
     private final PasswordEncoder passwordEncoder;
 
-    public DatabaseSetup(UserRepository userRepository, ProblemRepository problemRepository, AnswerRepository answerRepository, SubmissionRepository submissionRepository, TransactionTemplate tx, PasswordEncoder passwordEncoder) {
+    public DatabaseSetup(UserRepository userRepository, ProblemRepository problemRepository, ProblemLifecycleRepository problemLifecycleRepository, TransactionTemplate tx, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.problemRepository = problemRepository;
-        this.answerRepository = answerRepository;
-        this.submissionRepository = submissionRepository;
+        this.problemLifecycleRepository = problemLifecycleRepository;
         this.tx = tx;
         this.passwordEncoder = passwordEncoder;
     }
@@ -57,10 +58,22 @@ public class DatabaseSetup implements InitializingBean {
         problem1.setBranch("master");
         problem1.setReadmePath("/README.exam1.md");
 
+        ProblemLifecycleJpaEntity lifecycle = new ProblemLifecycleJpaEntity();
+        lifecycle.setId(NanoIdUtils.randomNanoId());
+        lifecycle.setProblem(problem1);
+        lifecycle.setStatus(ProblemStatus.ACTIVE);
+
+        ProblemCreatedJpaEntity problemCreated = new ProblemCreatedJpaEntity();
+        problemCreated.setId(NanoIdUtils.randomNanoId());
+        problemCreated.setProblemLifecycle(lifecycle);
+        problemCreated.setCreatorId(teacher1.getId());
+        problemCreated.setOccurredAt(LocalDateTime.now());
+        lifecycle.setProblemEvents(List.of(problemCreated));
         tx.execute(status -> {
             userRepository.save(teacher1);
             userRepository.save(student1);
             problemRepository.save(problem1);
+            problemLifecycleRepository.save(lifecycle);
             return null;
         });
     }

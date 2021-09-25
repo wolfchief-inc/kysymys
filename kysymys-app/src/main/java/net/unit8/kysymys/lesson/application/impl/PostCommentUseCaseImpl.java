@@ -27,7 +27,7 @@ class PostCommentUseCaseImpl implements PostCommentUseCase {
     @Override
     public PostedCommentEvent handle(PostCommentCommand command) {
         Answer answer = loadAnswerPort.load(AnswerId.of(command.getAnswerId()))
-                .orElseThrow(() -> new AnswerNotFound(command.getAnswerId()));
+                .orElseThrow(() -> new AnswerNotFoundException(command.getAnswerId()));
 
         Comment comment = Comment.of(CommentId.of(generateCursorPort.generateId()), answer, UserId.of(command.getCommenterId()),
                 Description.of(command.getDescription()),

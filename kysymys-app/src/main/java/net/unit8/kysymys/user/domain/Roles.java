@@ -18,6 +18,11 @@ public class Roles extends AbstractSet<Role> {
         return value.size();
     }
 
+    @Override
+    public boolean add(Role role) {
+        return value.add(role);
+    }
+
     private Roles(Set<Role> value) {
         this.value = value;
     }

@@ -5,17 +5,22 @@ import net.unit8.kysymys.lesson.application.ListFollowerAnswersUseCase;
 import net.unit8.kysymys.lesson.domain.Answer;
 import net.unit8.kysymys.user.application.*;
 import net.unit8.kysymys.user.domain.FollowStatus;
+import net.unit8.kysymys.user.domain.TeacherRoleGrantedEvent;
 import net.unit8.kysymys.user.domain.User;
 import net.unit8.kysymys.user.domain.UserProfileByOther;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -29,9 +34,13 @@ public class UserController {
     private SearchUsersUseCase searchUsersUseCase;
     @Autowired
     private ListFollowerAnswersUseCase listFollowerAnswersUseCase;
-
+    @Autowired
+    private GrantTeacherRoleUseCase grantTeacherRoleUseCase;
     @Autowired
     private UpdateProfileUseCase updateProfileUseCase;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @GetMapping("/search")
     public String userSearch(@RequestParam(value = "q", required = false) String q,
@@ -77,14 +86,14 @@ public class UserController {
                        @AuthenticationPrincipal User user,
                        Model model) {
         model.addAttribute("userId", userId);
-        if (!model.containsAttribute("form")) {
+        if (!model.containsAttribute("editUserForm")) {
             UserProfileByOther profile = showUserProfileUseCase.handle(new ShowUserProfileQuery(
                     userId,
                     user.getId().getValue()
             ));
             EditUserForm form = new EditUserForm();
             form.setName(user.getName());
-            model.addAttribute("form", form);
+            model.addAttribute("editUserForm", form);
         }
 
         return "user/edit";
@@ -93,7 +102,7 @@ public class UserController {
     @PostMapping("/{userId:^(?!search).*}/edit")
     public String update(@PathVariable("userId") String userId,
                        @AuthenticationPrincipal User user,
-                       EditUserForm form,
+                       @Validated EditUserForm form,
                        BindingResult bindingResult,
                        Model model) {
         if (bindingResult.hasErrors()) {
@@ -104,6 +113,23 @@ public class UserController {
                 form.getName(),
                 form.getNewPassword(),
                 form.getOldPassword()
+        ));
+        return "redirect:/user/" + userId;
+    }
+
+    @PostMapping("/{userId:^(?!search).*}/grant/teacher")
+    public String grantTeacherRole(@PathVariable("userId") String userId,
+                                   @AuthenticationPrincipal User user,
+                                   RedirectAttributes redirectAttributes,
+                                   Locale locale) {
+        TeacherRoleGrantedEvent event = grantTeacherRoleUseCase.handle(new GrantTeacherRoleCommand(
+                user.getId().getValue(),
+                userId
+        ));
+        redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
+                "message.teacher_role_granted",
+                new Object[]{ event.getGranteeName() },
+                locale
         ));
         return "redirect:/user/" + userId;
     }

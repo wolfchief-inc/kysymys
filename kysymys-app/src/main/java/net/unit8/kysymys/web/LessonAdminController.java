@@ -37,7 +37,7 @@ public class LessonAdminController {
     @Autowired
     private MessageSource messageSource;
 
-    @ModelAttribute(name = "form")
+    @ModelAttribute(name = "problemForm")
     private ProblemForm setupForm() {
         return new ProblemForm();
     }
@@ -95,7 +95,7 @@ public class LessonAdminController {
     public String edit(@PathVariable("problemId") String problemId,
                        Model model) {
         Problem problem = getProblemUseCase.handle(problemId);
-        ProblemForm form = Optional.ofNullable(model.getAttribute("form"))
+        ProblemForm form = Optional.ofNullable(model.getAttribute("problemForm"))
                 .filter(ProblemForm.class::isInstance)
                 .map(ProblemForm.class::cast)
                 .orElseGet(ProblemForm::new);
@@ -115,7 +115,9 @@ public class LessonAdminController {
                          RedirectAttributes redirectAttributes,
                          Locale locale,
                          Model model) {
-        Problem problem = getProblemUseCase.handle(problemId);
+        if (bindingResult.hasErrors()) {
+            return edit(problemId, model);
+        }
         UpdatedProblemEvent event = updateProblemUseCase.handle(new UpdateProblemCommand(
                 problemId,
                 form.getName(),

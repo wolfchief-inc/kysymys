@@ -60,6 +60,8 @@ public class WhatsNewEventListener {
         ));
     }
 
+    @EventListener
+    @Async
     public void onSubmittedAnswer(SubmittedAnswerEvent event) {
         LocalDateTime now = currentDateTimePort.now();
         List<WhatsNew> whatsNews = event.getFollowers().stream().map(follower -> WhatsNew.of(WhatsNewId.of(generateCursorPort.generateId()),
@@ -72,5 +74,18 @@ public class WhatsNewEventListener {
             whatsNews.forEach(saveWhatsNewPort::save);
             return null;
         });
+        event.getFollowers().forEach(follower -> {
+            applicationEventPublisher.publishEvent(new SendMailEvent(
+                    new String[]{ follower.getEmail() },
+                    messageSource.getMessage("mail.subject.submitted_answer", new Object[]{}, Locale.getDefault()),
+                    "submittedAnswerEvent",
+                    Map.of("answererId", event.getAnswererId(),
+                        "answererName", event.getAnswererName(),
+                            "problemId", event.getProblemId(),
+                            "problemName", event.getProblemName())
+            ));
+        });
+
+
     }
 }

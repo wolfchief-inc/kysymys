@@ -9,6 +9,7 @@ import net.unit8.kysymys.lesson.domain.ProblemId;
 import net.unit8.kysymys.stereotype.PersistenceAdapter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.Optional;
 
@@ -38,7 +39,7 @@ public class ProblemPersistenceAdapter implements LoadProblemPort, SaveProblemPo
     @Override
     public Page<Problem> list(int page) {
         if (page > 0) page = page - 1;
-        return problemRepository.findAll(PageRequest.of(page, 10))
+        return problemRepository.findAllOrderedByCreatedAt(PageRequest.of(page, 10))
                 .map(problemMapper::entityToDomain);
     }
 

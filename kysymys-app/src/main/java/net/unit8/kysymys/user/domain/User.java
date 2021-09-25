@@ -54,6 +54,10 @@ public class User implements UserDetails, OAuth2User {
         return roles.getPermissions();
     }
 
+    public void grantRole(Role role) {
+        roles.add(role);
+    }
+
     @Override
     public String getPassword() {
         return Optional.ofNullable(password)

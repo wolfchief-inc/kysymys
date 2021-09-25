@@ -1,9 +1,11 @@
 package net.unit8.kysymys.user.adapter.persistence;
 
 import net.unit8.kysymys.user.domain.*;
+import org.hibernate.collection.internal.PersistentSet;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 class UserMapper {
@@ -13,6 +15,8 @@ class UserMapper {
         entity.setName(member.getName());
         entity.setEmail(member.getEmail().toString());
         entity.setPassword(member.getPassword());
+        entity.setRoles(member.getRoles().stream().map(Enum::name).collect(Collectors.toSet()));
+        entity.setFollowers(new PersistentSet());
         return entity;
     }
 

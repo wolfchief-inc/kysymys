@@ -29,7 +29,7 @@ public class ShowAnswerUseCaseImpl implements ShowAnswerUseCase {
         UserId viewerUserId = UserId.of(query.getViewerUserId());
 
         Answer answer = loadAnswerPort.load(answerId)
-                .orElseThrow(() -> new AnswerNotFound(query.getAnswerId()));
+                .orElseThrow(() -> new AnswerNotFoundException(query.getAnswerId()));
         List<Comment> comments = listCommentPort.listRecentComments(answerId, generateCursorPort.generateId(), 10);
         return new AnswerWithComments(answer, comments);
     }

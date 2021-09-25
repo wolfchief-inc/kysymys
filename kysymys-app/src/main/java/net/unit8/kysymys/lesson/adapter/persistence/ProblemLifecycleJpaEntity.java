@@ -7,6 +7,7 @@ import net.unit8.kysymys.lesson.domain.ProblemStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -16,7 +17,6 @@ public class ProblemLifecycleJpaEntity implements Serializable {
     @Id
     @Getter
     @Setter
-    @EqualsAndHashCode.Include
     private String id;
 
     @Getter
@@ -30,6 +30,11 @@ public class ProblemLifecycleJpaEntity implements Serializable {
     @Column(nullable = false)
     @Enumerated
     private ProblemStatus status;
+
+    @Getter
+    @Setter
+    @OneToMany(mappedBy = "problemLifecycle", cascade = CascadeType.ALL)
+    private List<ProblemEventJpaEntity> problemEvents;
 
     @Override
     public int hashCode() {

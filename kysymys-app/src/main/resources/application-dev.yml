@@ -9,7 +9,9 @@ spring:
     console:
       enabled: true
       path: /h2
-
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
 management:
   endpoints:
     web:

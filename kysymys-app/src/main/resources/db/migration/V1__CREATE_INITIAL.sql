@@ -1,9 +1,8 @@
 CREATE TABLE answers (
-  id VARCHAR(255) NOT NULL,
-  problem_id VARCHAR(255) NOT NULL,
+  id VARCHAR(21) NOT NULL,
+  problem_id VARCHAR(21) NOT NULL,
   answerer_id VARCHAR(255) NOT NULL,
   repository_url VARCHAR(255),
-  latest_submission_id VARCHAR(255),
   CONSTRAINT pk_answers PRIMARY KEY (id)
 );
 
@@ -11,12 +10,6 @@ CREATE TABLE connections (
   followee_id VARCHAR(255) NOT NULL,
   follower_id VARCHAR(255) NOT NULL,
   CONSTRAINT pk_connections PRIMARY KEY (followee_id, follower_id)
-);
-
-CREATE TABLE latest_submissions (
-  answer_id VARCHAR(255) NOT NULL,
-  submission_id VARCHAR(255),
-  CONSTRAINT pk_latest_submissions PRIMARY KEY (answer_id)
 );
 
 CREATE TABLE offers (
@@ -27,19 +20,35 @@ CREATE TABLE offers (
   CONSTRAINT pk_offers PRIMARY KEY (id)
 );
 
-CREATE TABLE problems (
+CREATE TABLE problem_created_events (
   id VARCHAR(255) NOT NULL,
+  problem_lifecycle_id VARCHAR(255),
+  occurred_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  creator_id VARCHAR(255) NOT NULL,
+  CONSTRAINT pk_problem_created_events PRIMARY KEY (id)
+);
+
+CREATE TABLE problem_lifecycles (
+  id VARCHAR(255) NOT NULL,
+  problem_id VARCHAR(21) NOT NULL,
+  status INTEGER NOT NULL,
+  CONSTRAINT pk_problem_lifecycles PRIMARY KEY (id)
+);
+
+CREATE TABLE problems (
+  id VARCHAR(21) NOT NULL,
   name VARCHAR(255) NOT NULL,
   repository_url VARCHAR(255) NOT NULL,
   branch VARCHAR(255) NOT NULL,
-  readme_path VARCHAR(255) NOT NULL,
+  readme_path VARCHAR(255),
   runner VARCHAR(255),
+  problem_lifecycle_id VARCHAR(255),
   CONSTRAINT pk_problems PRIMARY KEY (id)
 );
 
 CREATE TABLE review_comments (
   id VARCHAR(255) NOT NULL,
-  answer_id VARCHAR(255) NOT NULL,
+  answer_id VARCHAR(21) NOT NULL,
   commenter_id VARCHAR(255) NOT NULL,
   description VARCHAR(255) NOT NULL,
   posted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
@@ -48,10 +57,16 @@ CREATE TABLE review_comments (
 
 CREATE TABLE submissions (
   id VARCHAR(255) NOT NULL,
-  answer_id VARCHAR(255),
+  answer_id VARCHAR(21),
   commit_hash VARCHAR(255),
   submitted_at TIMESTAMP WITHOUT TIME ZONE,
   CONSTRAINT pk_submissions PRIMARY KEY (id)
+);
+
+CREATE TABLE latest_submissions(
+  answer_id VARCHAR(21),
+  submission_id VARCHAR(255),
+  CONSTRAINT pk_latest_submissions PRIMARY KEY(answer_id, submission_id)
 );
 
 CREATE TABLE user_avatars (
@@ -82,17 +97,17 @@ CREATE TABLE whats_news (
 
 ALTER TABLE users ADD CONSTRAINT uc_users_email UNIQUE (email);
 
-ALTER TABLE answers ADD CONSTRAINT FK_ANSWERS_ON_LATESTSUBMISSION FOREIGN KEY (latest_submission_id) REFERENCES submissions (id);
-
 ALTER TABLE answers ADD CONSTRAINT FK_ANSWERS_ON_PROBLEM FOREIGN KEY (problem_id) REFERENCES problems (id);
-
-ALTER TABLE latest_submissions ADD CONSTRAINT FK_LATEST_SUBMISSIONS_ON_ANSWER FOREIGN KEY (answer_id) REFERENCES answers (id);
-
-ALTER TABLE latest_submissions ADD CONSTRAINT FK_LATEST_SUBMISSIONS_ON_SUBMISSION FOREIGN KEY (submission_id) REFERENCES submissions (id);
 
 ALTER TABLE offers ADD CONSTRAINT FK_OFFERS_ON_OFFERING_USER FOREIGN KEY (offering_user_id) REFERENCES users (id);
 
 ALTER TABLE offers ADD CONSTRAINT FK_OFFERS_ON_TARGET_USER FOREIGN KEY (target_user_id) REFERENCES users (id);
+
+ALTER TABLE problems ADD CONSTRAINT FK_PROBLEMS_ON_PROBLEMLIFECYCLE FOREIGN KEY (problem_lifecycle_id) REFERENCES problem_lifecycles (id);
+
+ALTER TABLE problem_created_events ADD CONSTRAINT FK_PROBLEM_CREATED_EVENTS_ON_PROBLEM_LIFECYCLE FOREIGN KEY (problem_lifecycle_id) REFERENCES problem_lifecycles (id);
+
+ALTER TABLE problem_lifecycles ADD CONSTRAINT FK_PROBLEM_LIFECYCLES_ON_PROBLEM FOREIGN KEY (problem_id) REFERENCES problems (id);
 
 ALTER TABLE review_comments ADD CONSTRAINT FK_REVIEW_COMMENTS_ON_ANSWER FOREIGN KEY (answer_id) REFERENCES answers (id);
 
