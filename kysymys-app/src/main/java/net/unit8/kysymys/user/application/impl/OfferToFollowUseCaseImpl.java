@@ -8,6 +8,8 @@ import net.unit8.kysymys.user.domain.*;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.time.LocalDateTime;
+
 @UseCase
 class OfferToFollowUseCaseImpl implements OfferToFollowUseCase {
     private final LoadUserPort loadUserPort;
@@ -35,13 +37,15 @@ class OfferToFollowUseCaseImpl implements OfferToFollowUseCase {
                 .map(user -> user.orElseThrow(() -> new UserNotFoundException(command.getTargetUserId())))
                 .orElseThrow(ConstraintViolationsException::new);
 
-        Offer offer = Offer.of(new OfferId(), offeringUser, targetUser, currentDateTimePort.now());
+        LocalDateTime now = currentDateTimePort.now();
+        Offer offer = Offer.of(new OfferId(), offeringUser, targetUser, now);
         return tx.execute(status -> {
             saveOfferPort.save(offer);
             OfferedToFollowEvent event = new OfferedToFollowEvent(
                     targetUser.getId().getValue(), targetUser.getName(),
                     targetUser.getEmail().getValue(),
-                    offeringUser.getId().getValue(), offeringUser.getName());
+                    offeringUser.getId().getValue(), offeringUser.getName(),
+                    now);
             applicationEventPublisher.publishEvent(event);
             return event;
         });

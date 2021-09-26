@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @DataJpaTest
 @Import({AnswerPersistenceAdapter.class, ProblemPersistenceAdapter.class, AnswerMapper.class, ProblemMapper.class})
 class AnswerPersistenceAdapterTest {
@@ -56,7 +58,7 @@ class AnswerPersistenceAdapterTest {
         sut.save(answer2nd);
         answerRepository.flush();
 
-        System.out.println(answerRepository.findAll());
-        System.out.println(submissionRepository.findAll());
+        assertThat(answerRepository.findAll()).hasSize(1);
+        assertThat(submissionRepository.findAll()).hasSize(2);
     }
 }

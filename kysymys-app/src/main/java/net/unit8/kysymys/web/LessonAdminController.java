@@ -3,7 +3,9 @@ package net.unit8.kysymys.web;
 import am.ik.yavi.core.ConstraintViolationsException;
 import net.unit8.kysymys.lesson.application.*;
 import net.unit8.kysymys.lesson.domain.CreatedProblemEvent;
+import net.unit8.kysymys.lesson.domain.DeletedProblemEvent;
 import net.unit8.kysymys.lesson.domain.Problem;
+import net.unit8.kysymys.lesson.domain.ProblemUpdatedEvent;
 import net.unit8.kysymys.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -112,18 +114,20 @@ public class LessonAdminController {
     public String update(@PathVariable("problemId") String problemId,
                          @Validated ProblemForm form,
                          BindingResult bindingResult,
+                         @AuthenticationPrincipal User user,
                          RedirectAttributes redirectAttributes,
                          Locale locale,
                          Model model) {
         if (bindingResult.hasErrors()) {
             return edit(problemId, model);
         }
-        UpdatedProblemEvent event = updateProblemUseCase.handle(new UpdateProblemCommand(
+        ProblemUpdatedEvent event = updateProblemUseCase.handle(new UpdateProblemCommand(
                 problemId,
                 form.getName(),
                 form.getRepositoryUrl(),
                 form.getBranch(),
-                form.getReadmePath()
+                form.getReadmePath(),
+                user.getId().getValue()
         ));
         redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
                 "message.updatedProblem",
@@ -135,10 +139,11 @@ public class LessonAdminController {
 
     @PostMapping("/delete/{problemId}")
     public String delete(@PathVariable("problemId") String problemId,
+                         @AuthenticationPrincipal User user,
                          RedirectAttributes redirectAttributes,
                          Locale locale) {
         try {
-            DeletedProblemEvent event = deleteProblemUseCase.handle(new DeleteProblemCommand(problemId));
+            DeletedProblemEvent event = deleteProblemUseCase.handle(new DeleteProblemCommand(problemId, user.getId().getValue()));
             redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
                     "message.deletedProblem",
                     new Object[]{event.getProblemId()},

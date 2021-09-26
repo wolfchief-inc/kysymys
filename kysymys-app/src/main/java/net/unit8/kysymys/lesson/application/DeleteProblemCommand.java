@@ -5,4 +5,5 @@ import lombok.Value;
 @Value
 public class DeleteProblemCommand {
     String id;
+    String deleterId;
 }

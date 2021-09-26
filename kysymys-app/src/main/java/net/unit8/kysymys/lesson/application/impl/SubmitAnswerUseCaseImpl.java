@@ -10,6 +10,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Component
 public class SubmitAnswerUseCaseImpl implements SubmitAnswerUseCase {
     private final SaveAnswerPort saveAnswerPort;
@@ -38,8 +41,9 @@ public class SubmitAnswerUseCaseImpl implements SubmitAnswerUseCase {
 
         UserId userId = UserId.of(command.getAnswererId());
 
+        LocalDateTime now = currentDateTimePort.now();
         Answer answer = answerIdValidated.combine(answerRepositoryValidated).apply((answerId, repository) ->
-                Answer.validator.validated(answerId, problem, userId, repository, currentDateTimePort.now())
+                Answer.validator.validated(answerId, problem, userId, repository, now)
         ).orElseThrow(ConstraintViolationsException::new);
 
         SubmittedAnswerEvent event = tx.execute(status -> {
@@ -49,10 +53,11 @@ public class SubmitAnswerUseCaseImpl implements SubmitAnswerUseCase {
                     problem.getName().getValue(),
                     command.getAnswererId(),
                     command.getAnswererName(),
-                    command.getFollowers()
-                    );
+                    command.getFollowers(),
+                    now);
         });
-        applicationEventPublisher.publishEvent(event);
+        Optional.ofNullable(event)
+                .ifPresent(applicationEventPublisher::publishEvent);
         return event;
     }
 }

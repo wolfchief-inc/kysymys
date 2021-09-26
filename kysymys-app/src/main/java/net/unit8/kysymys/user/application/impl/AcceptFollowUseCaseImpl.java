@@ -1,5 +1,6 @@
 package net.unit8.kysymys.user.application.impl;
 
+import net.unit8.kysymys.share.application.CurrentDateTimePort;
 import net.unit8.kysymys.stereotype.UseCase;
 import net.unit8.kysymys.user.application.*;
 import net.unit8.kysymys.user.domain.AcceptedFollowEvent;
@@ -12,12 +13,14 @@ class AcceptFollowUseCaseImpl implements AcceptFollowUseCase {
     private final LoadOfferPort loadOfferPort;
     private final DeleteOfferPort deleteOfferPort;
     private final AddFollowerPort addFollowerPort;
+    private final CurrentDateTimePort currentDateTimePort;
     private final TransactionTemplate tx;
 
-    AcceptFollowUseCaseImpl(LoadOfferPort loadOfferPort, DeleteOfferPort deleteOfferPort, AddFollowerPort addFollowerPort, TransactionTemplate tx) {
+    AcceptFollowUseCaseImpl(LoadOfferPort loadOfferPort, DeleteOfferPort deleteOfferPort, AddFollowerPort addFollowerPort, CurrentDateTimePort currentDateTimePort, TransactionTemplate tx) {
         this.loadOfferPort = loadOfferPort;
         this.deleteOfferPort = deleteOfferPort;
         this.addFollowerPort = addFollowerPort;
+        this.currentDateTimePort = currentDateTimePort;
         this.tx = tx;
     }
 
@@ -33,7 +36,7 @@ class AcceptFollowUseCaseImpl implements AcceptFollowUseCase {
             deleteOfferPort.delete(offer);
             addFollowerPort.follow(offer.getOfferingUser().getId(),
                     offer.getTargetUser().getId());
-            return new AcceptedFollowEvent();
+            return new AcceptedFollowEvent(currentDateTimePort.now());
         });
     }
 }

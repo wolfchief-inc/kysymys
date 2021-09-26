@@ -3,7 +3,7 @@ package net.unit8.kysymys.web;
 import net.unit8.kysymys.user.application.EmailAlreadyTakenException;
 import net.unit8.kysymys.user.application.SignupCommand;
 import net.unit8.kysymys.user.application.SignupUseCase;
-import net.unit8.kysymys.user.domain.CreatedUserEvent;
+import net.unit8.kysymys.user.domain.UserCreatedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +33,7 @@ public class SignupController {
         }
 
         try {
-            CreatedUserEvent event = signupUseCase.handle(new SignupCommand(
+            UserCreatedEvent event = signupUseCase.handle(new SignupCommand(
                     signupForm.getEmail(),
                     signupForm.getName(),
                     signupForm.getPassword()

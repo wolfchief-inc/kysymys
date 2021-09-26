@@ -9,4 +9,5 @@ public class UpdateProblemCommand {
     String repositoryUrl;
     String branch;
     String readmePath;
+    String updaterId;
 }

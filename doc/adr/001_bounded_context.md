@@ -8,10 +8,23 @@
 
 初期リリース段階では、以下４つに分ける。
 
-- Lesson (Core)
-- User (Supported)
-- Avatar (Generic)
-- Notification (Generic)
+- Lesson (Core): 問題を作成したり、それに回答したり、コメントをつけたりする。
+- User (Supported): Kysymysを使うユーザの登録やプロフィール閲覧・変更、フォロー申請など。
+- Avatar (Generic): ユーザのアバターを生成・表示する。
+- Notification (Generic): ユーザへの更新メッセージなどの通知を行う。
 
 テーブルも各コンテキストに分けてもつ。
 ユーザは他のすべてのコンテキストでも参照する必要があるが、User以外のコンテキストではUserIdのみを持つ。
+
+## Consequences
+
+ユーザ以外のContextからユーザのデータを参照したいケース。
+
+### Lessonコンテキストで、フォロー関係にあるユーザの解答が見える
+
+他人の解答が見えるかどうか判定したいが、この判定にはユーザコンテキストが必要になる。
+
+### Notificationでユーザの名前やEメールアドレスが必要になる
+
+メール通知する場合、メールアドレスが必要になるが、NotificationからはUserコンテキスを参照したくない。
+したがって、Notificationが受け取るEventに、必要なUserの名前やEメールアドレスを含めて受け渡すようにしている。

@@ -1,11 +1,9 @@
 package net.unit8.kysymys.user.application.impl;
 
+import net.unit8.kysymys.share.application.CurrentDateTimePort;
 import net.unit8.kysymys.stereotype.UseCase;
 import net.unit8.kysymys.user.application.*;
-import net.unit8.kysymys.user.domain.Password;
-import net.unit8.kysymys.user.domain.User;
-import net.unit8.kysymys.user.domain.UserId;
-import net.unit8.kysymys.user.domain.UserName;
+import net.unit8.kysymys.user.domain.*;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Optional;
@@ -14,11 +12,13 @@ import java.util.Optional;
 class UpdateProfileUseCaseImpl implements UpdateProfileUseCase {
     private final LoadUserPort loadUserPort;
     private final SaveUserPort saveUserPort;
+    private final CurrentDateTimePort currentDateTimePort;
     private final TransactionTemplate tx;
 
-    UpdateProfileUseCaseImpl(LoadUserPort loadUserPort, SaveUserPort saveUserPort, TransactionTemplate tx) {
+    UpdateProfileUseCaseImpl(LoadUserPort loadUserPort, SaveUserPort saveUserPort, CurrentDateTimePort currentDateTimePort, TransactionTemplate tx) {
         this.loadUserPort = loadUserPort;
         this.saveUserPort = saveUserPort;
+        this.currentDateTimePort = currentDateTimePort;
         this.tx = tx;
     }
 
@@ -43,7 +43,7 @@ class UpdateProfileUseCaseImpl implements UpdateProfileUseCase {
                     newPassword,
                     user.getRoles()
             ));
-            return new ProfileUpdatedEvent();
+            return new ProfileUpdatedEvent(userId.getValue(), currentDateTimePort.now());
         });
     }
 }

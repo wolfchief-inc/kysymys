@@ -1,7 +1,7 @@
 package net.unit8.kysymys.user.application;
 
-import net.unit8.kysymys.user.domain.CreatedUserEvent;
+import net.unit8.kysymys.user.domain.UserCreatedEvent;
 
 public interface SignupUseCase {
-    CreatedUserEvent handle(SignupCommand command);
+    UserCreatedEvent handle(SignupCommand command);
 }
