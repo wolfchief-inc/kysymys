@@ -5,6 +5,11 @@ import org.reflections8.Reflections;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
+/**
+ * テスト対象の実装クラスを探す。
+ *
+ * @author kawasima
+ */
 public class SutDetector {
     public static <T> T detect(Class<T> iface) {
         String packageName = iface.getPackageName();

@@ -1,17 +1,16 @@
 package net.unit8.kysymys.user.adapter.persistence;
 
 import net.unit8.kysymys.user.application.*;
-import net.unit8.kysymys.user.domain.EmailAddress;
-import net.unit8.kysymys.user.domain.User;
-import net.unit8.kysymys.user.domain.UserId;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import net.unit8.kysymys.user.domain.*;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,17 +43,28 @@ class UserPersistenceAdapter implements UserDetailsService, LoadUserPort, SaveUs
     }
 
     @Override
-    public Page<User> list(String query, int page) {
+    public Page<User> list(String query, Roles roles, int page) {
         if (page > 0) page = page - 1;
         Pageable pageable = PageRequest.of(page, 10);
 
-        if (query == null || query.isEmpty()) {
-            return userRepository.findAll(pageable)
-                    .map(userMapper::entityToDomain);
-        } else {
-            return userRepository.findByQuery(query, pageable)
-                    .map(userMapper::entityToDomain);
+        List<Specification<UserJpaEntity>> specifications = new ArrayList<>();
+
+        if (query != null && !query.isBlank()) {
+            specifications.add(UserSpecs.containingQuery(query));
         }
+        if (!roles.isEmpty()) {
+            specifications.add(UserSpecs.hasRole(roles.stream().map(Role::name).collect(Collectors.toSet())));
+        }
+
+        return specifications.stream().reduce(Specification::and)
+                .map(specs -> userRepository.findAll(specs, pageable))
+                .orElseGet(() -> userRepository.findAll(pageable))
+                .map(userMapper::entityToDomain);
+    }
+
+    @Override
+    public Page<User> list(String query, int page) {
+        return list(query, Roles.of(Set.of()), page);
     }
 
     @Override

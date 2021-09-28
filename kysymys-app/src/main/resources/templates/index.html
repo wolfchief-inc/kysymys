@@ -27,7 +27,7 @@
         </section>
         <section class="section">
             <div class="block">
-                <h3 class="title" th:text="#{caption.latest_problem}"></h3>
+                <h3 class="title is-5" th:text="#{caption.latest_problem}">最近の問題</h3>
                 <table class="table" th:if="${problems.hasContent()}">
                     <thead>
                     <tr>
@@ -65,7 +65,7 @@
         </section>
         <section class="section" th:if="${offers.hasContent()}">
             <div class="block">
-                <h3 class="title" th:text="#{caption.list_offers}"></h3>
+                <h3 class="title is-5" th:text="#{caption.list_offers}">フォロー申請</h3>
                 <table class="table">
                     <thead>
                     <tr>

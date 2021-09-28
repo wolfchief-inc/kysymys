@@ -46,9 +46,24 @@ public class LessonAdminController {
 
     @GetMapping("/new")
     public String newForm(Model model) {
+        Optional.ofNullable(model.getAttribute("problemForm"))
+                .filter(ProblemForm.class::isInstance)
+                .map(ProblemForm.class::cast)
+                .filter(f -> f.getReadmePath() != null && f.getReadmePath().startsWith("/"))
+                .ifPresent(f -> f.setReadmePath(f.getReadmePath().substring(1)));
         return "admin/lesson/new";
     }
 
+    private void normalize(ProblemForm form) {
+        Optional.ofNullable(form.getRepositoryUrl())
+                .map(String::trim)
+                .map(u -> u.replaceAll("[/]+$", ""))
+                .ifPresent(form::setRepositoryUrl);
+        Optional.ofNullable(form.getReadmePath())
+                .map(String::trim)
+                .map(p -> p.replaceAll("^([/]+|(?!/))", "/"))
+                .ifPresent(form::setReadmePath);
+    }
     @PostMapping("/new")
     public String create(@Validated ProblemForm form,
                          BindingResult bindingResult,
@@ -56,15 +71,7 @@ public class LessonAdminController {
                          RedirectAttributes redirectAttributes,
                          Locale locale,
                          Model model) {
-        Optional.ofNullable(form.getRepositoryUrl())
-                .map(String::trim)
-                .map(u -> u.replaceAll("[/]+$", ""))
-                .ifPresent(form::setRepositoryUrl);
-        Optional.ofNullable(form.getReadmePath())
-                .map(String::trim)
-                .map(p -> p.replaceAll("^[/]+", ""))
-                .ifPresent(form::setReadmePath);
-
+        normalize(form);
         if (bindingResult.hasErrors()) {
             return newForm(model);
         }
@@ -104,7 +111,7 @@ public class LessonAdminController {
         form.setName(problem.getName().getValue());
         form.setRepositoryUrl(problem.getRepository().getUrl());
         form.setBranch(problem.getRepository().getBranch());
-        form.setReadmePath(problem.getRepository().getReadmePath());
+        form.setReadmePath(problem.getRepository().getReadmePath().substring(1));
         model.addAttribute("problemId", problemId);
 
         return "admin/lesson/edit";
@@ -118,6 +125,7 @@ public class LessonAdminController {
                          RedirectAttributes redirectAttributes,
                          Locale locale,
                          Model model) {
+        normalize(form);
         if (bindingResult.hasErrors()) {
             return edit(problemId, model);
         }

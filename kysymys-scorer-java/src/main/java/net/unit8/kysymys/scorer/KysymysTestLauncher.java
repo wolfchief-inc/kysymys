@@ -17,9 +17,9 @@ import java.util.concurrent.TimeoutException;
 
 public class KysymysTestLauncher {
     public static void run(Class<?> testClass) {
-        String kysymysUrl = System.getProperty("KYSYMYS_URL");
-        String submissionId = System.getProperty("KYSYMYS_SUBMISSION_ID");
-        String token = System.getProperty("KYSYMYS_TOKEN");
+        String kysymysUrl = System.getProperty("kysymys.url");
+        String submissionId = System.getProperty("kysymys.submission.id");
+        String token = System.getProperty("kysymys.token");
         boolean standalone = kysymysUrl == null || submissionId == null || token == null;
 
         Launcher launcher = LauncherFactory.create();
