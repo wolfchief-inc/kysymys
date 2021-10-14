@@ -9,12 +9,18 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -35,11 +41,28 @@ public class SubmitMojo extends AbstractMojo {
     /**
      * The problem ID.
      */
-    @Parameter(required = true, property = "kysymys.problemId")
+    @Parameter(property = "kysymys.problemId")
     private String problemId;
+
+    @Parameter
+    private File propertyFile;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (propertyFile != null) {
+            Properties props = new Properties();
+            try(Reader reader = new FileReader(propertyFile)) {
+                props.load(reader);
+                problemId = Objects.requireNonNullElse(props.getProperty("kysymys.problemId"), problemId);
+                kysymysUrl = Objects.requireNonNullElse(props.getProperty("kysymys.url"), kysymysUrl);
+            } catch (IOException e) {
+                throw new MojoExecutionException("Failure to read properties from the file", e);
+            }
+        }
+
+        if (problemId == null || kysymysUrl == null) {
+            throw new MojoExecutionException("Must be set the url and problemId");
+        }
         RepositoryDetector repositoryDetector = new RepositoryDetector();
         RepositoryDetectionResult result;
         try {
@@ -67,7 +90,7 @@ public class SubmitMojo extends AbstractMojo {
             Desktop desktop = Desktop.getDesktop();
             desktop.browse(URI.create(kysymysUrl + "/token/publish/" + token));
 
-            HttpResponse<String> response = future.get(5, TimeUnit.SECONDS);
+            HttpResponse<String> response = future.get(30, TimeUnit.SECONDS);
             getLog().info("status:" + response.statusCode());
             getLog().info(response.body());
         } catch (IOException | InterruptedException | ExecutionException e) {
