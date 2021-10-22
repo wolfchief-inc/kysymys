@@ -6,6 +6,7 @@ import net.unit8.kysymys.user.domain.FollowStatus;
 import net.unit8.kysymys.user.domain.User;
 import net.unit8.kysymys.user.domain.UserId;
 import net.unit8.kysymys.user.domain.UserProfileByOther;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -35,14 +36,14 @@ class ShowUserProfileUseCaseImpl implements ShowUserProfileUseCase {
         User user = loadUserPort.load(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId.getValue()));
 
-        List<User> followers = getFollowersPort.listFollowers(userId);
+        Page<User> followers = getFollowersPort.listFollowers(userId, 0, Integer.MAX_VALUE);
         FollowStatus followStatus = userId.equals(viewerUserId) ? null :
                 followStatus(hasAlreadyOfferedPort.hasAlreadyOffered(viewerUserId, userId),
                 followers.stream().anyMatch(follower -> follower.getId().equals(viewerUserId)));
 
         return new UserProfileByOther(
                 user,
-                followers,
+                followers.getContent(),
                 followStatus
         );
     }

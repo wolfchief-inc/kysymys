@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -108,12 +109,18 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             return edit(userId, user, model);
         }
-        updateProfileUseCase.handle(new UpdateProfileCommand(
-                userId,
-                form.getName(),
-                form.getNewPassword(),
-                form.getOldPassword()
-        ));
+
+        try {
+            updateProfileUseCase.handle(new UpdateProfileCommand(
+                    userId,
+                    form.getName(),
+                    form.getOldPassword(),
+                    form.getNewPassword()
+            ));
+        } catch (PasswordMismatchException e) {
+            bindingResult.addError(new FieldError("editUserForm", "oldPassword", "Old password does not match"));
+            return edit(userId, user, model);
+        }
         return "redirect:/user/" + userId;
     }
 

@@ -55,6 +55,14 @@
                                     <span>GitHub</span>
                                 </a>
                             </div>
+                            <div class="level">
+                                <div class="level-left"></div>
+                                <div class="level-right">
+                                    <div class="level-item">
+                                        <a th:href="@{/signup}" th:text="#{label.signup}">Signup</a>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="box" th:if="${#arrays.contains(@environment.getActiveProfiles(),'dev')}">
                                 <div class="field is-grouped">
                                     <form th:action="@{/login}" method="post">

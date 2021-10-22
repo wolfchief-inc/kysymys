@@ -5,5 +5,5 @@ import net.unit8.kysymys.user.domain.UserId;
 import org.springframework.data.domain.Page;
 
 public interface ListWhatsNewPort {
-    Page<WhatsNew> findLatest(UserId userId, int size);
+    Page<WhatsNew> findLatestUnread(UserId userId, int size);
 }

@@ -18,6 +18,6 @@ class GetWhatsNewsUseCaseImpl implements GetWhatsNewsUseCase {
 
     @Override
     public Page<WhatsNew> handle(GetWhatsNewsQuery query) {
-        return listWhatsNewPort.findLatest(UserId.of(query.getUserId()), 5);
+        return listWhatsNewPort.findLatestUnread(UserId.of(query.getUserId()), 5);
     }
 }

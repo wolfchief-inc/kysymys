@@ -3,6 +3,7 @@ package net.unit8.kysymys.web;
 import lombok.Value;
 import net.unit8.kysymys.lesson.application.SubmitAnswerCommand;
 import net.unit8.kysymys.lesson.application.SubmitAnswerUseCase;
+import net.unit8.kysymys.user.application.ListFollowersQuery;
 import net.unit8.kysymys.user.application.ListFollowersUseCase;
 import net.unit8.kysymys.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,8 @@ public class ApolloController {
         DeferredResult<UserDto> deferredResult = new DeferredResult<>();
         deferredResult.onCompletion(() -> {
             UserDto user = (UserDto) deferredResult.getResult();
-            List<User> followers = listFollowersUseCase.handle(user.getId());
+            List<User> followers = listFollowersUseCase.handle(new ListFollowersQuery(user.getId(), 0, Integer.MAX_VALUE))
+                    .getContent();
             submitAnswerUseCase.handle(new SubmitAnswerCommand(submitAnswer.getProblemId(),
                     user.getId(),
                     user.getName(),

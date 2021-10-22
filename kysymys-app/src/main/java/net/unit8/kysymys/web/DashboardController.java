@@ -10,6 +10,8 @@ import net.unit8.kysymys.lesson.domain.ProblemId;
 import net.unit8.kysymys.notification.application.GetWhatsNewsQuery;
 import net.unit8.kysymys.notification.application.GetWhatsNewsUseCase;
 import net.unit8.kysymys.notification.domain.WhatsNew;
+import net.unit8.kysymys.user.application.ListFollowersQuery;
+import net.unit8.kysymys.user.application.ListFollowersUseCase;
 import net.unit8.kysymys.user.application.ListOffersQuery;
 import net.unit8.kysymys.user.application.ListOffersUseCase;
 import net.unit8.kysymys.user.domain.Offer;
@@ -38,13 +40,16 @@ public class DashboardController {
     @Autowired
     private ListOffersUseCase listOffersUseCase;
 
+    @Autowired
+    private ListFollowersUseCase listFollowersUseCase;
+
     @GetMapping("/")
     public String index(Model model,
                         @AuthenticationPrincipal User user) {
         Page<WhatsNew> whatsNews = getWhatsNewsUseCase.handle(new GetWhatsNewsQuery(user.getId().getValue(), 5));
         model.addAttribute("whatsNews", whatsNews);
 
-        Page<Problem> problems = listProblemsUseCase.handle(new ListProblemsQuery(0, 5));
+        Page<Problem> problems = listProblemsUseCase.handle(new ListProblemsQuery(0, 10));
         model.addAttribute("problems", problems);
 
         Map<ProblemId, Answer> answers = listMyAnswersUseCase.handle(new ListMyAnswersQuery(user.getId().getValue(), problems
@@ -56,8 +61,12 @@ public class DashboardController {
                 .collect(Collectors.toMap(a -> a.getProblem().getId(), a -> a));
         model.addAttribute("answers", answers);
 
-        Page<Offer> offers = listOffersUseCase.handle(new ListOffersQuery(user.getId().getValue(), 0, 5));
+        Page<Offer> offers = listOffersUseCase.handle(new ListOffersQuery(user.getId().getValue(), 0, 10));
         model.addAttribute("offers", offers);
+
+        Page<User> followers = listFollowersUseCase.handle(new ListFollowersQuery(user.getId().toString(), 0, 10));
+        model.addAttribute("followers", followers);
+
         return "index";
     }
 }

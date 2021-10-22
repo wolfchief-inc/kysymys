@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<UserJpaEntity, String>, Jp
     Optional<UserJpaEntity> findByEmail(String email);
 
     @Query("SELECT f FROM user u INNER JOIN u.followers f WHERE u.id=:userId")
-    List<UserJpaEntity> findAllFollowers(@Param("userId") String userId);
+    Page<UserJpaEntity> findAllFollowers(@Param("userId") String userId, Pageable pageable);
 
     @Query("SELECT u FROM user u WHERE u.id IN (:ids)")
     Set<UserJpaEntity> findAllByUserIds(@Param("ids") Set<String> ids);

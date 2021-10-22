@@ -3,10 +3,9 @@ package net.unit8.kysymys.user.adapter.persistence;
 import net.unit8.kysymys.user.application.*;
 import net.unit8.kysymys.user.domain.User;
 import net.unit8.kysymys.user.domain.UserId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 class FollowPersistenceAdapter implements IsFollowerPort, GetFollowersPort, AddFollowerPort, RemoveFollowerPort {
@@ -19,10 +18,9 @@ class FollowPersistenceAdapter implements IsFollowerPort, GetFollowersPort, AddF
     }
 
     @Override
-    public List<User> listFollowers(UserId userId) {
-        return userRepository.findAllFollowers(userId.getValue())
-                .stream().map(userMapper::entityToDomain)
-                .collect(Collectors.toList());
+    public Page<User> listFollowers(UserId userId, int page, int size) {
+        return userRepository.findAllFollowers(userId.getValue(), PageRequest.of(page, size))
+                .map(userMapper::entityToDomain);
     }
 
     @Override

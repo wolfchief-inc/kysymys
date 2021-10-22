@@ -57,9 +57,11 @@
                         <label class="label">New Password</label>
                         <div class="control">
                             <input class="input" type="password" th:field="*{newPassword}" placeholder="New Password"
-                                   th:classappend="${#fields.hasErrors('newPassword')} ? is-danger">
+                                   th:classappend="${#fields.hasErrors('newPassword') || #fields.hasErrors('notNewPasswordTooShort') || #fields.hasErrors('notNewPasswordTooLong')} ? is-danger">
                         </div>
                         <p th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}" class="help is-danger">Password is invalid</p>
+                        <p th:if="${#fields.hasErrors('notNewPasswordTooLong')}" th:errors="*{notNewPasswordTooLong}" class="help is-danger">Password is invalid</p>
+                        <p th:if="${#fields.hasErrors('notNewPasswordTooShort')}" th:errors="*{notNewPasswordTooShort}" class="help is-danger">Password is invalid</p>
                     </div>
                     <div class="field is-grouped">
                         <div class="control">

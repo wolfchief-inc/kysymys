@@ -23,6 +23,18 @@
                         <li th:text="${whatsNew.message}">おしらせ</li>
                     </ul>
                 </div>
+                <div class="level">
+                    <div class="level-right">
+                        <div class="level-item">
+                            <form th:action="@{/whatsNew/markAsRead}" method="post">
+                                <span th:each="whatsNew : ${whatsNews}">
+                                    <input type="hidden" name="whatsNewId" th:value="${whatsNew.id}" />
+                                </span>
+                                <button type="submit" th:text="#{label.mark_as_read}">Delete all</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         <section class="section">
@@ -87,6 +99,31 @@
                     </tr>
                     </tbody>
                 </table>
+            </div>
+        </section>
+        <section class="section" th:if="${followers.hasContent()}">
+            <div class="block">
+                <h3 class="title is-5" th:text="#{caption.list_followers}">Follower</h3>
+                <ul>
+                    <li class="media" th:each="follower : ${followers}">
+                        <div class="media-left">
+                            <figure class="image is-64x64">
+                                <img src="https://via.placeholder.com/128x128.png?text=Image" th:src="@{/avatar/{id}(id=${follower.id})}">
+                            </figure>
+                        </div>
+                        <div class="media-content">
+                            <div class="title is-5">
+                                <a href="#"
+                                   th:href="@{/user/{id}(id=${follower.id})}" th:text="${follower.name}">
+                                    name
+                                </a>
+                            </div>
+                            <div th:text="${follower.email}">
+                                teacher@example.com
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </section>
     </main>

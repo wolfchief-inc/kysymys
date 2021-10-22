@@ -23,7 +23,7 @@ public class Password {
     }
 
     public static Password ofRaw(String value) {
-        return validator.andThen(s -> new Password(s, true)).validated(value);
+        return validator.andThen(s -> new Password(s, false)).validated(value);
     }
 
     public static Password notSet() {

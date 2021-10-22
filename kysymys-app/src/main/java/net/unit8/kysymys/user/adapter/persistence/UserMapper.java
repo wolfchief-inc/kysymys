@@ -4,7 +4,7 @@ import net.unit8.kysymys.user.domain.*;
 import org.hibernate.collection.internal.PersistentSet;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
