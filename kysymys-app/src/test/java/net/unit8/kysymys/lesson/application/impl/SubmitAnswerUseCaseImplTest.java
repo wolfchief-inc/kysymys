@@ -1,10 +1,7 @@
 package net.unit8.kysymys.lesson.application.impl;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-import net.unit8.kysymys.lesson.application.LoadProblemPort;
-import net.unit8.kysymys.lesson.application.SaveAnswerPort;
-import net.unit8.kysymys.lesson.application.SubmitAnswerCommand;
-import net.unit8.kysymys.lesson.application.SubmitAnswerUseCase;
+import net.unit8.kysymys.lesson.application.*;
 import net.unit8.kysymys.lesson.domain.*;
 import net.unit8.kysymys.share.application.CurrentDateTimePort;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +42,7 @@ class SubmitAnswerUseCaseImplTest {
     }
 
     @Test
-    void test() {
+    void test() throws ProblemNotFoundException {
         String problemId = NanoIdUtils.randomNanoId();
         Problem problem = Problem.of(
                 ProblemId.of(problemId),

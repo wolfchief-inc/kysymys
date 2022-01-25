@@ -1,8 +1,8 @@
 package net.unit8.kysymys.web;
 
 import net.unit8.kysymys.user.application.EmailAlreadyTakenException;
-import net.unit8.kysymys.user.application.SignupCommand;
 import net.unit8.kysymys.user.application.SignupUseCase;
+import net.unit8.kysymys.user.application.SignupUseCase.SignupCommand;
 import net.unit8.kysymys.user.domain.UserCreatedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

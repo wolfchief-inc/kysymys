@@ -1,19 +1,18 @@
 package net.unit8.kysymys.web;
 
-import net.unit8.kysymys.lesson.application.ListMyAnswersQuery;
 import net.unit8.kysymys.lesson.application.ListMyAnswersUseCase;
-import net.unit8.kysymys.lesson.application.ListProblemsQuery;
+import net.unit8.kysymys.lesson.application.ListMyAnswersUseCase.ListMyAnswersQuery;
 import net.unit8.kysymys.lesson.application.ListProblemsUseCase;
+import net.unit8.kysymys.lesson.application.ListProblemsUseCase.ListProblemsQuery;
 import net.unit8.kysymys.lesson.domain.Answer;
 import net.unit8.kysymys.lesson.domain.Problem;
 import net.unit8.kysymys.lesson.domain.ProblemId;
-import net.unit8.kysymys.notification.application.GetWhatsNewsQuery;
 import net.unit8.kysymys.notification.application.GetWhatsNewsUseCase;
 import net.unit8.kysymys.notification.domain.WhatsNew;
-import net.unit8.kysymys.user.application.ListFollowersQuery;
 import net.unit8.kysymys.user.application.ListFollowersUseCase;
-import net.unit8.kysymys.user.application.ListOffersQuery;
+import net.unit8.kysymys.user.application.ListFollowersUseCase.ListFollowersQuery;
 import net.unit8.kysymys.user.application.ListOffersUseCase;
+import net.unit8.kysymys.user.application.ListOffersUseCase.ListOffersQuery;
 import net.unit8.kysymys.user.domain.Offer;
 import net.unit8.kysymys.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static net.unit8.kysymys.notification.application.GetWhatsNewsUseCase.GetWhatsNewsQuery;
 
 @Controller
 public class DashboardController {

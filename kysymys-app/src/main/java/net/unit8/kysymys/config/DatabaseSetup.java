@@ -32,7 +32,7 @@ public class DatabaseSetup implements InitializingBean {
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         if (userRepository.findByEmail("teacher1@example.com").isPresent())
             return;
 

@@ -27,7 +27,7 @@ class PostCommentUseCaseImpl implements PostCommentUseCase {
     }
 
     @Override
-    public PostedCommentEvent handle(PostCommentCommand command) {
+    public PostedCommentEvent handle(PostCommentCommand command) throws AnswerNotFoundException {
         Answer answer = loadAnswerPort.load(AnswerId.of(command.getAnswerId()))
                 .orElseThrow(() -> new AnswerNotFoundException(command.getAnswerId()));
 

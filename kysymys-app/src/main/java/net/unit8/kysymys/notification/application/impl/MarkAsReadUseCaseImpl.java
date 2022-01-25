@@ -1,7 +1,6 @@
 package net.unit8.kysymys.notification.application.impl;
 
 import net.unit8.kysymys.notification.application.DeleteAllWhatsNewsPort;
-import net.unit8.kysymys.notification.application.MarkAsReadCommand;
 import net.unit8.kysymys.notification.application.MarkAsReadUseCase;
 import net.unit8.kysymys.notification.domain.MarkedAsReadEvent;
 import net.unit8.kysymys.notification.domain.WhatsNewId;

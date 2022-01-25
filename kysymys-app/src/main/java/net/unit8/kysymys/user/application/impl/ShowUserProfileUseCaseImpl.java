@@ -8,8 +8,6 @@ import net.unit8.kysymys.user.domain.UserId;
 import net.unit8.kysymys.user.domain.UserProfileByOther;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 @UseCase
 class ShowUserProfileUseCaseImpl implements ShowUserProfileUseCase {
     private final LoadUserPort loadUserPort;

@@ -2,6 +2,7 @@ package net.unit8.kysymys.web;
 
 import am.ik.yavi.core.ConstraintViolationsException;
 import net.unit8.kysymys.lesson.application.*;
+import net.unit8.kysymys.lesson.application.UpdateProblemUseCase.UpdateProblemCommand;
 import net.unit8.kysymys.lesson.domain.CreatedProblemEvent;
 import net.unit8.kysymys.lesson.domain.DeletedProblemEvent;
 import net.unit8.kysymys.lesson.domain.Problem;
@@ -9,6 +10,7 @@ import net.unit8.kysymys.lesson.domain.ProblemUpdatedEvent;
 import net.unit8.kysymys.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Locale;
@@ -101,33 +104,38 @@ public class LessonAdminController {
     }
 
     @GetMapping("/edit/{problemId}")
-    public String edit(@PathVariable("problemId") String problemId,
-                       Model model) {
-        Problem problem = getProblemUseCase.handle(problemId);
-        ProblemForm form = Optional.ofNullable(model.getAttribute("problemForm"))
-                .filter(ProblemForm.class::isInstance)
-                .map(ProblemForm.class::cast)
-                .orElseGet(ProblemForm::new);
-        form.setName(problem.getName().getValue());
-        form.setRepositoryUrl(problem.getRepository().getUrl());
-        form.setBranch(problem.getRepository().getBranch());
-        form.setReadmePath(problem.getRepository().getReadmePath().substring(1));
-        model.addAttribute("problemId", problemId);
-
-        return "admin/lesson/edit";
+    public ModelAndView edit(@PathVariable("problemId") String problemId,
+                       ModelAndView mv) {
+        try {
+            Problem problem = getProblemUseCase.handle(problemId);
+            ProblemForm form = Optional.ofNullable(mv.getModelMap().getAttribute("problemForm"))
+                    .filter(ProblemForm.class::isInstance)
+                    .map(ProblemForm.class::cast)
+                    .orElseGet(ProblemForm::new);
+            form.setName(problem.getName().getValue());
+            form.setRepositoryUrl(problem.getRepository().getUrl());
+            form.setBranch(problem.getRepository().getBranch());
+            form.setReadmePath(problem.getRepository().getReadmePath().substring(1));
+            mv.addObject("problemId", problemId);
+            mv.setViewName("admin/lesson/edit");
+        } catch (ProblemNotFoundException e) {
+            mv.setViewName("error/problem_not_found");
+            mv.setStatus(HttpStatus.NOT_FOUND);
+        }
+        return mv;
     }
 
     @PostMapping("/edit/{problemId}")
-    public String update(@PathVariable("problemId") String problemId,
+    public ModelAndView update(@PathVariable("problemId") String problemId,
                          @Validated ProblemForm form,
                          BindingResult bindingResult,
                          @AuthenticationPrincipal User user,
                          RedirectAttributes redirectAttributes,
                          Locale locale,
-                         Model model) {
+                         ModelAndView mv) {
         normalize(form);
         if (bindingResult.hasErrors()) {
-            return edit(problemId, model);
+            return edit(problemId, mv);
         }
         ProblemUpdatedEvent event = updateProblemUseCase.handle(new UpdateProblemCommand(
                 problemId,
@@ -142,7 +150,8 @@ public class LessonAdminController {
                 new Object[]{ event.getProblemId() },
                 locale
         ));
-        return "redirect:/lesson";
+        mv.setViewName("redirect:/lesson");
+        return mv;
     }
 
     @PostMapping("/delete/{problemId}")

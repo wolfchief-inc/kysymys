@@ -18,7 +18,7 @@ class GetAvatarImageUseCaseImpl implements GetAvatarImageUseCase {
     }
 
     @Override
-    public byte[] handle(String userId) {
+    public byte[] handle(String userId) throws AvatarNotFoundException {
         Optional<UserAvatar> userAvatar = loadAvatarPort.load(UserId.of(userId));
         return userAvatar.map(UserAvatar::getImage).orElseThrow(() -> new AvatarNotFoundException(userId));
     }

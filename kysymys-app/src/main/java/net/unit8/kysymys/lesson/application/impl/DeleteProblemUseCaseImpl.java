@@ -23,7 +23,7 @@ class DeleteProblemUseCaseImpl implements DeleteProblemUseCase {
     }
 
     @Override
-    public DeletedProblemEvent handle(DeleteProblemCommand command) {
+    public DeletedProblemEvent handle(DeleteProblemCommand command) throws AlreadyHasAnswersException {
         ProblemId problemId = ProblemId.of(command.getId());
         UserId deleterId = UserId.of(command.getDeleterId());
 

@@ -4,7 +4,7 @@
     <parent>
         <groupId>net.unit8.kysymys</groupId>
         <artifactId>kysymys-parent</artifactId>
-        <version>0.1.1</version>
+        <version>0.1.2-SNAPSHOT</version>
     </parent>
     <artifactId>kysymys-scorer-java</artifactId>
     <packaging>jar</packaging>

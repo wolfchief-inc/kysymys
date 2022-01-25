@@ -1,9 +1,9 @@
 package net.unit8.kysymys.web;
 
-import net.unit8.kysymys.user.application.AcceptFollowCommand;
 import net.unit8.kysymys.user.application.AcceptFollowUseCase;
-import net.unit8.kysymys.user.application.OfferToFollowCommand;
+import net.unit8.kysymys.user.application.AcceptFollowUseCase.AcceptFollowCommand;
 import net.unit8.kysymys.user.application.OfferToFollowUseCase;
+import net.unit8.kysymys.user.application.OfferToFollowUseCase.OfferToFollowCommand;
 import net.unit8.kysymys.user.domain.OfferedToFollowEvent;
 import net.unit8.kysymys.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;

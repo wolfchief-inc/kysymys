@@ -1,6 +1,5 @@
 package net.unit8.kysymys.lesson.adapter.persistence;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.unit8.kysymys.lesson.domain.ProblemStatus;

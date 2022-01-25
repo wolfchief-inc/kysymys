@@ -29,7 +29,7 @@ class SignupUseCaseImpl implements SignupUseCase {
     }
 
     @Override
-    public UserCreatedEvent handle(SignupCommand command) {
+    public UserCreatedEvent handle(SignupCommand command) throws EmailAlreadyTakenException {
         EmailAddress email = EmailAddress.of(command.getEmail());
         if (existsEmailAddressPort.exists(email)) {
             throw new EmailAlreadyTakenException(command.getEmail());

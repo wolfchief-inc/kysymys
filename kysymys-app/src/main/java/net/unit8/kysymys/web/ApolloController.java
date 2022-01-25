@@ -1,10 +1,11 @@
 package net.unit8.kysymys.web;
 
 import lombok.Value;
+import net.unit8.kysymys.lesson.application.ProblemNotFoundException;
 import net.unit8.kysymys.lesson.application.SubmitAnswerCommand;
 import net.unit8.kysymys.lesson.application.SubmitAnswerUseCase;
-import net.unit8.kysymys.user.application.ListFollowersQuery;
 import net.unit8.kysymys.user.application.ListFollowersUseCase;
+import net.unit8.kysymys.user.application.ListFollowersUseCase.ListFollowersQuery;
 import net.unit8.kysymys.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,17 +36,22 @@ public class ApolloController {
         DeferredResult<UserDto> deferredResult = new DeferredResult<>();
         deferredResult.onCompletion(() -> {
             UserDto user = (UserDto) deferredResult.getResult();
+            assert user != null;
             List<User> followers = listFollowersUseCase.handle(new ListFollowersQuery(user.getId(), 0, Integer.MAX_VALUE))
                     .getContent();
-            submitAnswerUseCase.handle(new SubmitAnswerCommand(submitAnswer.getProblemId(),
-                    user.getId(),
-                    user.getName(),
-                    followers.stream().map(u -> new SubmitAnswerCommand.Follower(
-                            u.getId().getValue(), u.getName(), u.getEmail().getValue()
-                    )).collect(Collectors.toList()),
-                    submitAnswer.getRepositoryUrl(),
-                    submitAnswer.getCommitHash()));
-            watchRequests.remove(token, deferredResult);
+            try {
+                submitAnswerUseCase.handle(new SubmitAnswerCommand(submitAnswer.getProblemId(),
+                        user.getId(),
+                        user.getName(),
+                        followers.stream().map(u -> new SubmitAnswerCommand.Follower(
+                                u.getId().getValue(), u.getName(), u.getEmail().getValue()
+                        )).collect(Collectors.toList()),
+                        submitAnswer.getRepositoryUrl(),
+                        submitAnswer.getCommitHash()));
+                watchRequests.remove(token);
+            } catch (ProblemNotFoundException e) {
+                // Todo LOG
+            }
         });
         watchRequests.add(token, deferredResult);
         return deferredResult;

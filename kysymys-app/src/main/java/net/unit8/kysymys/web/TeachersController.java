@@ -1,7 +1,7 @@
 package net.unit8.kysymys.web;
 
-import net.unit8.kysymys.user.application.ListTeacherQuery;
 import net.unit8.kysymys.user.application.ListTeachersUseCase;
+import net.unit8.kysymys.user.application.ListTeachersUseCase.ListTeacherQuery;
 import net.unit8.kysymys.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

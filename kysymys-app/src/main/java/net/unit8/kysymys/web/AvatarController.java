@@ -1,6 +1,10 @@
 package net.unit8.kysymys.web;
 
-import net.unit8.kysymys.avatar.application.*;
+import net.unit8.kysymys.avatar.application.AvatarNotFoundException;
+import net.unit8.kysymys.avatar.application.GenerateAvatarUseCase;
+import net.unit8.kysymys.avatar.application.GenerateAvatarUseCase.AvatarGeneratedEvent;
+import net.unit8.kysymys.avatar.application.GenerateAvatarUseCase.GenerateAvatarCommand;
+import net.unit8.kysymys.avatar.application.GetAvatarImageUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;

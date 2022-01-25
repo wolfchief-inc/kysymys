@@ -1,6 +1,5 @@
 package net.unit8.kysymys.lesson.adapter.persistence;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

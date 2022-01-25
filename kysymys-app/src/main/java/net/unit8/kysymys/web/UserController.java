@@ -1,7 +1,7 @@
 package net.unit8.kysymys.web;
 
-import net.unit8.kysymys.lesson.application.ListFollowerAnswersQuery;
 import net.unit8.kysymys.lesson.application.ListFollowerAnswersUseCase;
+import net.unit8.kysymys.lesson.application.ListFollowerAnswersUseCase.ListFollowerAnswersQuery;
 import net.unit8.kysymys.lesson.domain.Answer;
 import net.unit8.kysymys.user.application.*;
 import net.unit8.kysymys.user.domain.FollowStatus;

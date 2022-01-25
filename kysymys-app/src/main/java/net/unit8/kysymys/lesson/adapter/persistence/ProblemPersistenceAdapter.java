@@ -9,7 +9,6 @@ import net.unit8.kysymys.lesson.domain.ProblemId;
 import net.unit8.kysymys.stereotype.PersistenceAdapter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 
 import java.util.Optional;
 

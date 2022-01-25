@@ -30,7 +30,7 @@ public class SubmitAnswerUseCaseImpl implements SubmitAnswerUseCase {
     }
 
     @Override
-    public SubmittedAnswerEvent handle(SubmitAnswerCommand command) {
+    public SubmittedAnswerEvent handle(SubmitAnswerCommand command) throws ProblemNotFoundException {
         Validated<AnswerRepository> answerRepositoryValidated = AnswerRepository.validator.validate(command.getRepositoryUrl(), command.getCommitHash());
         Validated<AnswerId> answerIdValidated = AnswerId.validator.validate(command.getAnswererId());
 

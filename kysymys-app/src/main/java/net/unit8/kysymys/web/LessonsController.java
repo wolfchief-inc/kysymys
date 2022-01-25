@@ -1,9 +1,9 @@
 package net.unit8.kysymys.web;
 
-import net.unit8.kysymys.lesson.application.ListMyAnswersQuery;
 import net.unit8.kysymys.lesson.application.ListMyAnswersUseCase;
-import net.unit8.kysymys.lesson.application.ListProblemsQuery;
+import net.unit8.kysymys.lesson.application.ListMyAnswersUseCase.ListMyAnswersQuery;
 import net.unit8.kysymys.lesson.application.ListProblemsUseCase;
+import net.unit8.kysymys.lesson.application.ListProblemsUseCase.ListProblemsQuery;
 import net.unit8.kysymys.lesson.domain.Answer;
 import net.unit8.kysymys.lesson.domain.Problem;
 import net.unit8.kysymys.lesson.domain.ProblemId;

@@ -6,9 +6,7 @@ import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Objects;
 
 @Data
 public class EditUserForm implements Serializable {

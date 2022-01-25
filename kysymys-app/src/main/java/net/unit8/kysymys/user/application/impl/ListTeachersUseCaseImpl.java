@@ -2,7 +2,6 @@ package net.unit8.kysymys.user.application.impl;
 
 import net.unit8.kysymys.stereotype.UseCase;
 import net.unit8.kysymys.user.application.GetUsersPort;
-import net.unit8.kysymys.user.application.ListTeacherQuery;
 import net.unit8.kysymys.user.application.ListTeachersUseCase;
 import net.unit8.kysymys.user.domain.Roles;
 import net.unit8.kysymys.user.domain.User;

@@ -2,7 +2,6 @@ package net.unit8.kysymys.lesson.application.impl;
 
 import am.ik.yavi.core.ConstraintViolationsException;
 import net.unit8.kysymys.lesson.application.SaveProblemPort;
-import net.unit8.kysymys.lesson.application.UpdateProblemCommand;
 import net.unit8.kysymys.lesson.application.UpdateProblemUseCase;
 import net.unit8.kysymys.lesson.domain.ProblemUpdatedEvent;
 import net.unit8.kysymys.lesson.domain.Problem;

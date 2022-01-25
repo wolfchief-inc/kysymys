@@ -16,7 +16,7 @@ class GetProblemUseCaseImpl implements GetProblemUseCase {
     }
 
     @Override
-    public Problem handle(String problemId) {
+    public Problem handle(String problemId) throws ProblemNotFoundException {
         return loadProblemPort.load(ProblemId.of(problemId))
                 .orElseThrow(() -> new ProblemNotFoundException(problemId));
     }

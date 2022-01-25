@@ -1,7 +1,6 @@
 package net.unit8.kysymys.lesson.application.impl;
 
 import net.unit8.kysymys.lesson.application.ListAnswersPort;
-import net.unit8.kysymys.lesson.application.ListMyAnswersQuery;
 import net.unit8.kysymys.lesson.application.ListMyAnswersUseCase;
 import net.unit8.kysymys.lesson.domain.Answer;
 import net.unit8.kysymys.lesson.domain.ProblemId;

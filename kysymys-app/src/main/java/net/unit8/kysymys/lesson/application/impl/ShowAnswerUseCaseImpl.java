@@ -24,7 +24,7 @@ public class ShowAnswerUseCaseImpl implements ShowAnswerUseCase {
     }
 
     @Override
-    public AnswerWithComments handle(ShowAnswerQuery query) {
+    public AnswerWithComments handle(ShowAnswerQuery query) throws AnswerNotFoundException {
         AnswerId answerId = AnswerId.of(query.getAnswerId());
         UserId viewerUserId = UserId.of(query.getViewerUserId());
 
