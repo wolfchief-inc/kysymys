@@ -19,21 +19,21 @@ class FollowPersistenceAdapter implements IsFollowerPort, GetFollowersPort, AddF
 
     @Override
     public Page<User> listFollowers(UserId userId, int page, int size) {
-        return userRepository.findAllFollowers(userId.getValue(), PageRequest.of(page, size))
+        return userRepository.findAllFollowers(userId.asString(), PageRequest.of(page, size))
                 .map(userMapper::entityToDomain);
     }
 
     @Override
     public boolean isFollower(UserId followerId, UserId followeeId) {
-        return userRepository.isFollower(followerId.getValue(), followeeId.getValue());
+        return userRepository.isFollower(followerId.asString(), followeeId.asString());
     }
 
     @Override
     public void follow(UserId followerId, UserId followeeId) {
-        UserJpaEntity follower = userRepository.findById(followerId.getValue())
-                .orElseThrow(() -> new UserNotFoundException(followerId.getValue()));
-        UserJpaEntity followee = userRepository.findById(followeeId.getValue())
-                .orElseThrow(() -> new UserNotFoundException(followeeId.getValue()));
+        UserJpaEntity follower = userRepository.findById(followerId.asString())
+                .orElseThrow(() -> new UserNotFoundException(followerId.asString()));
+        UserJpaEntity followee = userRepository.findById(followeeId.asString())
+                .orElseThrow(() -> new UserNotFoundException(followeeId.asString()));
 
         follower.getFollowers().add(followee);
         followee.getFollowers().add(follower);
@@ -41,10 +41,10 @@ class FollowPersistenceAdapter implements IsFollowerPort, GetFollowersPort, AddF
 
     @Override
     public void unfollow(UserId followerId, UserId followeeId) {
-        UserJpaEntity follower = userRepository.findById(followerId.getValue())
-                .orElseThrow(() -> new UserNotFoundException(followerId.getValue()));
-        UserJpaEntity followee = userRepository.findById(followeeId.getValue())
-                .orElseThrow(() -> new UserNotFoundException(followeeId.getValue()));
+        UserJpaEntity follower = userRepository.findById(followerId.asString())
+                .orElseThrow(() -> new UserNotFoundException(followerId.asString()));
+        UserJpaEntity followee = userRepository.findById(followeeId.asString())
+                .orElseThrow(() -> new UserNotFoundException(followeeId.asString()));
 
         follower.getFollowers().remove(followee);
         followee.getFollowers().remove(follower);

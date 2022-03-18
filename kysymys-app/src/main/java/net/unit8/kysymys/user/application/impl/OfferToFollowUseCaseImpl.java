@@ -3,7 +3,10 @@ package net.unit8.kysymys.user.application.impl;
 import am.ik.yavi.core.ConstraintViolationsException;
 import net.unit8.kysymys.share.application.CurrentDateTimePort;
 import net.unit8.kysymys.stereotype.UseCase;
-import net.unit8.kysymys.user.application.*;
+import net.unit8.kysymys.user.application.LoadUserPort;
+import net.unit8.kysymys.user.application.OfferToFollowUseCase;
+import net.unit8.kysymys.user.application.SaveOfferPort;
+import net.unit8.kysymys.user.application.UserNotFoundException;
 import net.unit8.kysymys.user.domain.*;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -42,9 +45,9 @@ class OfferToFollowUseCaseImpl implements OfferToFollowUseCase {
         return tx.execute(status -> {
             saveOfferPort.save(offer);
             OfferedToFollowEvent event = new OfferedToFollowEvent(
-                    targetUser.getId().getValue(), targetUser.getName(),
-                    targetUser.getEmail().getValue(),
-                    offeringUser.getId().getValue(), offeringUser.getName(),
+                    targetUser.getId().asString(), targetUser.getName(),
+                    targetUser.getEmail().asString(),
+                    offeringUser.getId().asString(), offeringUser.getName(),
                     now);
             applicationEventPublisher.publishEvent(event);
             return event;

@@ -2,15 +2,15 @@ package net.unit8.kysymys.user.domain;
 
 import am.ik.yavi.arguments.StringValidator;
 import am.ik.yavi.builder.StringValidatorBuilder;
-import lombok.Value;
+import lombok.EqualsAndHashCode;
 
-@Value
+@EqualsAndHashCode
 public class UserName {
     public static final StringValidator<String> validator = StringValidatorBuilder
-            .of("value", c -> c.notBlank().lessThanOrEqual(100))
+            .of("userName", c -> c.notBlank().lessThanOrEqual(100))
             .build();
 
-    String value;
+    private final String value;
 
     private UserName(String value) {
         this.value = value;
@@ -20,8 +20,12 @@ public class UserName {
         return validator.andThen(UserName::new).validated(value);
     }
 
+    public String asString() {
+        return value;
+    }
+
     @Override
     public String toString() {
-        return value;
+        return asString();
     }
 }

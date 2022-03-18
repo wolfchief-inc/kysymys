@@ -27,10 +27,10 @@ class UpdateProfileUseCaseImpl implements UpdateProfileUseCase {
     }
 
     @Override
-    public ProfileUpdatedEvent handle(UpdateProfileCommand command) {
+    public ProfileUpdatedEvent handle(UpdateProfileCommand command) throws PasswordMismatchException {
         UserId userId = UserId.of(command.getUserId());
         User user = loadUserPort.load(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId.getValue()));
+                .orElseThrow(() -> new UserNotFoundException(userId.asString()));
 
         if (StringUtils.hasText(command.getOldPassword())) {
             if (!passwordEncoder.matches(command.getOldPassword(), user.getPassword())) {
@@ -56,7 +56,7 @@ class UpdateProfileUseCaseImpl implements UpdateProfileUseCase {
                     newPassword,
                     user.getRoles()
             ));
-            return new ProfileUpdatedEvent(userId.getValue(), currentDateTimePort.now());
+            return new ProfileUpdatedEvent(userId.asString(), currentDateTimePort.now());
         });
     }
 }

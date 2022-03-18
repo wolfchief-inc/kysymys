@@ -3,7 +3,7 @@ package net.unit8.kysymys.lesson.application.impl;
 import net.unit8.kysymys.lesson.application.*;
 import net.unit8.kysymys.lesson.domain.Answer;
 import net.unit8.kysymys.lesson.domain.AnswerId;
-import net.unit8.kysymys.lesson.domain.AnswerWithComments;
+import net.unit8.kysymys.lesson.application.AnswerWithComments;
 import net.unit8.kysymys.lesson.domain.Comment;
 import net.unit8.kysymys.share.application.GenerateCursorPort;
 import net.unit8.kysymys.stereotype.UseCase;

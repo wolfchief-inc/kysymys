@@ -36,7 +36,7 @@ public class User implements UserDetails, OAuth2User {
     }
 
     public String getName() {
-        return name.getValue();
+        return name.asString();
     }
 
     @Override

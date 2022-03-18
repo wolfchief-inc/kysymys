@@ -3,7 +3,6 @@ package net.unit8.kysymys.user.application.impl;
 import net.unit8.kysymys.share.application.CurrentDateTimePort;
 import net.unit8.kysymys.stereotype.UseCase;
 import net.unit8.kysymys.user.application.*;
-import net.unit8.kysymys.user.domain.AcceptedFollowEvent;
 import net.unit8.kysymys.user.domain.Offer;
 import net.unit8.kysymys.user.domain.OfferId;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -25,10 +24,10 @@ class AcceptFollowUseCaseImpl implements AcceptFollowUseCase {
     }
 
     @Override
-    public AcceptedFollowEvent handle(AcceptFollowCommand command) {
+    public AcceptedFollowEvent handle(AcceptFollowCommand command) throws OfferNotFound {
         Offer offer = loadOfferPort.load(OfferId.of(command.getOfferId()))
                 .orElseThrow(() -> new OfferNotFound(command.getOfferId()));
-        if (!command.getAcceptorId().equals(offer.getTargetUser().getId().getValue())) {
+        if (!command.getAcceptorId().equals(offer.getTargetUser().getId().asString())) {
             throw new OfferNotFound(command.getOfferId());
         }
 

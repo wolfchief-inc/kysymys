@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 class UserMapper {
     public UserJpaEntity domainToEntity(User member) {
         UserJpaEntity entity = new UserJpaEntity();
-        entity.setId(member.getId().getValue());
+        entity.setId(member.getId().asString());
         entity.setName(member.getName());
         entity.setEmail(member.getEmail().toString());
         entity.setPassword(member.getPassword());

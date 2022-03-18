@@ -1,11 +1,11 @@
 package net.unit8.kysymys.web;
 
 import net.unit8.kysymys.lesson.application.AnswerNotFoundException;
+import net.unit8.kysymys.lesson.application.AnswerWithComments;
 import net.unit8.kysymys.lesson.application.PostCommentUseCase;
 import net.unit8.kysymys.lesson.application.PostCommentUseCase.PostCommentCommand;
 import net.unit8.kysymys.lesson.application.ShowAnswerUseCase;
 import net.unit8.kysymys.lesson.application.ShowAnswerUseCase.ShowAnswerQuery;
-import net.unit8.kysymys.lesson.domain.AnswerWithComments;
 import net.unit8.kysymys.lesson.domain.Comment;
 import net.unit8.kysymys.user.application.ListUsersUseCase;
 import net.unit8.kysymys.user.domain.User;
@@ -42,13 +42,13 @@ public class AnswerController {
                               @AuthenticationPrincipal User user,
                               ModelAndView mv) {
         try {
-            AnswerWithComments answerWithComments = showAnswerUseCase.handle(new ShowAnswerQuery(answerId, user.getId().getValue()));
+            AnswerWithComments answerWithComments = showAnswerUseCase.handle(new ShowAnswerQuery(answerId, user.getId().asString()));
             mv.addObject("answer", answerWithComments.getAnswer());
             mv.addObject("comments", answerWithComments.getComments());
             Set<String> userIds = Stream.concat(answerWithComments.getComments()
                             .stream()
                             .map(Comment::getCommenterId), Stream.of(answerWithComments.getAnswer().getAnswererId()))
-                    .map(UserId::getValue)
+                    .map(UserId::asString)
                     .collect(Collectors.toSet());
             Map<UserId, User> usersMap = listUsersUseCase.handle(userIds)
                     .stream()
@@ -68,7 +68,7 @@ public class AnswerController {
                               @Validated CommentForm form,
                               ModelAndView mv) {
         try {
-            postCommentUseCase.handle(new PostCommentCommand(answerId, user.getId().getValue(), form.getDescription()));
+            postCommentUseCase.handle(new PostCommentCommand(answerId, user.getId().asString(), form.getDescription()));
             mv.setViewName("redirect:/answer/" + answerId);
         } catch (AnswerNotFoundException e) {
             mv.setViewName("error/answer_not_found");

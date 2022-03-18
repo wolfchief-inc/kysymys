@@ -45,7 +45,7 @@ class SignupUseCaseImpl implements SignupUseCase {
 
         return tx.execute(status -> {
             saveUserPort.save(user);
-            UserCreatedEvent event = new UserCreatedEvent(user.getId().getValue(), currentDateTimePort.now());
+            UserCreatedEvent event = new UserCreatedEvent(user.getId().asString(), currentDateTimePort.now());
             applicationEventPublisher.publishEvent(event);
             return event;
         });

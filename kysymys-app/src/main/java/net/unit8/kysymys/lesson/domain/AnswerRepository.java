@@ -4,16 +4,14 @@ import am.ik.yavi.arguments.Arguments2Validator;
 import am.ik.yavi.arguments.ArgumentsValidators;
 import am.ik.yavi.arguments.StringValidator;
 import am.ik.yavi.builder.StringValidatorBuilder;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.*;
 
+@EqualsAndHashCode
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Value
 public class AnswerRepository {
-    private static StringValidator<String> urlValidator = StringValidatorBuilder.of("url", c -> c.url())
+    private final static StringValidator<String> urlValidator = StringValidatorBuilder.of("url", c -> c.url())
             .build();
-    private static StringValidator<String> commitHashValidator = StringValidatorBuilder.of("commitHash", c ->
+    private final static StringValidator<String> commitHashValidator = StringValidatorBuilder.of("commitHash", c ->
             c.lessThanOrEqual(40).greaterThanOrEqual(40))
             .build();
 
@@ -21,8 +19,10 @@ public class AnswerRepository {
             .split(urlValidator, commitHashValidator)
             .apply(AnswerRepository::new);
 
-    String url;
-    String commitHash;
+    @Getter
+    private final String url;
+    @Getter
+    private final String commitHash;
 
     public static AnswerRepository of(String url, String commitHash) {
         return validator.validated(url, commitHash);

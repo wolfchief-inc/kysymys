@@ -1,8 +1,8 @@
 package net.unit8.kysymys.lesson.adapter.persistence;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
+import net.unit8.kysymys.lesson.application.CreateProblemUseCase.CreatedProblemEvent;
 import net.unit8.kysymys.lesson.application.SaveProblemEventPort;
-import net.unit8.kysymys.lesson.domain.CreatedProblemEvent;
 import net.unit8.kysymys.lesson.domain.ProblemStatus;
 import net.unit8.kysymys.stereotype.PersistenceAdapter;
 

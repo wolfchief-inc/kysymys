@@ -47,22 +47,22 @@ public class DashboardController {
     @GetMapping("/")
     public String index(Model model,
                         @AuthenticationPrincipal User user) {
-        Page<WhatsNew> whatsNews = getWhatsNewsUseCase.handle(new GetWhatsNewsQuery(user.getId().getValue(), 5));
+        Page<WhatsNew> whatsNews = getWhatsNewsUseCase.handle(new GetWhatsNewsQuery(user.getId().asString(), 5));
         model.addAttribute("whatsNews", whatsNews);
 
         Page<Problem> problems = listProblemsUseCase.handle(new ListProblemsQuery(0, 10));
         model.addAttribute("problems", problems);
 
-        Map<ProblemId, Answer> answers = listMyAnswersUseCase.handle(new ListMyAnswersQuery(user.getId().getValue(), problems
+        Map<ProblemId, Answer> answers = listMyAnswersUseCase.handle(new ListMyAnswersQuery(user.getId().asString(), problems
                 .stream()
                 .map(Problem::getId)
-                .map(ProblemId::getValue)
+                .map(ProblemId::asString)
                 .collect(Collectors.toList())))
                 .stream()
                 .collect(Collectors.toMap(a -> a.getProblem().getId(), a -> a));
         model.addAttribute("answers", answers);
 
-        Page<Offer> offers = listOffersUseCase.handle(new ListOffersQuery(user.getId().getValue(), 0, 10));
+        Page<Offer> offers = listOffersUseCase.handle(new ListOffersQuery(user.getId().asString(), 0, 10));
         model.addAttribute("offers", offers);
 
         Page<User> followers = listFollowersUseCase.handle(new ListFollowersQuery(user.getId().toString(), 0, 10));

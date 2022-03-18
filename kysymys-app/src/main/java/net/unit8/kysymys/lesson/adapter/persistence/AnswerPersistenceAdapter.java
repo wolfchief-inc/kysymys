@@ -33,16 +33,16 @@ class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort, ListAn
 
     @Override
     public Optional<Answer> load(AnswerId answerId) {
-        return answerRepository.findById(answerId.getValue())
+        return answerRepository.findById(answerId.asString())
                 .map(answerMapper::entityToDomain);
     }
 
     public Optional<Answer> load(ProblemId problemId, UserId answererId) {
         AnswerJpaEntity example = new AnswerJpaEntity();
         ProblemJpaEntity problemExample = new ProblemJpaEntity();
-        problemExample.setId(problemId.getValue());
+        problemExample.setId(problemId.asString());
         example.setProblem(problemExample);
-        example.setAnswererId(answererId.getValue());
+        example.setAnswererId(answererId.asString());
         return answerRepository.findOne(Example.of(example))
                 .map(answerMapper::entityToDomain);
     }
@@ -50,13 +50,13 @@ class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort, ListAn
     @Override
     public Page<Answer> listRecentAnswers(UserId answererId, int page, int size) {
         if (page > 0) page = page - 1;
-        return answerRepository.findRecentAnswers(answererId.getValue(), PageRequest.of(page, size))
+        return answerRepository.findRecentAnswers(answererId.asString(), PageRequest.of(page, size))
                 .map(answerMapper::entityToDomain);
     }
 
     @Override
     public List<Answer> listUserAnswersByProblemIds(UserId userId, List<ProblemId> problemIds) {
-        return answerRepository.findAllByAnswererIdAndProblemIdIn(userId.getValue(), problemIds.stream().map(ProblemId::getValue).collect(Collectors.toList()))
+        return answerRepository.findAllByAnswererIdAndProblemIdIn(userId.asString(), problemIds.stream().map(ProblemId::asString).collect(Collectors.toList()))
                 .stream()
                 .map(answerMapper::entityToDomain)
                 .collect(Collectors.toList());
@@ -64,11 +64,11 @@ class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort, ListAn
 
     @Override
     public void save(Answer answer) {
-        Optional<SubmissionJpaEntity> submission = submissionRepository.findByCommitHash(answer.getId().getValue(),
+        Optional<SubmissionJpaEntity> submission = submissionRepository.findByCommitHash(answer.getId().asString(),
                 answer.getRepository().getCommitHash());
         if (submission.isPresent()) return;
 
-        AnswerJpaEntity answerEntity = answerRepository.findById(answer.getId().getValue())
+        AnswerJpaEntity answerEntity = answerRepository.findById(answer.getId().asString())
                 .orElse(answerMapper.domainToEntity(answer));
 
         SubmissionJpaEntity submissionEntity = new SubmissionJpaEntity();
@@ -85,7 +85,7 @@ class AnswerPersistenceAdapter implements LoadAnswerPort, SaveAnswerPort, ListAn
     public long countByProblemId(ProblemId problemId) {
         AnswerJpaEntity example = new AnswerJpaEntity();
         ProblemJpaEntity problemExample = new ProblemJpaEntity();
-        problemExample.setId(problemId.getValue());
+        problemExample.setId(problemId.asString());
         example.setProblem(problemExample);
         return answerRepository.count(Example.of(example));
     }

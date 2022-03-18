@@ -1,10 +1,11 @@
 package net.unit8.kysymys.user.application;
 
 import lombok.Value;
-import net.unit8.kysymys.user.domain.ProfileUpdatedEvent;
+
+import java.time.LocalDateTime;
 
 public interface UpdateProfileUseCase {
-    ProfileUpdatedEvent handle(UpdateProfileCommand command);
+    ProfileUpdatedEvent handle(UpdateProfileCommand command) throws PasswordMismatchException;
 
     @Value
     class UpdateProfileCommand {
@@ -12,5 +13,11 @@ public interface UpdateProfileUseCase {
         String name;
         String oldPassword;
         String newPassword;
+    }
+
+    @Value
+    class ProfileUpdatedEvent {
+        String userId;
+        LocalDateTime occurredAt;
     }
 }

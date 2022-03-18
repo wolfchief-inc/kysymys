@@ -16,16 +16,16 @@ class ReviewCommentMapper {
 
     ReviewCommentJpaEntity domainToEntity(Comment comment) {
         ReviewCommentJpaEntity entity = new ReviewCommentJpaEntity();
-        entity.setId(comment.getId().getValue());
+        entity.setId(comment.getId().asString());
         entity.setAnswer(answerMapper.domainToEntity(comment.getAnswer()));
-        entity.setCommenterId(comment.getCommenterId().getValue());
-        entity.setDescription(comment.getDescription().getValue());
+        entity.setCommenterId(comment.getCommenterId().asString());
+        entity.setDescription(comment.getDescription().asString());
         entity.setPostedAt(comment.getPostedAt());
         return entity;
     }
 
     Comment entityToDomain(ReviewCommentJpaEntity entity) {
-        return new Comment(
+        return Comment.of(
                 CommentId.of(entity.getId()),
                 answerMapper.entityToDomain(entity.getAnswer()),
                 UserId.of(entity.getCommenterId()),

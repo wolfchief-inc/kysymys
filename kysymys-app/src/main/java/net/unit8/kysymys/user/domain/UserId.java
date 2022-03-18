@@ -3,16 +3,17 @@ package net.unit8.kysymys.user.domain;
 import am.ik.yavi.arguments.StringValidator;
 import am.ik.yavi.builder.StringValidatorBuilder;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
-@Value
+@EqualsAndHashCode
 public class UserId {
     public static final StringValidator<UserId> validator = StringValidatorBuilder
-            .of("UserId", c -> c.notBlank().greaterThanOrEqual(21).lessThanOrEqual(21))
+            .of("userId", c -> c.notBlank().greaterThanOrEqual(21).lessThanOrEqual(21))
             .build()
             .andThen(UserId::new);
 
-    String value;
+    private final String value;
 
     private UserId(String value) {
         this.value = value;
@@ -26,8 +27,12 @@ public class UserId {
         return validator.validated(value);
     }
 
+    public String asString() {
+        return value;
+    }
+
     @Override
     public String toString() {
-        return value;
+        return asString();
     }
 }

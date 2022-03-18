@@ -4,8 +4,12 @@ import net.unit8.kysymys.lesson.application.ListFollowerAnswersUseCase;
 import net.unit8.kysymys.lesson.application.ListFollowerAnswersUseCase.ListFollowerAnswersQuery;
 import net.unit8.kysymys.lesson.domain.Answer;
 import net.unit8.kysymys.user.application.*;
+import net.unit8.kysymys.user.application.GrantTeacherRoleUseCase.GrantTeacherRoleCommand;
+import net.unit8.kysymys.user.application.GrantTeacherRoleUseCase.TeacherRoleGrantedEvent;
+import net.unit8.kysymys.user.application.SearchUsersUseCase.SearchUsersQuery;
+import net.unit8.kysymys.user.application.ShowUserProfileUseCase.ShowUserProfileQuery;
+import net.unit8.kysymys.user.application.UpdateProfileUseCase.UpdateProfileCommand;
 import net.unit8.kysymys.user.domain.FollowStatus;
-import net.unit8.kysymys.user.domain.TeacherRoleGrantedEvent;
 import net.unit8.kysymys.user.domain.User;
 import net.unit8.kysymys.user.domain.UserProfileByOther;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,15 +70,15 @@ public class UserController {
                        Model model) {
         UserProfileByOther profile = showUserProfileUseCase.handle(new ShowUserProfileQuery(
                 userId,
-                user.getId().getValue()
+                user.getId().asString()
         ));
 
         model.addAttribute("user", profile.getUser());
         model.addAttribute("followers", profile.getFollower());
-        model.addAttribute("isMyProfile", Objects.equals(userId, user.getId().getValue()));
+        model.addAttribute("isMyProfile", Objects.equals(userId, user.getId().asString()));
         model.addAttribute("followStatus", profile.getFollowStatus().orElse(null));
 
-        if (Objects.equals(userId, user.getId().getValue()) || profile.getFollowStatus().filter(s -> s == FollowStatus.FOLLOWING).isPresent()) {
+        if (Objects.equals(userId, user.getId().asString()) || profile.getFollowStatus().filter(s -> s == FollowStatus.FOLLOWING).isPresent()) {
             Page<Answer> answers = listFollowerAnswersUseCase.handle(new ListFollowerAnswersQuery(userId));
             model.addAttribute("answers", answers);
         }
@@ -90,7 +94,7 @@ public class UserController {
         if (!model.containsAttribute("editUserForm")) {
             UserProfileByOther profile = showUserProfileUseCase.handle(new ShowUserProfileQuery(
                     userId,
-                    user.getId().getValue()
+                    user.getId().asString()
             ));
             EditUserForm form = new EditUserForm();
             form.setName(user.getName());
@@ -130,7 +134,7 @@ public class UserController {
                                    RedirectAttributes redirectAttributes,
                                    Locale locale) {
         TeacherRoleGrantedEvent event = grantTeacherRoleUseCase.handle(new GrantTeacherRoleCommand(
-                user.getId().getValue(),
+                user.getId().asString(),
                 userId
         ));
         redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(

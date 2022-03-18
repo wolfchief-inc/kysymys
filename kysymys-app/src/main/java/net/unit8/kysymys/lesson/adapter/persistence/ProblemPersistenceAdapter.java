@@ -24,7 +24,7 @@ public class ProblemPersistenceAdapter implements LoadProblemPort, SaveProblemPo
 
     @Override
     public Optional<Problem> load(ProblemId problemId) {
-        return problemRepository.findById(problemId.getValue())
+        return problemRepository.findById(problemId.asString())
                 .map(problemMapper::entityToDomain);
     }
 
@@ -44,6 +44,6 @@ public class ProblemPersistenceAdapter implements LoadProblemPort, SaveProblemPo
 
     @Override
     public void delete(ProblemId problemId) {
-        problemRepository.deleteById(problemId.getValue());
+        problemRepository.deleteById(problemId.asString());
     }
 }

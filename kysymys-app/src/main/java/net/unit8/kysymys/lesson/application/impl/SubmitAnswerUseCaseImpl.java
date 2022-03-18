@@ -48,9 +48,9 @@ public class SubmitAnswerUseCaseImpl implements SubmitAnswerUseCase {
 
         SubmittedAnswerEvent event = tx.execute(status -> {
             saveAnswerPort.save(answer);
-            return new SubmittedAnswerEvent(answer.getId().getValue(),
-                    problem.getId().getValue(),
-                    problem.getName().getValue(),
+            return new SubmittedAnswerEvent(answer.getId().asString(),
+                    problem.getId().asString(),
+                    problem.getName().asString(),
                     command.getAnswererId(),
                     command.getAnswererName(),
                     command.getFollowers(),

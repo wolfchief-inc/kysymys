@@ -37,14 +37,14 @@ public class DatabaseSetup implements InitializingBean {
             return;
 
         UserJpaEntity teacher1 = new UserJpaEntity();
-        teacher1.setId(new UserId().getValue());
+        teacher1.setId(new UserId().asString());
         teacher1.setName("teacher1");
         teacher1.setEmail("teacher1@example.com");
         teacher1.setPassword(passwordEncoder.encode("password"));
         teacher1.setRoles(Set.of("STUDENT", "TEACHER"));
 
         UserJpaEntity student1 = new UserJpaEntity();
-        student1.setId(new UserId().getValue());
+        student1.setId(new UserId().asString());
         student1.setName("student1");
         student1.setEmail("student1@example.com");
         student1.setPassword(passwordEncoder.encode("password"));

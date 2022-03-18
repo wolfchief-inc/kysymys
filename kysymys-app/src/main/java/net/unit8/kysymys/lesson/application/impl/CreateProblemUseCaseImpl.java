@@ -1,7 +1,6 @@
 package net.unit8.kysymys.lesson.application.impl;
 
 import am.ik.yavi.core.ConstraintViolationsException;
-import net.unit8.kysymys.lesson.application.CreateProblemCommand;
 import net.unit8.kysymys.lesson.application.CreateProblemUseCase;
 import net.unit8.kysymys.lesson.application.SaveProblemEventPort;
 import net.unit8.kysymys.lesson.application.SaveProblemPort;
@@ -39,7 +38,7 @@ class CreateProblemUseCaseImpl implements CreateProblemUseCase {
 
         return tx.execute(status -> {
             saveProblemPort.save(problem);
-            CreatedProblemEvent event = new CreatedProblemEvent(problem.getId().getValue(), command.getCreatorId(), currentDateTimePort.now());
+            CreatedProblemEvent event = new CreatedProblemEvent(problem.getId().asString(), command.getCreatorId(), currentDateTimePort.now());
             saveProblemEventPort.save(event);
             return event;
         });

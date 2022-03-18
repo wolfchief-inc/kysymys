@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 class ProblemMapper {
     public ProblemJpaEntity domainToEntity(Problem problem) {
         ProblemJpaEntity entity = new ProblemJpaEntity();
-        entity.setId(problem.getId().getValue());
-        entity.setName(problem.getName().getValue());
+        entity.setId(problem.getId().asString());
+        entity.setName(problem.getName().asString());
         entity.setRepositoryUrl(problem.getRepository().getUrl());
         entity.setBranch(problem.getRepository().getBranch());
         entity.setReadmePath(problem.getRepository().getReadmePath());

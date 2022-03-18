@@ -4,7 +4,6 @@ import net.unit8.kysymys.share.application.CurrentDateTimePort;
 import net.unit8.kysymys.stereotype.UseCase;
 import net.unit8.kysymys.user.application.*;
 import net.unit8.kysymys.user.domain.Role;
-import net.unit8.kysymys.user.domain.TeacherRoleGrantedEvent;
 import net.unit8.kysymys.user.domain.User;
 import net.unit8.kysymys.user.domain.UserId;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -27,7 +26,7 @@ class GrantTeacherRoleUseCaseImpl implements GrantTeacherRoleUseCase {
     public TeacherRoleGrantedEvent handle(GrantTeacherRoleCommand command) {
         UserId granteeId = UserId.of(command.getGranteeId());
         User grantee = loadUserPort.load(granteeId)
-                .orElseThrow(() -> new UserNotFoundException(granteeId.getValue()));
+                .orElseThrow(() -> new UserNotFoundException(granteeId.asString()));
         grantee.grantRole(Role.TEACHER);
 
         return tx.execute(status -> {

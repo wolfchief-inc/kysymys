@@ -1,11 +1,14 @@
 package net.unit8.kysymys.user.domain;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@EqualsAndHashCode(callSuper = false)
 public class Permissions extends AbstractSet<Permission> {
     private final Set<Permission> value;
     @Override

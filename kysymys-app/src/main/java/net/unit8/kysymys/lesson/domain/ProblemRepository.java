@@ -6,20 +6,21 @@ import am.ik.yavi.arguments.StringValidator;
 import am.ik.yavi.builder.StringValidatorBuilder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.net.URL;
 
+@EqualsAndHashCode
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Value
 public class ProblemRepository {
-    private static StringValidator<String> urlValidator = StringValidatorBuilder
+    private final static StringValidator<String> urlValidator = StringValidatorBuilder
             .of("url", c -> c.notNull().url().lessThanOrEqual(100))
             .build();
-    private static StringValidator<String> branchValidator = StringValidatorBuilder
+    private final static StringValidator<String> branchValidator = StringValidatorBuilder
             .of("branch", c -> c.notNull().lessThanOrEqual(100))
             .build();
-    private static StringValidator<String> readmePathValidator = StringValidatorBuilder
+    private final static StringValidator<String> readmePathValidator = StringValidatorBuilder
             .of("readmePath", c -> c.notNull().lessThanOrEqual(100))
             .build();
 
@@ -27,9 +28,12 @@ public class ProblemRepository {
             .split(urlValidator, branchValidator, readmePathValidator)
             .apply(ProblemRepository::new);
 
-    String url;
-    String branch;
-    String readmePath;
+    @Getter
+    private final String url;
+    @Getter
+    private final String branch;
+    @Getter
+    private final String readmePath;
 
     public static ProblemRepository of(String url, String branch, String readmePath) {
         return validator.validated(url, branch, readmePath);

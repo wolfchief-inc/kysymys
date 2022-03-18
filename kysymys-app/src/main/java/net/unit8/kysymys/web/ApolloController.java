@@ -44,7 +44,7 @@ public class ApolloController {
                         user.getId(),
                         user.getName(),
                         followers.stream().map(u -> new SubmitAnswerCommand.Follower(
-                                u.getId().getValue(), u.getName(), u.getEmail().getValue()
+                                u.getId().asString(), u.getName(), u.getEmail().asString()
                         )).collect(Collectors.toList()),
                         submitAnswer.getRepositoryUrl(),
                         submitAnswer.getCommitHash()));
@@ -64,7 +64,7 @@ public class ApolloController {
         if (watchRequests.containsKey(token)) {
             Collection<DeferredResult<UserDto>> deferredResults = watchRequests.get(token);
             for (DeferredResult<UserDto> deferredResult : deferredResults) {
-                deferredResult.setResult(new UserDto(user.getId().getValue(), user.getName(), user.getEmail().getValue()));
+                deferredResult.setResult(new UserDto(user.getId().asString(), user.getName(), user.getEmail().asString()));
             }
         }
         return "success";

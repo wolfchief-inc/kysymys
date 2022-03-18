@@ -2,9 +2,10 @@ package net.unit8.kysymys.web;
 
 import am.ik.yavi.core.ConstraintViolationsException;
 import net.unit8.kysymys.lesson.application.*;
+import net.unit8.kysymys.lesson.application.CreateProblemUseCase.CreateProblemCommand;
+import net.unit8.kysymys.lesson.application.CreateProblemUseCase.CreatedProblemEvent;
+import net.unit8.kysymys.lesson.application.DeleteProblemUseCase.DeletedProblemEvent;
 import net.unit8.kysymys.lesson.application.UpdateProblemUseCase.UpdateProblemCommand;
-import net.unit8.kysymys.lesson.domain.CreatedProblemEvent;
-import net.unit8.kysymys.lesson.domain.DeletedProblemEvent;
 import net.unit8.kysymys.lesson.domain.Problem;
 import net.unit8.kysymys.lesson.domain.ProblemUpdatedEvent;
 import net.unit8.kysymys.user.domain.User;
@@ -84,7 +85,7 @@ public class LessonAdminController {
                     form.getName(),
                     form.getRepositoryUrl(),
                     form.getBranch(), form.getReadmePath(),
-                    user.getId().getValue());
+                    user.getId().asString());
             CreatedProblemEvent event = createProblemUseCase.handle(command);
             model.addAttribute("problemId", event.getProblemId());
             redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
@@ -112,7 +113,7 @@ public class LessonAdminController {
                     .filter(ProblemForm.class::isInstance)
                     .map(ProblemForm.class::cast)
                     .orElseGet(ProblemForm::new);
-            form.setName(problem.getName().getValue());
+            form.setName(problem.getName().asString());
             form.setRepositoryUrl(problem.getRepository().getUrl());
             form.setBranch(problem.getRepository().getBranch());
             form.setReadmePath(problem.getRepository().getReadmePath().substring(1));
@@ -143,7 +144,7 @@ public class LessonAdminController {
                 form.getRepositoryUrl(),
                 form.getBranch(),
                 form.getReadmePath(),
-                user.getId().getValue()
+                user.getId().asString()
         ));
         redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
                 "message.updatedProblem",
@@ -160,7 +161,7 @@ public class LessonAdminController {
                          RedirectAttributes redirectAttributes,
                          Locale locale) {
         try {
-            DeletedProblemEvent event = deleteProblemUseCase.handle(new DeleteProblemCommand(problemId, user.getId().getValue()));
+            DeletedProblemEvent event = deleteProblemUseCase.handle(new DeleteProblemUseCase.DeleteProblemCommand(problemId, user.getId().asString()));
             redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
                     "message.deletedProblem",
                     new Object[]{event.getProblemId()},

@@ -25,7 +25,7 @@ class UserAvatarPersistenceAdapter implements LoadAvatarPort, SaveAvatarPort {
 
     @Override
     public Optional<UserAvatar> load(UserId userId) {
-        return userAvatarRepository.findById(userId.getValue())
+        return userAvatarRepository.findById(userId.asString())
                 .map(userAvatarMapper::entityToDomain);
     }
 }

@@ -2,7 +2,7 @@ package net.unit8.kysymys.web;
 
 import net.unit8.kysymys.notification.application.MarkAsReadUseCase;
 import net.unit8.kysymys.notification.application.MarkAsReadUseCase.MarkAsReadCommand;
-import net.unit8.kysymys.notification.domain.MarkedAsReadEvent;
+import net.unit8.kysymys.notification.application.MarkAsReadUseCase.MarkedAsReadEvent;
 import net.unit8.kysymys.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -30,7 +30,7 @@ public class WhatsNewController {
                              @AuthenticationPrincipal User user,
                              RedirectAttributes redirectAttributes,
                              Locale locale) {
-        MarkedAsReadEvent event = markAsReadUseCase.handle(new MarkAsReadCommand(user.getId().getValue(),
+        MarkedAsReadEvent event = markAsReadUseCase.handle(new MarkAsReadCommand(user.getId().asString(),
                 whatsNewIds));
         redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
                 "message.marked_as_read",

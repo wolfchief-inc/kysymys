@@ -4,23 +4,28 @@ import am.ik.yavi.arguments.StringValidator;
 import am.ik.yavi.builder.StringValidatorBuilder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
-@Value
+@EqualsAndHashCode
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class EmailAddress {
     public static final StringValidator<String> validator = StringValidatorBuilder
-            .of("value", c -> c.notBlank().lessThanOrEqual(100).email())
+            .of("emailAddress", c -> c.notBlank().lessThanOrEqual(100).email())
             .build();
 
-    String value;
+    private final String value;
 
     public static EmailAddress of(String value) {
         return validator.andThen(EmailAddress::new).validated(value);
     }
 
+    public String asString() {
+        return value;
+    }
+
     @Override
     public String toString() {
-        return value;
+        return asString();
     }
 }

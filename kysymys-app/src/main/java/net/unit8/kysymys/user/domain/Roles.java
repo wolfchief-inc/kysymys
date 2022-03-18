@@ -1,10 +1,13 @@
 package net.unit8.kysymys.user.domain;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@EqualsAndHashCode(callSuper = false)
 public class Roles extends AbstractSet<Role> {
     private final Set<Role> value;
 

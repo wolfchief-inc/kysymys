@@ -37,7 +37,7 @@ class PostCommentUseCaseImpl implements PostCommentUseCase {
                 now);
         return tx.execute(status -> {
             saveCommentPort.save(comment);
-            return new PostedCommentEvent(answer.getId().getValue(), command.getCommenterId(), now);
+            return new PostedCommentEvent(answer.getId().asString(), command.getCommenterId(), now);
         });
     }
 }

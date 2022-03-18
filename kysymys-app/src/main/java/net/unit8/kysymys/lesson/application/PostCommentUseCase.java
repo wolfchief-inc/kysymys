@@ -1,7 +1,8 @@
 package net.unit8.kysymys.lesson.application;
 
 import lombok.Value;
-import net.unit8.kysymys.lesson.domain.PostedCommentEvent;
+
+import java.time.LocalDateTime;
 
 public interface PostCommentUseCase {
     PostedCommentEvent handle(PostCommentCommand command) throws AnswerNotFoundException;
@@ -11,5 +12,12 @@ public interface PostCommentUseCase {
         String answerId;
         String commenterId;
         String description;
+    }
+
+    @Value
+    class PostedCommentEvent {
+        String answerId;
+        String commenterId;
+        LocalDateTime occurredAt;
     }
 }

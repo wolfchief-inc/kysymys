@@ -38,10 +38,10 @@ public class LessonsController {
         Page<Problem> problems = listProblemsUseCase.handle(new ListProblemsQuery(page, 10));
         model.addAttribute("problems", problems);
 
-        Map<ProblemId, Answer> answers = listMyAnswersUseCase.handle(new ListMyAnswersQuery(user.getId().getValue(), problems
+        Map<ProblemId, Answer> answers = listMyAnswersUseCase.handle(new ListMyAnswersQuery(user.getId().asString(), problems
                 .stream()
                 .map(Problem::getId)
-                .map(ProblemId::getValue)
+                .map(ProblemId::asString)
                 .collect(Collectors.toList())))
                 .stream()
                 .collect(Collectors.toMap(a -> a.getProblem().getId(), a -> a));

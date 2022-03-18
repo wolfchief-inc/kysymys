@@ -32,7 +32,7 @@ class ShowUserProfileUseCaseImpl implements ShowUserProfileUseCase {
         UserId viewerUserId = UserId.of(query.getViewerUserId());
 
         User user = loadUserPort.load(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId.getValue()));
+                .orElseThrow(() -> new UserNotFoundException(userId.asString()));
 
         Page<User> followers = getFollowersPort.listFollowers(userId, 0, Integer.MAX_VALUE);
         FollowStatus followStatus = userId.equals(viewerUserId) ? null :

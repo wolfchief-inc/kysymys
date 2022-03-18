@@ -24,7 +24,7 @@ class ReviewCommentPersistentAdapter implements SaveCommentPort, ListCommentPort
     @Override
     public List<Comment> listRecentComments(AnswerId answerId, String cursor, int size) {
         Pageable page = PageRequest.of(0, size, Sort.by("id").descending());
-        return reviewCommentRepository.findByCursor(answerId.getValue(), cursor, page)
+        return reviewCommentRepository.findByCursor(answerId.asString(), cursor, page)
                 .stream()
                 .sorted(Comparator.comparing(ReviewCommentJpaEntity::getId))
                 .map(reviewCommentMapper::entityToDomain)

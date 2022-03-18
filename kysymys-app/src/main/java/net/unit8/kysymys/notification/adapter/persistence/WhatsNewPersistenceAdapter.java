@@ -30,7 +30,7 @@ class WhatsNewPersistenceAdapter implements SaveWhatsNewPort, ListWhatsNewPort, 
     @Override
     public Page<WhatsNew> findLatestUnread(UserId userId, int size) {
         Pageable pageable = PageRequest.of(0, size);
-        return unreadWhatsNewRepository.findByUserId(userId.getValue(), pageable)
+        return unreadWhatsNewRepository.findByUserId(userId.asString(), pageable)
                 .map(UnreadWhatsNewJpaEntity::getWhatsNew)
                 .map(whatsNewMapper::entityToDomain);
     }
@@ -47,7 +47,7 @@ class WhatsNewPersistenceAdapter implements SaveWhatsNewPort, ListWhatsNewPort, 
 
     @Override
     public void deleteAll(UserId userId, List<WhatsNewId> whatsNewIds) {
-        unreadWhatsNewRepository.findAllByWhatsNewIds(userId.getValue(), whatsNewIds.stream().map(WhatsNewId::getValue).collect(Collectors.toList()))
+        unreadWhatsNewRepository.findAllByWhatsNewIds(userId.asString(), whatsNewIds.stream().map(WhatsNewId::asString).collect(Collectors.toList()))
                 .forEach(unreadWhatsNewRepository::delete);
     }
 }

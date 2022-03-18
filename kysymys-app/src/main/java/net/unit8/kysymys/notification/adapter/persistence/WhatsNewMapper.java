@@ -40,9 +40,9 @@ class WhatsNewMapper {
 
     public WhatsNewJpaEntity domainToEntity(WhatsNew whatsNew) {
         WhatsNewJpaEntity entity = new WhatsNewJpaEntity();
-        entity.setId(whatsNew.getId().getValue());
-        entity.setUserId(whatsNew.getUserId().getValue());
-        entity.setTemplatePath(whatsNew.getTemplatePath().getValue());
+        entity.setId(whatsNew.getId().asString());
+        entity.setUserId(whatsNew.getUserId().asString());
+        entity.setTemplatePath(whatsNew.getTemplatePath().asString());
         try {
             entity.setParams(objectMapper.writeValueAsString(whatsNew.getParams()));
         } catch (JsonProcessingException e) {

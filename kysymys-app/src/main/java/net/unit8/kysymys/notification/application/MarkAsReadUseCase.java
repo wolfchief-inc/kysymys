@@ -1,8 +1,8 @@
 package net.unit8.kysymys.notification.application;
 
 import lombok.Value;
-import net.unit8.kysymys.notification.domain.MarkedAsReadEvent;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MarkAsReadUseCase {
@@ -14,4 +14,8 @@ public interface MarkAsReadUseCase {
         List<String> whatsNewIds;
     }
 
+    @Value
+    class MarkedAsReadEvent {
+        LocalDateTime occurredAt;
+    }
 }

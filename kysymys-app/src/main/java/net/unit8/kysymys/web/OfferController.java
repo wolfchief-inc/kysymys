@@ -2,9 +2,10 @@ package net.unit8.kysymys.web;
 
 import net.unit8.kysymys.user.application.AcceptFollowUseCase;
 import net.unit8.kysymys.user.application.AcceptFollowUseCase.AcceptFollowCommand;
+import net.unit8.kysymys.user.application.OfferNotFound;
 import net.unit8.kysymys.user.application.OfferToFollowUseCase;
 import net.unit8.kysymys.user.application.OfferToFollowUseCase.OfferToFollowCommand;
-import net.unit8.kysymys.user.domain.OfferedToFollowEvent;
+import net.unit8.kysymys.user.application.OfferToFollowUseCase.OfferedToFollowEvent;
 import net.unit8.kysymys.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -34,7 +35,7 @@ public class OfferController {
                         @PathVariable("targetUserId") String targetUserId,
                         RedirectAttributes redirectAttributes,
                         Locale locale) {
-        OfferedToFollowEvent event = offerToFollowUseCase.handle(new OfferToFollowCommand(user.getId().getValue(), targetUserId));
+        OfferedToFollowEvent event = offerToFollowUseCase.handle(new OfferToFollowCommand(user.getId().asString(), targetUserId));
         redirectAttributes.addFlashAttribute("notification", messageSource.getMessage(
                 "message.offeredToFollow",
                 new Object[]{ event.getTargetUserName() },
@@ -48,8 +49,12 @@ public class OfferController {
                          @PathVariable("offerId") String offerId,
                          RedirectAttributes redirectAttributes,
                          Locale locale) {
-        acceptFollowUseCase.handle(new AcceptFollowCommand(offerId, user.getId().getValue()));
-        return "redirect:/";
+        try {
+            acceptFollowUseCase.handle(new AcceptFollowCommand(offerId, user.getId().asString()));
+            return "redirect:/";
+        } catch (OfferNotFound e) {
+            return "redirect:/error/offer_not_found";
+        }
     }
 
 }

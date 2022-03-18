@@ -14,7 +14,7 @@ class OfferMapper {
 
     OfferJpaEntity domainToEntity(Offer offer) {
         OfferJpaEntity entity = new OfferJpaEntity();
-        entity.setId(offer.getId().getValue());
+        entity.setId(offer.getId().asString());
         entity.setOfferingUser(userMapper.domainToEntity(offer.getOfferingUser()));
         entity.setTargetUser(userMapper.domainToEntity(offer.getTargetUser()));
         entity.setOfferedAt(offer.getOfferedAt());
@@ -22,7 +22,7 @@ class OfferMapper {
     }
 
     Offer entityToDomain(OfferJpaEntity entity) {
-        return new Offer(
+        return Offer.of(
                 OfferId.of(entity.getId()),
                 userMapper.entityToDomain(entity.getOfferingUser()),
                 userMapper.entityToDomain(entity.getTargetUser()),

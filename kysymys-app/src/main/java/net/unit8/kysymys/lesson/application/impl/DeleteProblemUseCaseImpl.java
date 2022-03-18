@@ -1,7 +1,6 @@
 package net.unit8.kysymys.lesson.application.impl;
 
 import net.unit8.kysymys.lesson.application.*;
-import net.unit8.kysymys.lesson.domain.DeletedProblemEvent;
 import net.unit8.kysymys.lesson.domain.ProblemId;
 import net.unit8.kysymys.share.application.CurrentDateTimePort;
 import net.unit8.kysymys.stereotype.UseCase;
@@ -33,8 +32,8 @@ class DeleteProblemUseCaseImpl implements DeleteProblemUseCase {
 
         return tx.execute(status -> {
             deleteProblemPort.delete(problemId);
-            return new DeletedProblemEvent(problemId.getValue(),
-                    deleterId.getValue(),
+            return new DeletedProblemEvent(problemId.asString(),
+                    deleterId.asString(),
                     currentDateTimePort.now());
         });
     }

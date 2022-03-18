@@ -1,7 +1,8 @@
 package net.unit8.kysymys.user.application;
 
 import lombok.Value;
-import net.unit8.kysymys.user.domain.UserCreatedEvent;
+
+import java.time.LocalDateTime;
 
 public interface SignupUseCase {
     UserCreatedEvent handle(SignupCommand command) throws EmailAlreadyTakenException;
@@ -11,5 +12,11 @@ public interface SignupUseCase {
         String email;
         String name;
         String password;
+    }
+
+    @Value
+    class UserCreatedEvent {
+        String userId;
+        LocalDateTime occurredAt;
     }
 }

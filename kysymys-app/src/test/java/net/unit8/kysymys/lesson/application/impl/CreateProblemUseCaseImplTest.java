@@ -1,11 +1,11 @@
 package net.unit8.kysymys.lesson.application.impl;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-import net.unit8.kysymys.lesson.application.CreateProblemCommand;
 import net.unit8.kysymys.lesson.application.CreateProblemUseCase;
+import net.unit8.kysymys.lesson.application.CreateProblemUseCase.CreateProblemCommand;
+import net.unit8.kysymys.lesson.application.CreateProblemUseCase.CreatedProblemEvent;
 import net.unit8.kysymys.lesson.application.SaveProblemEventPort;
 import net.unit8.kysymys.lesson.application.SaveProblemPort;
-import net.unit8.kysymys.lesson.domain.CreatedProblemEvent;
 import net.unit8.kysymys.share.application.CurrentDateTimePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

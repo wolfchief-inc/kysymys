@@ -42,8 +42,8 @@ public class UpdateProblemUseCaseImpl implements UpdateProblemUseCase {
 
         return tx.execute(status -> {
             saveProblemPort.save(problem);
-            return new ProblemUpdatedEvent(problemId.getValue(),
-                    updaterId.getValue(),
+            return new ProblemUpdatedEvent(problemId.asString(),
+                    updaterId.asString(),
                     currentDateTimePort.now());
         });
     }

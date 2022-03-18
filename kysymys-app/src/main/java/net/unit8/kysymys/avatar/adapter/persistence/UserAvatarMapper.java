@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 class UserAvatarMapper {
     UserAvatarJpaEntity domainToEntity(UserAvatar userAvatar) {
         UserAvatarJpaEntity entity = new UserAvatarJpaEntity();
-        entity.setUserId(userAvatar.getUserId().getValue());
+        entity.setUserId(userAvatar.getUserId().asString());
         entity.setImageContent(userAvatar.getImage());
         return entity;
     }

@@ -22,14 +22,14 @@ class OfferPersistenceAdapter implements LoadOfferPort, SaveOfferPort, DeleteOff
 
     @Override
     public Optional<Offer> load(OfferId offerId) {
-        return offerRepository.findById(offerId.getValue())
+        return offerRepository.findById(offerId.asString())
                 .map(offerMapper::entityToDomain);
     }
 
     @Override
     public Page<Offer> listByTargetUser(UserId targetUserId, int page, int size) {
         if (page > 0) page = page - 1;
-        return offerRepository.findAllByTargetUser(targetUserId.getValue(), PageRequest.of(page, size))
+        return offerRepository.findAllByTargetUser(targetUserId.asString(), PageRequest.of(page, size))
                 .map(offerMapper::entityToDomain);
     }
 
@@ -45,7 +45,7 @@ class OfferPersistenceAdapter implements LoadOfferPort, SaveOfferPort, DeleteOff
 
     @Override
     public boolean hasAlreadyOffered(UserId offeringUserId, UserId targetUserId) {
-        return offerRepository.findByOfferingUserAndTargetUser(offeringUserId.getValue(), targetUserId.getValue())
+        return offerRepository.findByOfferingUserAndTargetUser(offeringUserId.asString(), targetUserId.asString())
                 .isPresent();
 
     }

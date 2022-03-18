@@ -4,12 +4,11 @@ import am.ik.yavi.arguments.StringValidator;
 import am.ik.yavi.builder.StringValidatorBuilder;
 import lombok.*;
 
-@ToString
 @EqualsAndHashCode
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Password {
     public static final StringValidator<String> validator = StringValidatorBuilder
-            .of("value", c -> c.notBlank().lessThanOrEqual(100))
+            .of("password", c -> c.notBlank().lessThanOrEqual(100))
             .build();
 
     @Getter

@@ -69,7 +69,7 @@ class UserPersistenceAdapter implements UserDetailsService, LoadUserPort, SaveUs
 
     @Override
     public Set<User> listByUserIds(Set<UserId> userIds) {
-        return userRepository.findAllByUserIds(userIds.stream().map(UserId::getValue).collect(Collectors.toSet()))
+        return userRepository.findAllByUserIds(userIds.stream().map(UserId::asString).collect(Collectors.toSet()))
                 .stream()
                 .map(userMapper::entityToDomain)
                 .collect(Collectors.toSet());
@@ -77,7 +77,7 @@ class UserPersistenceAdapter implements UserDetailsService, LoadUserPort, SaveUs
 
     @Override
     public Optional<User> load(UserId userId) {
-        return userRepository.findById(userId.getValue())
+        return userRepository.findById(userId.asString())
                 .map(userMapper::entityToDomain);
     }
 }

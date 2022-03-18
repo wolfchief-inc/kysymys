@@ -3,16 +3,16 @@ package net.unit8.kysymys.lesson.domain;
 import am.ik.yavi.arguments.StringValidator;
 import am.ik.yavi.builder.StringValidatorBuilder;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-import lombok.Value;
+import lombok.EqualsAndHashCode;
 
-@Value
+@EqualsAndHashCode
 public class ProblemId {
     public static final StringValidator<ProblemId> validator = StringValidatorBuilder
             .of("value", c -> c.notBlank().greaterThanOrEqual(21).lessThanOrEqual(21))
             .build()
             .andThen(ProblemId::new);
 
-    String value;
+    private final String value;
 
     private ProblemId(String value) {
         this.value = value;
@@ -26,8 +26,12 @@ public class ProblemId {
         return validator.validated(value);
     }
 
+    public String asString() {
+        return value;
+    }
+
     @Override
     public String toString() {
-        return value;
+        return asString();
     }
 }
