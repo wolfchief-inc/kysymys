@@ -62,6 +62,22 @@ public class AnswerDao {
                 .fetch(AnswerDao::mapAnswer);
     }
 
+    /**
+     * Lists answers whose {@code answerer_id} is in the provided list.
+     * Used by Lesson's ListFollowerAnswers (callers pass in the followee
+     * user ids resolved from the User context's ConnectionDao).
+     */
+    public List<Answer> listByAnswerers(List<UserId> answererIds) {
+        if (answererIds == null || answererIds.isEmpty()) {
+            return List.of();
+        }
+        List<String> values = answererIds.stream().map(UserId::value).toList();
+        return dsl.select(ID, PROBLEM_ID, ANSWERER_ID, REPOSITORY_URL)
+                .from(table("answers"))
+                .where(ANSWERER_ID.in(values))
+                .fetch(AnswerDao::mapAnswer);
+    }
+
     private static Answer mapAnswer(Record r) {
         // Recover the sealed AnswerRepository subtype from the URL prefix.
         // (The "answers" table doesn't carry a discriminator column today.)

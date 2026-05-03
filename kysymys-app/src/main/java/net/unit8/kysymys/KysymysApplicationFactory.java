@@ -34,8 +34,11 @@ import net.unit8.kysymys.lesson.resource.AnswersResource;
 import net.unit8.kysymys.lesson.resource.CommentsResource;
 import net.unit8.kysymys.lesson.resource.MyAnswersResource;
 import net.unit8.kysymys.avatar.resource.AvatarEndpoint;
+import net.unit8.kysymys.lesson.resource.FollowerAnswersResource;
 import net.unit8.kysymys.lesson.resource.ProblemResource;
 import net.unit8.kysymys.lesson.resource.ProblemsResource;
+import net.unit8.kysymys.notification.resource.WhatsNewsResource;
+import net.unit8.kysymys.notification.system.RecordWhatsNewSubscriber;
 import net.unit8.kysymys.user.resource.AcceptOfferResource;
 import net.unit8.kysymys.user.resource.FollowersResource;
 import net.unit8.kysymys.user.resource.GrantTeacherRoleResource;
@@ -109,7 +112,14 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
             r.put("/offers/:id/accept").to(AcceptOfferResource.class);
             r.get("/users/:id/followers").to(FollowersResource.class);
 
-            // Avatar — handled by AvatarHandlerMiddleware before this routing,
+            // Notification
+            r.get("/whats-news").to(WhatsNewsResource.class);
+            r.put("/whats-news/:id/read").to(WhatsNewsResource.class);
+
+            // Lesson — follower answers (Sub-B deferred)
+            r.get("/followers/answers").to(FollowerAnswersResource.class);
+
+            // Avatar — handled by AvatarEndpoint before this routing,
             // so no route entry is needed here.
         }).compile();
 
@@ -121,6 +131,7 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
         app.use(new ParamsMiddleware());
         app.use(new NestedParamsMiddleware());
         app.use(new EventBusBindMiddleware());
+        app.use(new RecordWhatsNewSubscriber());
         // Avatar endpoint sits before content negotiation so that image/png
         // responses don't have to go through the JSON-only SerDes pipeline.
         app.use(enkan.predicate.PathPredicate.GET(AvatarEndpoint.PATH.pattern()),
