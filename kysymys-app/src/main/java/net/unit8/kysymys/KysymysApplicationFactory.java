@@ -35,6 +35,11 @@ import net.unit8.kysymys.lesson.resource.CommentsResource;
 import net.unit8.kysymys.lesson.resource.MyAnswersResource;
 import net.unit8.kysymys.lesson.resource.ProblemResource;
 import net.unit8.kysymys.lesson.resource.ProblemsResource;
+import net.unit8.kysymys.user.resource.AcceptOfferResource;
+import net.unit8.kysymys.user.resource.FollowersResource;
+import net.unit8.kysymys.user.resource.GrantTeacherRoleResource;
+import net.unit8.kysymys.user.resource.OffersResource;
+import net.unit8.kysymys.user.resource.TeachersResource;
 import net.unit8.kysymys.user.resource.UserResource;
 import net.unit8.kysymys.user.resource.UsersResource;
 
@@ -96,6 +101,12 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
             r.get("/users").to(UsersResource.class);
             r.get("/users/:id").to(UserResource.class);
             r.put("/users/:id").to(UserResource.class);
+            r.get("/teachers").to(TeachersResource.class);
+            r.post("/grant-teacher-role").to(GrantTeacherRoleResource.class);
+            r.post("/offers").to(OffersResource.class);
+            r.get("/offers").to(OffersResource.class);
+            r.put("/offers/:id/accept").to(AcceptOfferResource.class);
+            r.get("/users/:id/followers").to(FollowersResource.class);
         }).compile();
 
         BouncrBackend bouncrBackend = new BouncrBackend();

@@ -50,13 +50,14 @@ public class AnswersResource {
     }
 
     @Decision(POST)
-    public boolean submit(Parameters params, DSLContext dsl, UserId caller, RestContext context) {
+    public boolean submit(Parameters params, DSLContext dsl, UserId caller,
+                          net.unit8.kysymys.system.KysymysEventBus eventBus, RestContext context) {
         AnswerJsonDecoders.SubmitInput input = context.get(SUBMIT_INPUT).orElseThrow();
         ProblemId pid;
         try { pid = new ProblemId(params.get("id")); }
         catch (IllegalArgumentException ex) { return false; }
 
-        Optional<SubmitAnswer.Output> out = new SubmitAnswer(dsl).apply(
+        Optional<SubmitAnswer.Output> out = new SubmitAnswer(dsl, eventBus).apply(
                 new SubmitAnswer.Input(
                         pid, caller, input.repository(), input.commitHash(),
                         LocalDateTime.now()));
