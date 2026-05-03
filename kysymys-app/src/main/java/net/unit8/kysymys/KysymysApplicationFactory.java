@@ -13,6 +13,7 @@ import enkan.web.application.WebApplication;
 import enkan.web.data.HttpRequest;
 import enkan.web.data.HttpResponse;
 import enkan.web.middleware.ContentNegotiationMiddleware;
+import enkan.web.middleware.CorsMiddleware;
 import enkan.web.middleware.NestedParamsMiddleware;
 import enkan.web.middleware.ParamsMiddleware;
 import kotowari.inject.ParameterInjector;
@@ -130,6 +131,7 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
         WebApplication app = new WebApplication();
         app.use(new ParamsMiddleware());
         app.use(new NestedParamsMiddleware());
+        app.use(buildCorsMiddleware());
         app.use(new EventBusBindMiddleware());
         app.use(new RecordWhatsNewSubscriber());
         // Avatar endpoint sits before content negotiation so that image/png
@@ -145,6 +147,29 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
         app.use(new AuthenticationMiddleware<>(backends));
         app.use(resourceInvoker);
         return app;
+    }
+
+    private static CorsMiddleware buildCorsMiddleware() {
+        Set<String> origins = parseOrigins();
+        return builder(new CorsMiddleware())
+                .set(CorsMiddleware::setOrigins, origins)
+                .set(CorsMiddleware::setHeaders, Set.of(
+                        "Origin", "Accept", "X-Requested-With", "Content-Type",
+                        "Access-Control-Request-Method", "Access-Control-Request-Headers",
+                        "x-bouncr-credential"))
+                .set(CorsMiddleware::setCredentials, false)
+                .build();
+    }
+
+    private static Set<String> parseOrigins() {
+        String env = System.getenv("KYSYMYS_CORS_ORIGINS");
+        if (env == null || env.isBlank()) {
+            return Set.of("http://localhost:5173");
+        }
+        return java.util.Arrays.stream(env.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(java.util.stream.Collectors.toUnmodifiableSet());
     }
 
     private static String jwtSecret() {
