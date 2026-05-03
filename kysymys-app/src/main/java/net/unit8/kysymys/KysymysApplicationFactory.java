@@ -26,7 +26,9 @@ import kotowari.routing.Routes;
 import net.unit8.kysymys.health.HealthResource;
 import net.unit8.kysymys.health.MeResource;
 import net.unit8.kysymys.inject.DSLContextInjector;
+import net.unit8.kysymys.inject.EventBusInjector;
 import net.unit8.kysymys.inject.UserIdInjector;
+import net.unit8.kysymys.system.EventBusBindMiddleware;
 import net.unit8.kysymys.lesson.resource.AnswerResource;
 import net.unit8.kysymys.lesson.resource.AnswersResource;
 import net.unit8.kysymys.lesson.resource.CommentsResource;
@@ -59,7 +61,8 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
                 new ParametersInjector(),
                 new PrincipalInjector(),
                 new DSLContextInjector(),
-                new UserIdInjector()
+                new UserIdInjector(),
+                new EventBusInjector()
         );
 
         ResourceInvokerMiddleware<HttpResponse> resourceInvoker =
@@ -95,6 +98,7 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
         WebApplication app = new WebApplication();
         app.use(new ParamsMiddleware());
         app.use(new NestedParamsMiddleware());
+        app.use(new EventBusBindMiddleware());
         app.use(builder(new ContentNegotiationMiddleware())
                 .set(ContentNegotiationMiddleware::setAllowedTypes, Set.of("application/json"))
                 .build());
