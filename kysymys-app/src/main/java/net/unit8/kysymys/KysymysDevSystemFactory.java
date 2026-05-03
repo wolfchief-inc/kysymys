@@ -9,6 +9,7 @@ import enkan.component.jooq.JooqProvider;
 import enkan.component.undertow.UndertowComponent;
 import enkan.config.EnkanSystemFactory;
 import enkan.system.EnkanSystem;
+import net.unit8.kysymys.system.KysymysEventBus;
 import org.jooq.SQLDialect;
 
 import static enkan.component.ComponentRelationship.component;
@@ -47,6 +48,7 @@ public class KysymysDevSystemFactory implements EnkanSystemFactory {
                         .build(),
                 "flyway", new FlywayMigration(),
                 "beans", new JacksonBeansConverter(),
+                "eventBus", new KysymysEventBus(),
                 "app", new ApplicationComponent<>("net.unit8.kysymys.KysymysApplicationFactory"),
                 "http", builder(new UndertowComponent())
                         .set(UndertowComponent::setPort, 3000)
@@ -54,7 +56,7 @@ public class KysymysDevSystemFactory implements EnkanSystemFactory {
         ).relationships(
                 component("flyway").using("datasource"),
                 component("jooq").using("datasource"),
-                component("app").using("jooq", "beans", "flyway"),
+                component("app").using("jooq", "beans", "flyway", "eventBus"),
                 component("http").using("app")
         );
     }

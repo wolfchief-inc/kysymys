@@ -26,13 +26,26 @@ import kotowari.routing.Routes;
 import net.unit8.kysymys.health.HealthResource;
 import net.unit8.kysymys.health.MeResource;
 import net.unit8.kysymys.inject.DSLContextInjector;
+import net.unit8.kysymys.inject.EventBusInjector;
 import net.unit8.kysymys.inject.UserIdInjector;
+import net.unit8.kysymys.system.EventBusBindMiddleware;
 import net.unit8.kysymys.lesson.resource.AnswerResource;
 import net.unit8.kysymys.lesson.resource.AnswersResource;
 import net.unit8.kysymys.lesson.resource.CommentsResource;
 import net.unit8.kysymys.lesson.resource.MyAnswersResource;
+import net.unit8.kysymys.avatar.resource.AvatarEndpoint;
+import net.unit8.kysymys.lesson.resource.FollowerAnswersResource;
 import net.unit8.kysymys.lesson.resource.ProblemResource;
 import net.unit8.kysymys.lesson.resource.ProblemsResource;
+import net.unit8.kysymys.notification.resource.WhatsNewsResource;
+import net.unit8.kysymys.notification.system.RecordWhatsNewSubscriber;
+import net.unit8.kysymys.user.resource.AcceptOfferResource;
+import net.unit8.kysymys.user.resource.FollowersResource;
+import net.unit8.kysymys.user.resource.GrantTeacherRoleResource;
+import net.unit8.kysymys.user.resource.OffersResource;
+import net.unit8.kysymys.user.resource.TeachersResource;
+import net.unit8.kysymys.user.resource.UserResource;
+import net.unit8.kysymys.user.resource.UsersResource;
 
 import java.util.List;
 import java.util.Set;
@@ -59,7 +72,8 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
                 new ParametersInjector(),
                 new PrincipalInjector(),
                 new DSLContextInjector(),
-                new UserIdInjector()
+                new UserIdInjector(),
+                new EventBusInjector()
         );
 
         ResourceInvokerMiddleware<HttpResponse> resourceInvoker =
@@ -86,6 +100,27 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
 
             // Lesson — Comment
             r.post("/answers/:id/comments").to(CommentsResource.class);
+
+            // User
+            r.get("/users").to(UsersResource.class);
+            r.get("/users/:id").to(UserResource.class);
+            r.put("/users/:id").to(UserResource.class);
+            r.get("/teachers").to(TeachersResource.class);
+            r.post("/grant-teacher-role").to(GrantTeacherRoleResource.class);
+            r.post("/offers").to(OffersResource.class);
+            r.get("/offers").to(OffersResource.class);
+            r.put("/offers/:id/accept").to(AcceptOfferResource.class);
+            r.get("/users/:id/followers").to(FollowersResource.class);
+
+            // Notification
+            r.get("/whats-news").to(WhatsNewsResource.class);
+            r.put("/whats-news/:id/read").to(WhatsNewsResource.class);
+
+            // Lesson — follower answers (Sub-B deferred)
+            r.get("/followers/answers").to(FollowerAnswersResource.class);
+
+            // Avatar — handled by AvatarEndpoint before this routing,
+            // so no route entry is needed here.
         }).compile();
 
         BouncrBackend bouncrBackend = new BouncrBackend();
@@ -95,6 +130,12 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
         WebApplication app = new WebApplication();
         app.use(new ParamsMiddleware());
         app.use(new NestedParamsMiddleware());
+        app.use(new EventBusBindMiddleware());
+        app.use(new RecordWhatsNewSubscriber());
+        // Avatar endpoint sits before content negotiation so that image/png
+        // responses don't have to go through the JSON-only SerDes pipeline.
+        app.use(enkan.predicate.PathPredicate.GET(AvatarEndpoint.PATH.pattern()),
+                "avatarEndpoint", new AvatarEndpoint());
         app.use(builder(new ContentNegotiationMiddleware())
                 .set(ContentNegotiationMiddleware::setAllowedTypes, Set.of("application/json"))
                 .build());

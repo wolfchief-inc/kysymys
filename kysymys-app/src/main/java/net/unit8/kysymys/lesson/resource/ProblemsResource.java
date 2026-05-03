@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static kotowari.restful.DecisionPoint.ALLOWED;
 import static kotowari.restful.DecisionPoint.AUTHORIZED;
 import static kotowari.restful.DecisionPoint.HANDLE_CREATED;
 import static kotowari.restful.DecisionPoint.HANDLE_OK;
@@ -38,6 +39,12 @@ public class ProblemsResource {
     @Decision(AUTHORIZED)
     public boolean authorized(Principal principal) {
         return principal != null;
+    }
+
+    @Decision(value = ALLOWED, method = {"POST"})
+    public boolean teacherOnly(Principal principal) {
+        return principal instanceof enkan.security.bouncr.UserPermissionPrincipal p
+                && p.permissions().contains("TEACHER");
     }
 
     @Decision(value = MALFORMED, method = {"POST"})
