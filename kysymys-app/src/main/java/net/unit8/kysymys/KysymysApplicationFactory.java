@@ -26,6 +26,7 @@ import kotowari.routing.Routes;
 import net.unit8.kysymys.health.HealthResource;
 import net.unit8.kysymys.health.MeResource;
 import net.unit8.kysymys.inject.DSLContextInjector;
+import net.unit8.kysymys.inject.UserIdInjector;
 
 import java.util.List;
 import java.util.Set;
@@ -51,7 +52,8 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
                 new HttpRequestInjector(),
                 new ParametersInjector(),
                 new PrincipalInjector(),
-                new DSLContextInjector()
+                new DSLContextInjector(),
+                new UserIdInjector()
         );
 
         ResourceInvokerMiddleware<HttpResponse> resourceInvoker =
