@@ -83,6 +83,25 @@ HTTP 200
 jsonpath "$.latestCommitHash" == "1111111111111111111111111111111111111111"
 jsonpath "$.comments" count == 0
 
+# scenario 8: post a comment
+POST {{host}}/answers/{{answer_id}}/comments
+x-bouncr-credential: {{token}}
+Accept: application/json
+Content-Type: application/json
+{
+  "description": "Looks good"
+}
+HTTP 201
+
+# scenario 9: show answer (with one comment)
+GET {{host}}/answers/{{answer_id}}
+x-bouncr-credential: {{token}}
+Accept: application/json
+HTTP 200
+[Asserts]
+jsonpath "$.comments" count == 1
+jsonpath "$.comments[0].description" == "Looks good"
+
 # scenario 10: rename
 PUT {{host}}/problems/{{problem_id}}
 x-bouncr-credential: {{token}}

@@ -9,7 +9,7 @@ Problemは生成されてから、アーカイブされる。そのライフサ�
 [Long termイベントパターン](https://scrapbox.io/kawasima/%E3%82%A4%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%BF%E3%83%96%E3%83%AB%E3%83%87%E3%83%BC%E3%82%BF%E3%83%A2%E3%83%87%E3%83%AB#5e3a5f1da8e5b200009c04ec) を使う。
 
 
-[Problem](../../kysymys-app/src/main/java/net/unit8/kysymys/lesson/adapter/persistence/ProblemJpaEntity.java) に対して、[ProblemLifecycle](../../kysymys-app/src/main/java/net/unit8/kysymys/lesson/adapter/persistence/ProblemJpaEntity.java) のロングタームイベントをOneToOneの関連として作り、ProblemLifecycleがステータスを持つ。
+[Problem](../../kysymys-app/src/main/java/net/unit8/kysymys/lesson/data/Problem.java) に対して、[ProblemLifecycle](../../kysymys-app/src/main/java/net/unit8/kysymys/lesson/data/ProblemLifecycle.java) のロングタームイベントを 1:1 の関連として作り、ProblemLifecycleがステータスを持つ。
 
 ```
 
@@ -34,10 +34,10 @@ Problemは生成されてから、アーカイブされる。そのライフサ�
 
 ```
 
-ProblemLifecycleのステータスを変えるイベントを、[ProblemEvent](../../kysymys-app/src/main/java/net/unit8/kysymys/lesson/adapter/persistence/ProblemJpaEntity.java)エンティティとして記録する。ProblemEventはEventごとのエンティティが作られる。
-このProblemEventはUseCaseの実行結果として送出されるイベントに対応しており、それを永続化するものである。
+ProblemLifecycleのステータスを変えるイベントを、[ProblemEvent](../../kysymys-app/src/main/java/net/unit8/kysymys/lesson/data/ProblemEvent.java) (sealed interface, permits `ProblemCreatedEvent` / `ProblemUpdatedEvent` / `ProblemArchivedEvent`) として記録する。各サブタイプは個別のテーブル (`problem_created_events` / `problem_updated_events` / `problem_archived_events`) に永続化する。
+このProblemEventはbehaviorの実行結果として送出されるイベントに対応しており、それを永続化するものである。
 
-イベントは日時属性をただ一つ持つ。そのふるまいは共通しているので、ProblemEventを継承して、ProblemCreatedやProblemArchivedなどの実際のイベントを作る。
+イベントは日時属性 `occurredAt` を持つ。Sub-B 移行で `ProblemEvent` を sealed interface にし、3 サブタイプを `record` で表現することで、Raoh `discriminate` での扱いと整合させた。
 
 UseCaseから送出される過程で、永続化層には以下の操作がされる。
 
