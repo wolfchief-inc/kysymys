@@ -1,172 +1,171 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>net.unit8.kysymys</groupId>
         <artifactId>kysymys-parent</artifactId>
-        <version>0.1.2-SNAPSHOT</version>
+        <version>0.2.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-
     <artifactId>kysymys-app</artifactId>
     <packaging>jar</packaging>
     <name>kysymys-app</name>
+    <description>Kysymys backend (Enkan / Kotowari / Raoh / JOOQ / Bouncr)</description>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <start-class>net.unit8.kysymys.App</start-class>
-        <java.version>11</java.version>
-        <lombok.version>1.18.20</lombok.version>
+        <java.version>25</java.version>
     </properties>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                    <release>${java.version}</release>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <mainClass>net.unit8.kysymys.KysymysDevMain</mainClass>
                 </configuration>
             </plugin>
         </plugins>
     </build>
 
     <dependencies>
+        <!-- JSON body reader/writer (loaded by SerDesMiddleware via ServiceLoader) -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.thymeleaf.extras</groupId>
-            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+            <groupId>tools.jackson.jakarta.rs</groupId>
+            <artifactId>jackson-jakarta-rs-json-provider</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
+        <!-- Enkan / Kotowari core -->
         <dependency>
-            <groupId>com.aventrix.jnanoid</groupId>
-            <artifactId>jnanoid</artifactId>
+            <groupId>net.unit8.enkan</groupId>
+            <artifactId>kotowari-restful</artifactId>
+            <version>${enkan.version}</version>
         </dependency>
         <dependency>
-            <groupId>am.ik.yavi</groupId>
-            <artifactId>yavi</artifactId>
+            <groupId>net.unit8.enkan</groupId>
+            <artifactId>kotowari-restful-devel</artifactId>
+            <version>${enkan.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.unit8.enkan</groupId>
+            <artifactId>enkan-devel</artifactId>
+            <version>${enkan.version}</version>
         </dependency>
 
+        <!-- Enkan components -->
         <dependency>
-            <groupId>org.thymeleaf.extras</groupId>
-            <artifactId>thymeleaf-extras-java8time</artifactId>
+            <groupId>net.unit8.enkan</groupId>
+            <artifactId>enkan-component-flyway</artifactId>
+            <version>${enkan.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.unit8.enkan</groupId>
+            <artifactId>enkan-component-jackson</artifactId>
+            <version>${enkan.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.unit8.enkan</groupId>
+            <artifactId>enkan-component-HikariCP</artifactId>
+            <version>${enkan.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.unit8.enkan</groupId>
+            <artifactId>enkan-component-undertow</artifactId>
+            <version>${enkan.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.unit8.enkan</groupId>
+            <artifactId>enkan-component-jooq</artifactId>
+            <version>${enkan.version}</version>
+        </dependency>
+
+        <!-- Bouncr (JWT auth) -->
+        <dependency>
+            <groupId>net.unit8.enkan</groupId>
+            <artifactId>enkan-bouncr</artifactId>
+            <version>${enkan.version}</version>
+        </dependency>
+
+        <!-- Raoh (validation) -->
+        <dependency>
+            <groupId>net.unit8.raoh</groupId>
+            <artifactId>raoh-json</artifactId>
+            <version>${raoh.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.unit8.raoh</groupId>
+            <artifactId>raoh-jooq</artifactId>
+            <version>${raoh.version}</version>
+        </dependency>
+
+        <!-- Bean Validation (required by kotowari-restful BeansValidator) -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>9.0.1.Final</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.expressly</groupId>
+            <artifactId>expressly</artifactId>
+            <version>6.0.0</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- DB drivers -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.4.240</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.3</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Flyway PostgreSQL provider (Flyway 10+ split DB types into separate artifacts) -->
         <dependency>
             <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.talanlabs</groupId>
-            <artifactId>avatar-generator-8bit</artifactId>
+            <artifactId>flyway-database-postgresql</artifactId>
+            <version>11.20.3</version>
+            <scope>runtime</scope>
         </dependency>
 
+        <!-- Logging -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.17</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-devtools</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>production</id>
-            <activation>
-                <property>
-                    <name>env</name>
-                    <value>production</value>
-                </property>
-            </activation>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <excludes>
-                            <exclude>**/application-dev.yml</exclude>
-                            <exclude>**/application-local.yml</exclude>
-                        </excludes>
-                    </resource>
-                </resources>
-                <plugins>
-                    <plugin>
-                        <groupId>com.google.cloud.tools</groupId>
-                        <artifactId>jib-maven-plugin</artifactId>
-                        <version>3.1.4</version>
-                        <configuration>
-                            <to>
-                                <image>${aws.account.id}.dkr.ecr.ap-northeast-1.amazonaws.com/kysymys-app</image>
-                            </to>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>postgres</id>
-            <activation>
-                <property>
-                    <name>db</name>
-                    <value>postgres</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.postgresql</groupId>
-                    <artifactId>postgresql</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 </project>

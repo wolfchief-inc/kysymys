@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.unit8.kysymys</groupId>
     <artifactId>kysymys-parent</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>kysymys-parent</name>
@@ -13,8 +13,11 @@
     <description>A platform for training programming.</description>
 
     <properties>
-        <java.version>11</java.version>
-        <kysymys.version>0.1.2-SNAPSHOT</kysymys.version>
+        <kysymys.version>0.2.0-SNAPSHOT</kysymys.version>
+        <enkan.version>0.15.0</enkan.version>
+        <raoh.version>0.5.0</raoh.version>
+        <jackson.version>3.1.0</jackson.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <modules>
@@ -29,10 +32,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.10.1</version>
-                    <configuration>
-                        <release>17</release>
-                    </configuration>
+                    <version>3.13.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
@@ -48,27 +48,14 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M5</version>
-                    <configuration>
-                        <forkCount>0</forkCount>
-                    </configuration>
+                    <version>3.2.5</version>
                 </plugin>
             </plugins>
-
         </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.9.0</version>
             </plugin>
         </plugins>
     </build>
@@ -120,32 +107,15 @@
                 <version>2.0.0</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.6.3</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>am.ik.yavi</groupId>
-                <artifactId>yavi</artifactId>
-                <version>0.10.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.talanlabs</groupId>
-                <artifactId>avatar-generator-8bit</artifactId>
-                <version>1.1.0</version>
-            </dependency>
-            <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
-                <version>5.7.2</version>
+                <version>5.10.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.20.2</version>
+                <version>3.25.3</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -159,7 +129,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.2.0</version>
+                        <version>3.3.0</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -172,6 +142,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.6.3</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -184,7 +155,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.0.1</version>
+                        <version>3.2.4</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
