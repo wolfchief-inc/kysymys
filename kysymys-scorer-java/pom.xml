@@ -9,11 +9,15 @@
     <artifactId>kysymys-scorer-java</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <junit-platform.version>1.9.0</junit-platform.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
-            <version>1.7.2</version>
+            <version>${junit-platform.version}</version>
         </dependency>
         <dependency>
             <groupId>net.oneandone.reflections8</groupId>
