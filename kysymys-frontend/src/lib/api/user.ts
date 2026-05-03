@@ -34,7 +34,11 @@ export const listTeachers = () =>
   apiFetch("/teachers", {}, userListSchema);
 
 export const grantTeacherRole = (targetUserId: string) =>
-  apiFetch("/teachers", { method: "POST", body: { targetUserId } });
+  apiFetch(
+    "/grant-teacher-role",
+    { method: "POST", body: { targetUserId } },
+    userSchema,
+  );
 
 export const offerToFollow = (targetUserId: string): Promise<Offer> =>
   apiFetch("/offers", { method: "POST", body: { targetUserId } }, offerSchema);
