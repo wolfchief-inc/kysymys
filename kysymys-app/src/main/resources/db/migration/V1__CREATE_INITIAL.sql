@@ -7,15 +7,15 @@ CREATE TABLE answers (
 );
 
 CREATE TABLE connections (
-  followee_id VARCHAR(255) NOT NULL,
-  follower_id VARCHAR(255) NOT NULL,
+  followee_id VARCHAR(21) NOT NULL,
+  follower_id VARCHAR(21) NOT NULL,
   CONSTRAINT pk_connections PRIMARY KEY (followee_id, follower_id)
 );
 
 CREATE TABLE offers (
-  id VARCHAR(255) NOT NULL,
-  offering_user_id VARCHAR(255),
-  target_user_id VARCHAR(255),
+  id VARCHAR(21) NOT NULL,
+  offering_user_id VARCHAR(21),
+  target_user_id VARCHAR(21),
   offered_at TIMESTAMP WITHOUT TIME ZONE,
   CONSTRAINT pk_offers PRIMARY KEY (id)
 );
@@ -70,16 +70,16 @@ CREATE TABLE latest_submissions(
 );
 
 CREATE TABLE user_avatars (
-  user_id VARCHAR(255) NOT NULL,
+  user_id VARCHAR(21) NOT NULL,
   avatar_code BIGINT,
   image_content BYTEA,
   CONSTRAINT pk_user_avatars PRIMARY KEY (user_id)
 );
 
-CREATE TABLE user_roles (user_id VARCHAR(255) NOT NULL, roles VARCHAR(255));
+CREATE TABLE user_roles (user_id VARCHAR(21) NOT NULL, roles VARCHAR(255));
 
 CREATE TABLE users (
-  id VARCHAR(255) NOT NULL,
+  id VARCHAR(21) NOT NULL,
   email VARCHAR(255) NOT NULL,
   name VARCHAR(255) NOT NULL,
   password VARCHAR(255),
@@ -87,8 +87,8 @@ CREATE TABLE users (
 );
 
 CREATE TABLE whats_news (
-  id VARCHAR(255) NOT NULL,
-  user_id VARCHAR(255) NOT NULL,
+  id VARCHAR(21) NOT NULL,
+  user_id VARCHAR(21) NOT NULL,
   template_path VARCHAR(255) NOT NULL,
   params TEXT,
   posted_at TIMESTAMP WITHOUT TIME ZONE,
