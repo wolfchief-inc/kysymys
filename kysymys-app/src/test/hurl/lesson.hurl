@@ -37,6 +37,52 @@ HTTP 200
 jsonpath "$.name" == "FizzBuzz"
 jsonpath "$.status" == "ACTIVE"
 
+# scenario 4: submit first answer
+POST {{host}}/problems/{{problem_id}}/answers
+x-bouncr-credential: {{token}}
+Accept: application/json
+Content-Type: application/json
+{
+  "repository": { "type": "github", "url": "https://github.com/student/fizzbuzz-mine" },
+  "commitHash": "0123456789012345678901234567890123456789"
+}
+HTTP 201
+[Captures]
+answer_id: jsonpath "$.id"
+
+# scenario 5: submit second commit on same answer
+POST {{host}}/problems/{{problem_id}}/answers
+x-bouncr-credential: {{token}}
+Accept: application/json
+Content-Type: application/json
+{
+  "repository": { "type": "github", "url": "https://github.com/student/fizzbuzz-mine" },
+  "commitHash": "1111111111111111111111111111111111111111"
+}
+HTTP 201
+[Asserts]
+jsonpath "$.id" == "{{answer_id}}"
+jsonpath "$.latestCommitHash" == "1111111111111111111111111111111111111111"
+
+# scenario 6: my answers list
+GET {{host}}/answers
+x-bouncr-credential: {{token}}
+Accept: application/json
+HTTP 200
+[Asserts]
+jsonpath "$" count == 1
+jsonpath "$[0].id" == "{{answer_id}}"
+jsonpath "$[0].latestCommitHash" == "1111111111111111111111111111111111111111"
+
+# scenario 7: show answer (no comments yet)
+GET {{host}}/answers/{{answer_id}}
+x-bouncr-credential: {{token}}
+Accept: application/json
+HTTP 200
+[Asserts]
+jsonpath "$.latestCommitHash" == "1111111111111111111111111111111111111111"
+jsonpath "$.comments" count == 0
+
 # scenario 10: rename
 PUT {{host}}/problems/{{problem_id}}
 x-bouncr-credential: {{token}}
