@@ -27,6 +27,8 @@ import net.unit8.kysymys.health.HealthResource;
 import net.unit8.kysymys.health.MeResource;
 import net.unit8.kysymys.inject.DSLContextInjector;
 import net.unit8.kysymys.inject.UserIdInjector;
+import net.unit8.kysymys.lesson.resource.ProblemResource;
+import net.unit8.kysymys.lesson.resource.ProblemsResource;
 
 import java.util.List;
 import java.util.Set;
@@ -65,6 +67,13 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
         Routes routes = Routes.define(r -> {
             r.get("/health").to(HealthResource.class);
             r.get("/me").to(MeResource.class);
+
+            // Lesson — Problem
+            r.get("/problems").to(ProblemsResource.class);
+            r.post("/problems").to(ProblemsResource.class);
+            r.get("/problems/:id").to(ProblemResource.class);
+            r.put("/problems/:id").to(ProblemResource.class);
+            r.delete("/problems/:id").to(ProblemResource.class);
         }).compile();
 
         BouncrBackend bouncrBackend = new BouncrBackend();
