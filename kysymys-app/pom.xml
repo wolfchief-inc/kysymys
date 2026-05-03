@@ -126,6 +126,12 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- ID generation -->
+        <dependency>
+            <groupId>com.aventrix.jnanoid</groupId>
+            <artifactId>jnanoid</artifactId>
+        </dependency>
+
         <!-- DB drivers -->
         <dependency>
             <groupId>com.h2database</groupId>

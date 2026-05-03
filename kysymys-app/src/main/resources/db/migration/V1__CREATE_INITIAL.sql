@@ -1,7 +1,7 @@
 CREATE TABLE answers (
   id VARCHAR(21) NOT NULL,
   problem_id VARCHAR(21) NOT NULL,
-  answerer_id VARCHAR(255) NOT NULL,
+  answerer_id VARCHAR(21) NOT NULL,
   repository_url VARCHAR(255),
   CONSTRAINT pk_answers PRIMARY KEY (id)
 );
@@ -21,17 +21,17 @@ CREATE TABLE offers (
 );
 
 CREATE TABLE problem_created_events (
-  id VARCHAR(255) NOT NULL,
-  problem_lifecycle_id VARCHAR(255),
+  id VARCHAR(21) NOT NULL,
+  problem_lifecycle_id VARCHAR(21),
   occurred_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-  creator_id VARCHAR(255) NOT NULL,
+  creator_id VARCHAR(21) NOT NULL,
   CONSTRAINT pk_problem_created_events PRIMARY KEY (id)
 );
 
 CREATE TABLE problem_lifecycles (
-  id VARCHAR(255) NOT NULL,
+  id VARCHAR(21) NOT NULL,
   problem_id VARCHAR(21) NOT NULL,
-  status INTEGER NOT NULL,
+  status VARCHAR(20) NOT NULL,
   CONSTRAINT pk_problem_lifecycles PRIMARY KEY (id)
 );
 
@@ -42,31 +42,31 @@ CREATE TABLE problems (
   branch VARCHAR(255) NOT NULL,
   readme_path VARCHAR(255),
   runner VARCHAR(255),
-  problem_lifecycle_id VARCHAR(255),
+  problem_lifecycle_id VARCHAR(21),
   CONSTRAINT pk_problems PRIMARY KEY (id)
 );
 
 CREATE TABLE review_comments (
-  id VARCHAR(255) NOT NULL,
+  id VARCHAR(21) NOT NULL,
   answer_id VARCHAR(21) NOT NULL,
-  commenter_id VARCHAR(255) NOT NULL,
-  description VARCHAR(255) NOT NULL,
+  commenter_id VARCHAR(21) NOT NULL,
+  description VARCHAR(4000) NOT NULL,
   posted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   CONSTRAINT pk_review_comments PRIMARY KEY (id)
 );
 
 CREATE TABLE submissions (
-  id VARCHAR(255) NOT NULL,
+  id VARCHAR(21) NOT NULL,
   answer_id VARCHAR(21),
-  commit_hash VARCHAR(255),
+  commit_hash VARCHAR(40),
   submitted_at TIMESTAMP WITHOUT TIME ZONE,
   CONSTRAINT pk_submissions PRIMARY KEY (id)
 );
 
 CREATE TABLE latest_submissions(
-  answer_id VARCHAR(21),
-  submission_id VARCHAR(255),
-  CONSTRAINT pk_latest_submissions PRIMARY KEY(answer_id, submission_id)
+  answer_id VARCHAR(21) NOT NULL,
+  submission_id VARCHAR(21) NOT NULL,
+  CONSTRAINT pk_latest_submissions PRIMARY KEY(answer_id)
 );
 
 CREATE TABLE user_avatars (

@@ -26,6 +26,13 @@ import kotowari.routing.Routes;
 import net.unit8.kysymys.health.HealthResource;
 import net.unit8.kysymys.health.MeResource;
 import net.unit8.kysymys.inject.DSLContextInjector;
+import net.unit8.kysymys.inject.UserIdInjector;
+import net.unit8.kysymys.lesson.resource.AnswerResource;
+import net.unit8.kysymys.lesson.resource.AnswersResource;
+import net.unit8.kysymys.lesson.resource.CommentsResource;
+import net.unit8.kysymys.lesson.resource.MyAnswersResource;
+import net.unit8.kysymys.lesson.resource.ProblemResource;
+import net.unit8.kysymys.lesson.resource.ProblemsResource;
 
 import java.util.List;
 import java.util.Set;
@@ -51,7 +58,8 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
                 new HttpRequestInjector(),
                 new ParametersInjector(),
                 new PrincipalInjector(),
-                new DSLContextInjector()
+                new DSLContextInjector(),
+                new UserIdInjector()
         );
 
         ResourceInvokerMiddleware<HttpResponse> resourceInvoker =
@@ -63,6 +71,21 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
         Routes routes = Routes.define(r -> {
             r.get("/health").to(HealthResource.class);
             r.get("/me").to(MeResource.class);
+
+            // Lesson — Problem
+            r.get("/problems").to(ProblemsResource.class);
+            r.post("/problems").to(ProblemsResource.class);
+            r.get("/problems/:id").to(ProblemResource.class);
+            r.put("/problems/:id").to(ProblemResource.class);
+            r.delete("/problems/:id").to(ProblemResource.class);
+
+            // Lesson — Answer
+            r.post("/problems/:id/answers").to(AnswersResource.class);
+            r.get("/answers").to(MyAnswersResource.class);
+            r.get("/answers/:id").to(AnswerResource.class);
+
+            // Lesson — Comment
+            r.post("/answers/:id/comments").to(CommentsResource.class);
         }).compile();
 
         BouncrBackend bouncrBackend = new BouncrBackend();
