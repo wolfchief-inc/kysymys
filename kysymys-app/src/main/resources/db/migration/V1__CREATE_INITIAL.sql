@@ -72,7 +72,7 @@ CREATE TABLE latest_submissions(
 CREATE TABLE user_avatars (
   user_id VARCHAR(255) NOT NULL,
   avatar_code BIGINT,
-  image_content OID,
+  image_content BYTEA,
   CONSTRAINT pk_user_avatars PRIMARY KEY (user_id)
 );
 
