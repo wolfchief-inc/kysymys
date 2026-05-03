@@ -35,6 +35,8 @@ import net.unit8.kysymys.lesson.resource.CommentsResource;
 import net.unit8.kysymys.lesson.resource.MyAnswersResource;
 import net.unit8.kysymys.lesson.resource.ProblemResource;
 import net.unit8.kysymys.lesson.resource.ProblemsResource;
+import net.unit8.kysymys.user.resource.UserResource;
+import net.unit8.kysymys.user.resource.UsersResource;
 
 import java.util.List;
 import java.util.Set;
@@ -89,6 +91,11 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
 
             // Lesson — Comment
             r.post("/answers/:id/comments").to(CommentsResource.class);
+
+            // User
+            r.get("/users").to(UsersResource.class);
+            r.get("/users/:id").to(UserResource.class);
+            r.put("/users/:id").to(UserResource.class);
         }).compile();
 
         BouncrBackend bouncrBackend = new BouncrBackend();
