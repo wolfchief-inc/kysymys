@@ -40,3 +40,14 @@ buildNumber.properties
 *.iml
 .jpb/
 *-local.yml
+
+# macOS
+.DS_Store
+
+# VSCode
+.vscode/
+
+# Node.js / frontend
+node_modules/
+dist/
+kysymys-frontend/routeTree.gen.ts
