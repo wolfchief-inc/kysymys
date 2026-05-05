@@ -37,7 +37,7 @@ public class FollowersResource {
         UserDao userDao = new UserDao(dsl);
         return ids.stream()
                 .flatMap(id -> userDao.findById(id).stream())
-                .map(UserJsonEncoders::encode)
+                .map(UserJsonEncoders::encodeUser)
                 .toList();
     }
 }

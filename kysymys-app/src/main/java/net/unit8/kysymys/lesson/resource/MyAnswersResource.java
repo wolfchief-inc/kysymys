@@ -27,7 +27,7 @@ public class MyAnswersResource {
         AnswerDao answers = new AnswerDao(dsl);
         SubmissionDao submissions = new SubmissionDao(dsl);
         return answers.listByAnswerer(caller).stream()
-                .map(a -> AnswerJsonEncoders.encode(a, submissions.findLatest(a.id())))
+                .map(a -> LessonJsonEncoders.encodeAnswer(a, submissions.findLatest(a.id())))
                 .toList();
     }
 }

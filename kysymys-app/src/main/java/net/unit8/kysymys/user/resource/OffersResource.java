@@ -14,26 +14,19 @@ import net.unit8.kysymys.user.data.UserId;
 import net.unit8.raoh.Err;
 import net.unit8.raoh.Ok;
 import net.unit8.raoh.Result;
-import net.unit8.raoh.decode.Decoder;
 import org.jooq.DSLContext;
 import tools.jackson.databind.JsonNode;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static kotowari.restful.DecisionPoint.*;
-import static net.unit8.raoh.json.JsonDecoders.field;
-import static net.unit8.raoh.json.JsonDecoders.string;
 
 @AllowedMethods({"GET", "POST"})
 public class OffersResource {
-
-    private static final Decoder<JsonNode, UserId> INPUT =
-            field("targetUserId", string().fixedLength(21)).map(UserId::of);
 
     static final ContextKey<UserId> TARGET = ContextKey.of("target", UserId.class);
     static final ContextKey<Offer> CREATED = ContextKey.of("createdOffer", Offer.class);
@@ -47,7 +40,7 @@ public class OffersResource {
 
     @Decision(value = MALFORMED, method = {"POST"})
     public Problem validate(JsonNode body, RestContext context) {
-        Result<UserId> result = INPUT.decode(body);
+        Result<UserId> result = UserJsonDecoders.OFFER.decode(body);
         if (result instanceof Ok<UserId> ok) {
             context.put(TARGET, ok.value());
             return null;
@@ -71,24 +64,14 @@ public class OffersResource {
 
     @Decision(HANDLE_CREATED)
     public Map<String, Object> handleCreated(RestContext context) {
-        Offer o = context.get(CREATED).orElseThrow();
-        return encode(o);
+        return UserJsonEncoders.encodeOffer(context.get(CREATED).orElseThrow());
     }
 
     @Decision(HANDLE_OK)
     public List<Map<String, Object>> list(Principal principal, DSLContext dsl) {
         UserId caller = UserId.of(principal.getName());
         return new OfferDao(dsl).listByTarget(caller).stream()
-                .map(OffersResource::encode)
+                .map(UserJsonEncoders::encodeOffer)
                 .toList();
-    }
-
-    private static Map<String, Object> encode(Offer o) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("id", o.id().value());
-        body.put("offeringUserId", o.offeringUserId().value());
-        body.put("targetUserId", o.targetUserId().value());
-        body.put("offeredAt", o.offeredAt().toString());
-        return body;
     }
 }

@@ -29,7 +29,7 @@ public class UsersResource {
     public List<Map<String, Object>> list(Parameters params, DSLContext dsl) {
         String q = params.get("q");
         return new UserDao(dsl).list(q).stream()
-                .map(UserJsonEncoders::encode)
+                .map(UserJsonEncoders::encodeUser)
                 .toList();
     }
 }

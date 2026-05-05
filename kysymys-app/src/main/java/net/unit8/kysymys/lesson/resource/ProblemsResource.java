@@ -31,8 +31,8 @@ import static kotowari.restful.DecisionPoint.POST;
 @AllowedMethods({"GET", "POST"})
 public class ProblemsResource {
 
-    static final ContextKey<ProblemJsonDecoders.CreateInput> CREATE_INPUT =
-            ContextKey.of("createInput", ProblemJsonDecoders.CreateInput.class);
+    static final ContextKey<LessonJsonDecoders.CreateProblemInput> CREATE_INPUT =
+            ContextKey.of("createInput", LessonJsonDecoders.CreateProblemInput.class);
     static final ContextKey<net.unit8.kysymys.lesson.data.Problem> CREATED_PROBLEM =
             ContextKey.of("createdProblem", net.unit8.kysymys.lesson.data.Problem.class);
 
@@ -49,18 +49,18 @@ public class ProblemsResource {
 
     @Decision(value = MALFORMED, method = {"POST"})
     public Problem validatePost(JsonNode body, RestContext context) {
-        Result<ProblemJsonDecoders.CreateInput> result = ProblemJsonDecoders.CREATE.decode(body);
-        if (result instanceof Ok<ProblemJsonDecoders.CreateInput> ok) {
+        Result<LessonJsonDecoders.CreateProblemInput> result = LessonJsonDecoders.CREATE_PROBLEM.decode(body);
+        if (result instanceof Ok<LessonJsonDecoders.CreateProblemInput> ok) {
             context.put(CREATE_INPUT, ok.value());
             return null;
         }
-        Err<ProblemJsonDecoders.CreateInput> err = (Err<ProblemJsonDecoders.CreateInput>) result;
+        Err<LessonJsonDecoders.CreateProblemInput> err = (Err<LessonJsonDecoders.CreateProblemInput>) result;
         return Problem.fromViolationList(toViolations(err));
     }
 
     @Decision(POST)
     public boolean create(DSLContext dsl, UserId caller, RestContext context) {
-        ProblemJsonDecoders.CreateInput input = context.get(CREATE_INPUT).orElseThrow();
+        LessonJsonDecoders.CreateProblemInput input = context.get(CREATE_INPUT).orElseThrow();
         net.unit8.kysymys.lesson.data.Problem created = new CreateProblem(dsl).apply(
                 new CreateProblem.Input(input.name(), input.repository(), caller, LocalDateTime.now()));
         context.put(CREATED_PROBLEM, created);
@@ -70,14 +70,14 @@ public class ProblemsResource {
     @Decision(HANDLE_CREATED)
     public Map<String, Object> handleCreated(RestContext context) {
         net.unit8.kysymys.lesson.data.Problem p = context.get(CREATED_PROBLEM).orElseThrow();
-        return ProblemJsonEncoders.encode(p, ProblemStatus.ACTIVE);
+        return LessonJsonEncoders.encodeProblem(p, ProblemStatus.ACTIVE);
     }
 
     @Decision(HANDLE_OK)
     public List<Map<String, Object>> list(DSLContext dsl) {
         ProblemDao dao = new ProblemDao(dsl);
         return dao.listActive().stream()
-                .map(p -> ProblemJsonEncoders.encode(p, ProblemStatus.ACTIVE))
+                .map(p -> LessonJsonEncoders.encodeProblem(p, ProblemStatus.ACTIVE))
                 .toList();
     }
 

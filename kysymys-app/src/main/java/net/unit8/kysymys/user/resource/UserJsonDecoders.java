@@ -1,12 +1,16 @@
 package net.unit8.kysymys.user.resource;
 
 import net.unit8.kysymys.user.data.EmailAddress;
+import net.unit8.kysymys.user.data.UserId;
 import net.unit8.kysymys.user.data.UserName;
 import net.unit8.raoh.decode.Decoder;
 import tools.jackson.databind.JsonNode;
 
 import static net.unit8.raoh.json.JsonDecoders.*;
 
+/**
+ * Raoh decoders for every User context request body.
+ */
 public final class UserJsonDecoders {
     private UserJsonDecoders() {}
 
@@ -16,6 +20,14 @@ public final class UserJsonDecoders {
     ).map((email, name) -> new UpdateProfileInput(
             email.map(EmailAddress::of).orElse(null),
             name.map(UserName::of).orElse(null)));
+
+    /** Decoder output for POST /offers — body carries the target user. */
+    public static final Decoder<JsonNode, UserId> OFFER =
+            field("targetUserId", string().fixedLength(21)).map(UserId::of);
+
+    /** Decoder output for POST /grant-teacher-role — body carries the target user. */
+    public static final Decoder<JsonNode, UserId> GRANT_TEACHER_ROLE =
+            field("targetUserId", string().fixedLength(21)).map(UserId::of);
 
     public record UpdateProfileInput(EmailAddress email, UserName name) {}
 }

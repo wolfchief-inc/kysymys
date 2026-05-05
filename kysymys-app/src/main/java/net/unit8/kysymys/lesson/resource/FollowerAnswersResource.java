@@ -40,7 +40,7 @@ public class FollowerAnswersResource {
         AnswerDao answers = new AnswerDao(dsl);
         SubmissionDao submissions = new SubmissionDao(dsl);
         return answers.listByAnswerers(followees).stream()
-                .map(a -> AnswerJsonEncoders.encode(a, Optional.ofNullable(submissions.findLatest(a.id()).orElse(null))))
+                .map(a -> LessonJsonEncoders.encodeAnswer(a, Optional.ofNullable(submissions.findLatest(a.id()).orElse(null))))
                 .toList();
     }
 }

@@ -13,7 +13,6 @@ import net.unit8.kysymys.user.data.UserId;
 import net.unit8.raoh.Err;
 import net.unit8.raoh.Ok;
 import net.unit8.raoh.Result;
-import net.unit8.raoh.decode.Decoder;
 import org.jooq.DSLContext;
 import tools.jackson.databind.JsonNode;
 
@@ -23,14 +22,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import static kotowari.restful.DecisionPoint.*;
-import static net.unit8.raoh.json.JsonDecoders.field;
-import static net.unit8.raoh.json.JsonDecoders.string;
 
 @AllowedMethods({"POST"})
 public class GrantTeacherRoleResource {
-
-    private static final Decoder<JsonNode, UserId> INPUT_DECODER =
-            field("targetUserId", string().fixedLength(21)).map(UserId::of);
 
     static final ContextKey<UserId> TARGET = ContextKey.of("target", UserId.class);
     static final ContextKey<User> RESULT = ContextKey.of("result", User.class);
@@ -50,7 +44,7 @@ public class GrantTeacherRoleResource {
 
     @Decision(MALFORMED)
     public Problem validate(JsonNode body, RestContext context) {
-        Result<UserId> result = INPUT_DECODER.decode(body);
+        Result<UserId> result = UserJsonDecoders.GRANT_TEACHER_ROLE.decode(body);
         if (result instanceof Ok<UserId> ok) {
             context.put(TARGET, ok.value());
             return null;
@@ -72,6 +66,6 @@ public class GrantTeacherRoleResource {
 
     @Decision(HANDLE_CREATED)
     public Map<String, Object> handleCreated(RestContext context) {
-        return UserJsonEncoders.encode(context.get(RESULT).orElseThrow());
+        return UserJsonEncoders.encodeUser(context.get(RESULT).orElseThrow());
     }
 }

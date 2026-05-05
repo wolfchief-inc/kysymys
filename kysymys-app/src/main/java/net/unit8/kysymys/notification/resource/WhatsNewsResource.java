@@ -12,7 +12,6 @@ import net.unit8.kysymys.user.data.UserId;
 import org.jooq.DSLContext;
 
 import java.security.Principal;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static kotowari.restful.DecisionPoint.AUTHORIZED;
@@ -60,15 +59,7 @@ public class WhatsNewsResource {
         UserId caller = UserId.of(principal.getName());
         WhatsNewDao dao = new WhatsNewDao(dsl);
         return dao.listByUser(caller).stream()
-                .map(w -> {
-                    Map<String, Object> body = new LinkedHashMap<>();
-                    body.put("id", w.id().value());
-                    body.put("templatePath", w.templatePath().value());
-                    body.put("params", w.params());
-                    body.put("postedAt", w.postedAt().toString());
-                    body.put("unread", dao.isUnread(w.id(), caller));
-                    return body;
-                })
-                .collect(java.util.stream.Collectors.toList());
+                .map(w -> NotificationJsonEncoders.encodeWhatsNew(w, dao.isUnread(w.id(), caller)))
+                .toList();
     }
 }
