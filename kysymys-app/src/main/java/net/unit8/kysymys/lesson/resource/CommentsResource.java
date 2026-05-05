@@ -18,7 +18,6 @@ import tools.jackson.databind.JsonNode;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,8 +29,8 @@ import static kotowari.restful.DecisionPoint.POST;
 @AllowedMethods({"POST"})
 public class CommentsResource {
 
-    static final ContextKey<CommentJsonDecoders.PostInput> POST_INPUT =
-            ContextKey.of("commentInput", CommentJsonDecoders.PostInput.class);
+    static final ContextKey<LessonJsonDecoders.PostCommentInput> POST_INPUT =
+            ContextKey.of("commentInput", LessonJsonDecoders.PostCommentInput.class);
     static final ContextKey<ReviewComment> CREATED =
             ContextKey.of("createdComment", ReviewComment.class);
 
@@ -42,18 +41,18 @@ public class CommentsResource {
 
     @Decision(value = MALFORMED, method = {"POST"})
     public Problem validate(JsonNode body, RestContext context) {
-        Result<CommentJsonDecoders.PostInput> result = CommentJsonDecoders.POST.decode(body);
-        if (result instanceof Ok<CommentJsonDecoders.PostInput> ok) {
+        Result<LessonJsonDecoders.PostCommentInput> result = LessonJsonDecoders.POST_COMMENT.decode(body);
+        if (result instanceof Ok<LessonJsonDecoders.PostCommentInput> ok) {
             context.put(POST_INPUT, ok.value());
             return null;
         }
-        Err<CommentJsonDecoders.PostInput> err = (Err<CommentJsonDecoders.PostInput>) result;
+        Err<LessonJsonDecoders.PostCommentInput> err = (Err<LessonJsonDecoders.PostCommentInput>) result;
         return Problem.fromViolationList(ProblemsResource.toViolations(err));
     }
 
     @Decision(POST)
     public boolean create(Parameters params, DSLContext dsl, UserId caller, RestContext context) {
-        CommentJsonDecoders.PostInput input = context.get(POST_INPUT).orElseThrow();
+        LessonJsonDecoders.PostCommentInput input = context.get(POST_INPUT).orElseThrow();
         AnswerId aid;
         try { aid = new AnswerId(params.get("id")); }
         catch (IllegalArgumentException ex) { return false; }
@@ -66,13 +65,6 @@ public class CommentsResource {
 
     @Decision(HANDLE_CREATED)
     public Map<String, Object> handleCreated(RestContext context) {
-        ReviewComment c = context.get(CREATED).orElseThrow();
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("id", c.id().value());
-        body.put("answerId", c.answerId().value());
-        body.put("commenterId", c.commenterId().value());
-        body.put("description", c.description().value());
-        body.put("postedAt", c.postedAt().toString());
-        return body;
+        return LessonJsonEncoders.encodeComment(context.get(CREATED).orElseThrow());
     }
 }

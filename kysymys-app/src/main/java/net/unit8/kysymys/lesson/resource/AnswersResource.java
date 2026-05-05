@@ -28,8 +28,8 @@ import static kotowari.restful.DecisionPoint.POST;
 @AllowedMethods({"POST"})
 public class AnswersResource {
 
-    static final ContextKey<AnswerJsonDecoders.SubmitInput> SUBMIT_INPUT =
-            ContextKey.of("submitInput", AnswerJsonDecoders.SubmitInput.class);
+    static final ContextKey<LessonJsonDecoders.SubmitAnswerInput> SUBMIT_INPUT =
+            ContextKey.of("submitInput", LessonJsonDecoders.SubmitAnswerInput.class);
     static final ContextKey<SubmitAnswer.Output> OUTPUT =
             ContextKey.of("submitOutput", SubmitAnswer.Output.class);
 
@@ -40,19 +40,19 @@ public class AnswersResource {
 
     @Decision(value = MALFORMED, method = {"POST"})
     public Problem validate(JsonNode body, RestContext context) {
-        Result<AnswerJsonDecoders.SubmitInput> result = AnswerJsonDecoders.SUBMIT.decode(body);
-        if (result instanceof Ok<AnswerJsonDecoders.SubmitInput> ok) {
+        Result<LessonJsonDecoders.SubmitAnswerInput> result = LessonJsonDecoders.SUBMIT_ANSWER.decode(body);
+        if (result instanceof Ok<LessonJsonDecoders.SubmitAnswerInput> ok) {
             context.put(SUBMIT_INPUT, ok.value());
             return null;
         }
-        Err<AnswerJsonDecoders.SubmitInput> err = (Err<AnswerJsonDecoders.SubmitInput>) result;
+        Err<LessonJsonDecoders.SubmitAnswerInput> err = (Err<LessonJsonDecoders.SubmitAnswerInput>) result;
         return Problem.fromViolationList(ProblemsResource.toViolations(err));
     }
 
     @Decision(POST)
     public boolean submit(Parameters params, DSLContext dsl, UserId caller,
                           net.unit8.kysymys.system.KysymysEventBus eventBus, RestContext context) {
-        AnswerJsonDecoders.SubmitInput input = context.get(SUBMIT_INPUT).orElseThrow();
+        LessonJsonDecoders.SubmitAnswerInput input = context.get(SUBMIT_INPUT).orElseThrow();
         ProblemId pid;
         try { pid = new ProblemId(params.get("id")); }
         catch (IllegalArgumentException ex) { return false; }
@@ -68,6 +68,6 @@ public class AnswersResource {
     @Decision(HANDLE_CREATED)
     public Map<String, Object> handleCreated(RestContext context) {
         SubmitAnswer.Output out = context.get(OUTPUT).orElseThrow();
-        return AnswerJsonEncoders.encode(out.answer(), Optional.of(out.submission()));
+        return LessonJsonEncoders.encodeAnswer(out.answer(), Optional.of(out.submission()));
     }
 }

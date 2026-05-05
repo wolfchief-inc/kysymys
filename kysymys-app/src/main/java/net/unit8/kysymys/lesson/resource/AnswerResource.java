@@ -52,6 +52,6 @@ public class AnswerResource {
         Answer a = context.get(ANSWER).orElseThrow();
         Optional<Submission> latest = context.get(LATEST);
         List<ReviewComment> comments = new ReviewCommentDao(dsl).listByAnswer(a.id());
-        return AnswerJsonEncoders.encode(a, latest, comments);
+        return LessonJsonEncoders.encodeAnswer(a, latest, comments);
     }
 }

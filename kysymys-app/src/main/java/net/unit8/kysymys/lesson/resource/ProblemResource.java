@@ -40,8 +40,8 @@ public class ProblemResource {
             ContextKey.of("problem", net.unit8.kysymys.lesson.data.Problem.class);
     static final ContextKey<ProblemStatus> STATUS =
             ContextKey.of("status", ProblemStatus.class);
-    static final ContextKey<ProblemJsonDecoders.UpdateInput> UPDATE_INPUT =
-            ContextKey.of("updateInput", ProblemJsonDecoders.UpdateInput.class);
+    static final ContextKey<LessonJsonDecoders.UpdateProblemInput> UPDATE_INPUT =
+            ContextKey.of("updateInput", LessonJsonDecoders.UpdateProblemInput.class);
 
     @Decision(AUTHORIZED)
     public boolean authorized(Principal principal) {
@@ -73,18 +73,18 @@ public class ProblemResource {
 
     @Decision(value = MALFORMED, method = {"PUT"})
     public Problem validatePut(JsonNode body, RestContext context) {
-        Result<ProblemJsonDecoders.UpdateInput> result = ProblemJsonDecoders.UPDATE.decode(body);
-        if (result instanceof Ok<ProblemJsonDecoders.UpdateInput> ok) {
+        Result<LessonJsonDecoders.UpdateProblemInput> result = LessonJsonDecoders.UPDATE_PROBLEM.decode(body);
+        if (result instanceof Ok<LessonJsonDecoders.UpdateProblemInput> ok) {
             context.put(UPDATE_INPUT, ok.value());
             return null;
         }
-        Err<ProblemJsonDecoders.UpdateInput> err = (Err<ProblemJsonDecoders.UpdateInput>) result;
+        Err<LessonJsonDecoders.UpdateProblemInput> err = (Err<LessonJsonDecoders.UpdateProblemInput>) result;
         return Problem.fromViolationList(ProblemsResource.toViolations(err));
     }
 
     @Decision(PUT)
     public boolean update(DSLContext dsl, UserId caller, RestContext context) {
-        ProblemJsonDecoders.UpdateInput input = context.get(UPDATE_INPUT).orElseThrow();
+        LessonJsonDecoders.UpdateProblemInput input = context.get(UPDATE_INPUT).orElseThrow();
         net.unit8.kysymys.lesson.data.Problem existing = context.get(PROBLEM).orElseThrow();
         Optional<net.unit8.kysymys.lesson.data.Problem> updated = new UpdateProblem(dsl).apply(
                 new UpdateProblem.Input(existing.id(), input.name(), input.repository(),
@@ -114,6 +114,6 @@ public class ProblemResource {
     public Map<String, Object> show(RestContext context) {
         net.unit8.kysymys.lesson.data.Problem p = context.get(PROBLEM).orElseThrow();
         ProblemStatus s = context.get(STATUS).orElse(ProblemStatus.ACTIVE);
-        return ProblemJsonEncoders.encode(p, s);
+        return LessonJsonEncoders.encodeProblem(p, s);
     }
 }

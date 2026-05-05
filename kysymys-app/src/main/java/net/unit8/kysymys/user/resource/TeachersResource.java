@@ -28,7 +28,7 @@ public class TeachersResource {
     @Decision(HANDLE_OK)
     public List<Map<String, Object>> list(DSLContext dsl) {
         return new UserDao(dsl).listByRole(Role.TEACHER).stream()
-                .map(UserJsonEncoders::encode)
+                .map(UserJsonEncoders::encodeUser)
                 .toList();
     }
 }

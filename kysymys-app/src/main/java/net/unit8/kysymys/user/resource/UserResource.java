@@ -87,6 +87,6 @@ public class UserResource {
 
     @Decision(HANDLE_OK)
     public Map<String, Object> show(RestContext context) {
-        return UserJsonEncoders.encode(context.get(USER).orElseThrow());
+        return UserJsonEncoders.encodeUser(context.get(USER).orElseThrow());
     }
 }
