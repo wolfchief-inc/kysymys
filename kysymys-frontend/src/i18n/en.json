@@ -1,0 +1,105 @@
+{
+  "app": {
+    "name": "Kysymys",
+    "tagline": "Programming learning platform"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "problems": "Problems",
+    "myAnswers": "My Answers",
+    "followers": "Following",
+    "users": "Users",
+    "teachers": "Teachers",
+    "offers": "Offers",
+    "notifications": "Notifications",
+    "logout": "Logout"
+  },
+  "auth": {
+    "title": "Sign in",
+    "tokenLabel": "Bouncr token",
+    "tokenHelp": "Paste the JWT to send as x-bouncr-credential header.",
+    "save": "Save & continue",
+    "logout": "Sign out"
+  },
+  "common": {
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "submit": "Submit",
+    "back": "Back",
+    "yes": "Yes",
+    "no": "No",
+    "search": "Search",
+    "language": "Language"
+  },
+  "errors": {
+    "title": "Something went wrong",
+    "description": "An error occurred. Please try again.",
+    "retry": "Retry",
+    "unauthorized": "Authentication required",
+    "forbidden": "Permission denied",
+    "notFound": "Not found"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "whatsNew": "What's new",
+    "myRecentAnswers": "My recent answers",
+    "followersAnswers": "Following's recent answers",
+    "empty": "Nothing yet"
+  },
+  "problem": {
+    "list": "Problems",
+    "new": "New Problem",
+    "edit": "Edit problem",
+    "archive": "Archive",
+    "submitAnswer": "Submit answer",
+    "title": "Title",
+    "description": "Description",
+    "repository": "Repository",
+    "type": "Type",
+    "url": "URL",
+    "owner": "Owner",
+    "name": "Name",
+    "private": "Private",
+    "github": "GitHub",
+    "githubPrivate": "GitHub (Private)",
+    "url_": "URL"
+  },
+  "answer": {
+    "submit": "Submit answer",
+    "myAnswers": "My answers",
+    "comments": "Comments",
+    "postComment": "Post comment",
+    "comment": "Comment",
+    "commitHash": "Commit hash"
+  },
+  "user": {
+    "list": "Users",
+    "profile": "Profile",
+    "name": "Name",
+    "email": "Email",
+    "follow": "Follow",
+    "following": "Following",
+    "followers": "Followers",
+    "edit": "Edit profile",
+    "grantTeacher": "Grant teacher role",
+    "targetUserId": "Target user ID"
+  },
+  "offer": {
+    "list": "Offers",
+    "accept": "Accept",
+    "from": "From"
+  },
+  "notification": {
+    "list": "Notifications",
+    "markRead": "Mark as read",
+    "unread": "Unread",
+    "read": "Read",
+    "templates": {
+      "submittedAnswer": "{{actor}} submitted a new answer",
+      "offeredToFollow": "{{actor}} started following you"
+    }
+  }
+}

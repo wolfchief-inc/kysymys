@@ -1,0 +1,105 @@
+{
+  "app": {
+    "name": "Kysymys",
+    "tagline": "プログラミング学習プラットフォーム"
+  },
+  "nav": {
+    "dashboard": "ダッシュボード",
+    "problems": "課題",
+    "myAnswers": "自分の回答",
+    "followers": "フォロー中の回答",
+    "users": "ユーザー",
+    "teachers": "先生一覧",
+    "offers": "招待",
+    "notifications": "通知",
+    "logout": "ログアウト"
+  },
+  "auth": {
+    "title": "ログイン",
+    "tokenLabel": "Bouncr トークン",
+    "tokenHelp": "x-bouncr-credential ヘッダで送る JWT を貼り付けてください。",
+    "save": "保存して続ける",
+    "logout": "ログアウト"
+  },
+  "common": {
+    "loading": "読み込み中…",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "edit": "編集",
+    "delete": "削除",
+    "submit": "送信",
+    "back": "戻る",
+    "yes": "はい",
+    "no": "いいえ",
+    "search": "検索",
+    "language": "言語"
+  },
+  "errors": {
+    "title": "エラーが発生しました",
+    "description": "問題が発生しました。再度お試しください。",
+    "retry": "再試行",
+    "unauthorized": "認証が必要です",
+    "forbidden": "権限がありません",
+    "notFound": "ページが見つかりません"
+  },
+  "dashboard": {
+    "title": "ダッシュボード",
+    "whatsNew": "新着通知",
+    "myRecentAnswers": "自分の最近の回答",
+    "followersAnswers": "フォロー中の最近の回答",
+    "empty": "まだありません"
+  },
+  "problem": {
+    "list": "課題一覧",
+    "new": "新しい課題",
+    "edit": "課題を編集",
+    "archive": "アーカイブ",
+    "submitAnswer": "回答を送信",
+    "title": "タイトル",
+    "description": "説明",
+    "repository": "リポジトリ",
+    "type": "種別",
+    "url": "URL",
+    "owner": "オーナー",
+    "name": "名前",
+    "private": "プライベート",
+    "github": "GitHub",
+    "githubPrivate": "GitHub (プライベート)",
+    "url_": "URL"
+  },
+  "answer": {
+    "submit": "回答を送信",
+    "myAnswers": "自分の回答",
+    "comments": "コメント",
+    "postComment": "コメントを投稿",
+    "comment": "コメント",
+    "commitHash": "コミットハッシュ"
+  },
+  "user": {
+    "list": "ユーザー一覧",
+    "profile": "プロフィール",
+    "name": "名前",
+    "email": "メール",
+    "follow": "フォロー",
+    "following": "フォロー中",
+    "followers": "フォロワー",
+    "edit": "プロフィールを編集",
+    "grantTeacher": "先生権限を付与",
+    "targetUserId": "対象ユーザー ID"
+  },
+  "offer": {
+    "list": "招待",
+    "accept": "受け入れる",
+    "from": "送信者"
+  },
+  "notification": {
+    "list": "通知",
+    "markRead": "既読にする",
+    "unread": "未読",
+    "read": "既読",
+    "templates": {
+      "submittedAnswer": "{{actor}} が新しい回答を提出しました",
+      "offeredToFollow": "{{actor}} があなたをフォローし始めました"
+    }
+  }
+}
