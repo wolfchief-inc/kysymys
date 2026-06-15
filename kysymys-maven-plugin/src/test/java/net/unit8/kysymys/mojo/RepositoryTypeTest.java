@@ -18,6 +18,12 @@ class RepositoryTypeTest {
     }
 
     @Test
+    void githubSshSchemeUrl() {
+        assertThat(RepositoryType.fromUrl("ssh://git@github.com:22/kawasima/kysymys.git"))
+                .isEqualTo(RepositoryType.GITHUB);
+    }
+
+    @Test
     void bitbucketUrl() {
         assertThat(RepositoryType.fromUrl("https://bitbucket.org/team/repo.git"))
                 .isEqualTo(RepositoryType.BITBUCKET);
@@ -27,6 +33,19 @@ class RepositoryTypeTest {
     void selfHostedFallsBackToGeneric() {
         assertThat(RepositoryType.fromUrl("https://git.example.com/team/repo.git"))
                 .isEqualTo(RepositoryType.GENERIC);
+    }
+
+    @Test
+    void hostNameInPathDoesNotMisclassify() {
+        // "github.com" appears in the path, but the host is git.example.com.
+        assertThat(RepositoryType.fromUrl("https://git.example.com/mirror/github.com.git"))
+                .isEqualTo(RepositoryType.GENERIC);
+    }
+
+    @Test
+    void enterpriseSubdomainMatchesProvider() {
+        assertThat(RepositoryType.fromUrl("https://git.github.com/team/repo.git"))
+                .isEqualTo(RepositoryType.GITHUB);
     }
 
     @Test
