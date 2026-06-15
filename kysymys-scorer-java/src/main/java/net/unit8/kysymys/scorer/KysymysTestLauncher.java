@@ -6,22 +6,16 @@ import org.junit.platform.launcher.TestPlan;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
+/**
+ * Runs the JUnit Platform test plan for a single answer and prints the score.
+ *
+ * <p>The legacy HTTP scoring call ({@code POST /score/{submissionId}/{token}}) was removed when
+ * kysymys-app was replatformed onto Enkan: the new server exposes no scoring endpoint. Scoring now
+ * runs standalone and reports its result on stdout. A server-side scoring API is deferred to a
+ * later step (after the full Bouncr stack is wired up).
+ */
 public class KysymysTestLauncher {
     public static void run(Class<?> testClass) {
-        String kysymysUrl = System.getProperty("kysymys.url");
-        String submissionId = System.getProperty("kysymys.submission.id");
-        String token = System.getProperty("kysymys.token");
-        boolean standalone = kysymysUrl == null || submissionId == null || token == null;
-
         Launcher launcher = LauncherFactory.create();
         TestPlan plan = launcher.discover(LauncherDiscoveryRequestBuilder
                 .request()
@@ -29,22 +23,6 @@ public class KysymysTestLauncher {
                 .build());
         KysymysTestExecutionListener testExecutionListener = new KysymysTestExecutionListener();
         launcher.execute(plan, testExecutionListener);
-
-        if (!standalone) {
-            HttpClient httpClient = HttpClient.newHttpClient();
-
-            try {
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(kysymysUrl + "/score/" + submissionId + "/" + token))
-                        .POST(HttpRequest.BodyPublishers.ofString(""))
-                        .headers("content-type", "application/json")
-                        .build();
-                CompletableFuture<HttpResponse<String>> future = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-                HttpResponse<String> response = future.get(5, TimeUnit.SECONDS);
-            } catch (ExecutionException | InterruptedException | TimeoutException e) {
-                throw new RuntimeException("Failure scoring", e);
-            }
-        }
         System.out.println(testExecutionListener);
     }
 }

@@ -10,10 +10,21 @@ import java.net.URL;
 import java.util.Set;
 
 public class RepositoryDetector {
-    private String normalizeUrl(String urlStr) throws MalformedURLException {
-        URL url = new URL(urlStr);
-        return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile())
-                .toExternalForm();
+    /**
+     * Normalizes an http(s) remote URL by dropping any userinfo/fragment. SSH/SCP-like remotes
+     * (e.g. {@code git@github.com:owner/repo.git}, {@code ssh://git@host/...}) are not valid
+     * {@link URL}s and are returned unchanged.
+     */
+    static String normalizeUrl(String urlStr) throws MalformedURLException {
+        if (urlStr == null) {
+            return null;
+        }
+        if (urlStr.startsWith("http://") || urlStr.startsWith("https://")) {
+            URL url = new URL(urlStr);
+            return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile())
+                    .toExternalForm();
+        }
+        return urlStr;
     }
 
     public RepositoryDetectionResult detect() throws IOException {
