@@ -118,6 +118,26 @@ export const acknowledgeSchema = z.object({
   readWhatsNewId: id21.optional(),
 });
 
+export const buildKindSchema = z.enum(["BUILD_SUCCESS", "BUILD_FAILURE"]);
+export type BuildKind = z.infer<typeof buildKindSchema>;
+
+export const activityParticipantSchema = z.object({
+  participantId: z.string(),
+  problemId: z.string().nullable(),
+  lastActivityAt: z.string().nullable(),
+  lastBuildKind: buildKindSchema.nullable(),
+  lastBuildAt: z.string().nullable(),
+  lastBuildDetail: z.string().nullable(),
+  stuck: z.boolean(),
+});
+export type ActivityParticipant = z.infer<typeof activityParticipantSchema>;
+
+export const activityStatusSchema = z.object({
+  serverTime: z.string(),
+  participants: z.array(activityParticipantSchema),
+});
+export type ActivityStatus = z.infer<typeof activityStatusSchema>;
+
 export const problemViolationSchema = z.object({
   type: z.string().optional(),
   title: z.string().optional(),

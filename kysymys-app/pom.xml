@@ -32,6 +32,83 @@
                 <configuration>
                     <mainClass>net.unit8.kysymys.KysymysDevMain</mainClass>
                 </configuration>
+                <!--
+                  Cross-compile the kysymys-agent Go binary for each shipped
+                  platform into agent-bin/<os-arch>/ so the server can hand the
+                  matching one to participants over GET /agent/<os-arch>. Bound to
+                  prepare-package so `mvn test` stays Go-free; `mvn package` (and
+                  `mvn package exec:java` for dev) produces the binaries into
+                  target/classes. Requires the Go toolchain; source is
+                  ../kysymys-agent.
+                -->
+                <executions>
+                    <execution>
+                        <id>go-build-darwin-arm64</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>exec</goal></goals>
+                        <configuration>
+                            <executable>go</executable>
+                            <workingDirectory>${project.basedir}/../kysymys-agent</workingDirectory>
+                            <environmentVariables>
+                                <GOOS>darwin</GOOS>
+                                <GOARCH>arm64</GOARCH>
+                                <CGO_ENABLED>0</CGO_ENABLED>
+                            </environmentVariables>
+                            <arguments>
+                                <argument>build</argument>
+                                <argument>-trimpath</argument>
+                                <argument>-ldflags=-s -w</argument>
+                                <argument>-o</argument>
+                                <argument>${project.build.outputDirectory}/agent-bin/darwin-arm64/kysymys-agent</argument>
+                                <argument>.</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>go-build-windows-amd64</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>exec</goal></goals>
+                        <configuration>
+                            <executable>go</executable>
+                            <workingDirectory>${project.basedir}/../kysymys-agent</workingDirectory>
+                            <environmentVariables>
+                                <GOOS>windows</GOOS>
+                                <GOARCH>amd64</GOARCH>
+                                <CGO_ENABLED>0</CGO_ENABLED>
+                            </environmentVariables>
+                            <arguments>
+                                <argument>build</argument>
+                                <argument>-trimpath</argument>
+                                <argument>-ldflags=-s -w</argument>
+                                <argument>-o</argument>
+                                <argument>${project.build.outputDirectory}/agent-bin/windows-amd64/kysymys-agent.exe</argument>
+                                <argument>.</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>go-build-linux-amd64</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>exec</goal></goals>
+                        <configuration>
+                            <executable>go</executable>
+                            <workingDirectory>${project.basedir}/../kysymys-agent</workingDirectory>
+                            <environmentVariables>
+                                <GOOS>linux</GOOS>
+                                <GOARCH>amd64</GOARCH>
+                                <CGO_ENABLED>0</CGO_ENABLED>
+                            </environmentVariables>
+                            <arguments>
+                                <argument>build</argument>
+                                <argument>-trimpath</argument>
+                                <argument>-ldflags=-s -w</argument>
+                                <argument>-o</argument>
+                                <argument>${project.build.outputDirectory}/agent-bin/linux-amd64/kysymys-agent</argument>
+                                <argument>.</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

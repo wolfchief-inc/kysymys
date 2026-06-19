@@ -24,6 +24,7 @@
         <module>kysymys-app</module>
         <module>kysymys-maven-plugin</module>
         <module>kysymys-scorer-java</module>
+        <module>kysymys-activity-agent</module>
     </modules>
 
     <build>
