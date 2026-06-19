@@ -15,6 +15,9 @@ Maven マルチモジュール:
 | `kysymys-app` | バックエンド本体 (Enkan / Kotowari-restful / Raoh / JOOQ / Bouncr) | 25 |
 | `kysymys-maven-plugin` | 解答提出用の Maven プラグイン (利用者の手元で動く) | 17 |
 | `kysymys-scorer-java` | Java 解答の採点ロジック | 17 |
+| `kysymys-activity-agent` | 作業状況テレメトリの Maven 拡張 (Go バイナリをサーバから DL して起動) | 17 |
+
+加えて Maven モジュールではない Go プロジェクト `kysymys-agent/` がある (参加者側の常駐ウォッチャー本体。単一バイナリ、stdlib のみ)。`kysymys-app` の `mvn package` 時に darwin-arm64 / windows-amd64 / linux-amd64 へクロスコンパイルされ、`kysymys-app` の `GET /agent/<os-arch>` から配信される。`kysymys-activity-agent`(拡張)はこれを初回ビルド時にダウンロードしてキャッシュ・起動する。サーバのビルドに Go ツールチェインが要る (`mvn package` 時のみ、`mvn test` には不要)。
 
 ビルド時の JDK は Java 25 一本でよく、外部モジュールは `<release>17</release>` で Java 17 互換 class file を出力します。Maven Toolchains は使いません。
 
@@ -43,8 +46,17 @@ kysymys-app/src/main/java/net/unit8/kysymys/
 ├── health/
 │   ├── HealthResource.java           -- /health
 │   └── MeResource.java               -- /me (Bouncr 認証疎通用)
-└── (後続 Sub で lesson/ user/ avatar/ notification/ を data/behavior/dao/resource 構成で追加)
+├── activity/                         -- 作業状況テレメトリ (data/behavior/dao/resource)
+└── (lesson/ user/ avatar/ notification/ を data/behavior/dao/resource 構成で配置)
 ```
+
+## 作業状況テレメトリ (activity)
+
+研修で submit を待たずに各参加者の作業状況を集め、手助けが要る人を講師が見つけるための仕組み。詳細は `doc/training-activity-setup.md`。
+
+- 参加者側: `kysymys-activity-agent` (Maven 拡張で `mvn` のたびにビルド成否を HTTP 送信し、ホストに合う Go バイナリ `kysymys-agent` をサーバから DL してウォッチャーを起動。ファイル編集の heartbeat はその Go バイナリが送信) と `mvn kysymys:stuck` / `kysymys:resolved`
+- サーバ側: `POST /activity` (テレメトリ受信、Bouncr JWT 認証、participantId = principal)、`GET /activity/status` (講師専用、TEACHER 権限。全参加者の現在状態を導出)、`GET /agent/<os-arch>` (Go バイナリ配信、認証不要のローエンドポイント)。蓄積は `activity_events` テーブル (Flyway V5)、状態は読み取り時に導出
+- 講師側: React の `/dashboard` (teacher 専用、3 秒 polling)
 
 各 Bounded Context (Sub-B 以降で追加) の配下には:
 

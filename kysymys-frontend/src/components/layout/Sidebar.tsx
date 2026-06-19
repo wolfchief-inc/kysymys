@@ -9,8 +9,10 @@ import {
   Mail,
   Bell,
   UsersRound,
+  MonitorDot,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { isTeacher } from "@/lib/auth";
 
 type Item = {
   to: string;
@@ -29,6 +31,15 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     { to: "/followers/answers", label: t("nav.followers"), icon: UsersRound },
     { to: "/users", label: t("nav.users"), icon: Users },
     { to: "/teachers", label: t("nav.teachers"), icon: GraduationCap },
+    ...(isTeacher()
+      ? [
+          {
+            to: "/dashboard",
+            label: t("nav.instructorDashboard"),
+            icon: MonitorDot,
+          },
+        ]
+      : []),
     { to: "/offers", label: t("nav.offers"), icon: Mail },
     { to: "/notifications", label: t("nav.notifications"), icon: Bell },
   ];

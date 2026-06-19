@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.unit8.kysymys</groupId>
+        <artifactId>kysymys-parent</artifactId>
+        <version>0.2.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>kysymys-activity-agent</artifactId>
+    <packaging>jar</packaging>
+
+    <description>
+        Maven core extension + background watcher that reports a participant's
+        work activity (build outcomes, file-change heartbeats) to a kysymys
+        server, so an instructor can see who needs help without waiting for an
+        explicit answer submission. Loaded by the exercise repository via
+        .mvn/extensions.xml. Java 17, no third-party runtime dependencies.
+    </description>
+
+    <properties>
+        <maven.version>3.6.1</maven.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>17</release>
+                </configuration>
+            </plugin>
+            <!--
+              No Go binaries are bundled here: the extension downloads the one
+              matching the host from the kysymys server (GET /agent/<os-arch>) on
+              first build and caches it. The binaries are cross-compiled and served
+              by kysymys-app (see its pom.xml). So this jar stays small and the
+              build needs no Go toolchain.
+            -->
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- Provided by the Maven runtime when this jar is loaded as a core extension. -->
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-core</artifactId>
+            <version>${maven.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

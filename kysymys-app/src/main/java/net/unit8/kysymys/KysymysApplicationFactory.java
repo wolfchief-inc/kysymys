@@ -29,6 +29,9 @@ import net.unit8.kysymys.health.MeResource;
 import net.unit8.kysymys.inject.DSLContextInjector;
 import net.unit8.kysymys.inject.EventBusInjector;
 import net.unit8.kysymys.inject.UserIdInjector;
+import net.unit8.kysymys.activity.resource.ActivityResource;
+import net.unit8.kysymys.activity.resource.ActivityStatusResource;
+import net.unit8.kysymys.activity.resource.AgentBinaryEndpoint;
 import net.unit8.kysymys.system.EventBusBindMiddleware;
 import net.unit8.kysymys.lesson.resource.AnswerResource;
 import net.unit8.kysymys.lesson.resource.AnswersResource;
@@ -117,6 +120,10 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
             r.get("/whats-news").to(WhatsNewsResource.class);
             r.put("/whats-news/:id/read").to(WhatsNewsResource.class);
 
+            // Activity — work telemetry + instructor dashboard
+            r.post("/activity").to(ActivityResource.class);
+            r.get("/activity/status").to(ActivityStatusResource.class);
+
             // Lesson — follower answers (Sub-B deferred)
             r.get("/followers/answers").to(FollowerAnswersResource.class);
 
@@ -138,6 +145,10 @@ public class KysymysApplicationFactory implements ApplicationFactory<HttpRequest
         // responses don't have to go through the JSON-only SerDes pipeline.
         app.use(enkan.predicate.PathPredicate.GET(AvatarEndpoint.PATH.pattern()),
                 "avatarEndpoint", new AvatarEndpoint());
+        // Agent binary download sits before content negotiation/auth: it streams a
+        // raw executable and participants fetch it before any token round-trip.
+        app.use(enkan.predicate.PathPredicate.GET(AgentBinaryEndpoint.PATH.pattern()),
+                "agentBinaryEndpoint", new AgentBinaryEndpoint());
         app.use(builder(new ContentNegotiationMiddleware())
                 .set(ContentNegotiationMiddleware::setAllowedTypes, Set.of("application/json"))
                 .build());

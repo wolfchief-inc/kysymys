@@ -10,6 +10,7 @@
     "followers": "フォロー中の回答",
     "users": "ユーザー",
     "teachers": "先生一覧",
+    "instructorDashboard": "指導ダッシュボード",
     "offers": "招待",
     "notifications": "通知",
     "logout": "ログアウト"
@@ -48,6 +49,18 @@
     "myRecentAnswers": "自分の最近の回答",
     "followersAnswers": "フォロー中の最近の回答",
     "empty": "まだありません"
+  },
+  "instructorDashboard": {
+    "title": "指導ダッシュボード",
+    "empty": "まだ活動がありません",
+    "idle": "停滞",
+    "justNow": "たった今",
+    "lastBuild": "最終ビルド",
+    "buildPassed": "成功",
+    "buildFailed": "失敗",
+    "stuck": "ヘルプ",
+    "noProblem": "課題なし",
+    "updatedAgo": "{{seconds}}秒前に更新"
   },
   "problem": {
     "list": "課題一覧",

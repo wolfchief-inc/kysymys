@@ -10,6 +10,7 @@
     "followers": "Following",
     "users": "Users",
     "teachers": "Teachers",
+    "instructorDashboard": "Instructor Dashboard",
     "offers": "Offers",
     "notifications": "Notifications",
     "logout": "Logout"
@@ -48,6 +49,18 @@
     "myRecentAnswers": "My recent answers",
     "followersAnswers": "Following's recent answers",
     "empty": "Nothing yet"
+  },
+  "instructorDashboard": {
+    "title": "Instructor Dashboard",
+    "empty": "No activity yet",
+    "idle": "Idle",
+    "justNow": "just now",
+    "lastBuild": "Last build",
+    "buildPassed": "Passed",
+    "buildFailed": "Failed",
+    "stuck": "STUCK",
+    "noProblem": "No problem",
+    "updatedAgo": "updated {{seconds}}s ago"
   },
   "problem": {
     "list": "Problems",
