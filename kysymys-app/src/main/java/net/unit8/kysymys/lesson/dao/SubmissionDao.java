@@ -59,11 +59,6 @@ public class SubmissionDao {
                                 .where(ANSWER_ID.eq(answerId.value()))
                 ))
                 .fetchOne();
-        return Optional.ofNullable(rec).map(r -> new Submission(
-                new SubmissionId(r.get(ID)),
-                new AnswerId(r.get(ANSWER_ID)),
-                new CommitHash(r.get(COMMIT_HASH)),
-                r.get(SUBMITTED_AT)
-        ));
+        return Optional.ofNullable(rec).map(r -> LessonRecordDecoders.SUBMISSION.decode(r).getOrThrow());
     }
 }

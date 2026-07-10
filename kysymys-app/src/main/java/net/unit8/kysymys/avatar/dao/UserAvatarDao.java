@@ -30,7 +30,7 @@ public class UserAvatarDao {
         if (rec == null) return Optional.empty();
         byte[] image = rec.get(IMAGE_CONTENT);
         if (image == null || image.length == 0) return Optional.empty();
-        return Optional.of(new UserAvatar(UserId.of(rec.get(USER_ID)), image));
+        return Optional.of(AvatarRecordDecoders.USER_AVATAR.decode(rec).getOrThrow());
     }
 
     public void upsert(UserAvatar avatar) {

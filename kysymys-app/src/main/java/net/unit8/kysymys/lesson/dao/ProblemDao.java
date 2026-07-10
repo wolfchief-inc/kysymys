@@ -88,7 +88,7 @@ public class ProblemDao {
                 .from(PROBLEMS)
                 .where(ID.eq(id.value()))
                 .fetchOne();
-        return Optional.ofNullable(rec).map(r -> ProblemRecordDecoders.PROBLEM.decode(r).getOrThrow());
+        return Optional.ofNullable(rec).map(r -> LessonRecordDecoders.PROBLEM.decode(r).getOrThrow());
     }
 
     public Optional<ProblemStatus> findStatus(ProblemLifecycleId lifecycleId) {
@@ -115,7 +115,7 @@ public class ProblemDao {
                 .from(PROBLEMS)
                 .join(LIFECYCLES).on(problemLifecycleId.eq(lifecycleId))
                 .where(lifecycleStatus.eq(ProblemStatus.ACTIVE.name()))
-                .fetch(r -> ProblemRecordDecoders.PROBLEM.decode(r).getOrThrow());
+                .fetch(r -> LessonRecordDecoders.PROBLEM.decode(r).getOrThrow());
     }
 
     // ---- write-side mapping helpers ----

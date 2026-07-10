@@ -40,7 +40,7 @@ public class OfferDao {
                 .from(table("offers"))
                 .where(ID.eq(id.value()))
                 .fetchOne();
-        return Optional.ofNullable(rec).map(OfferDao::mapOffer);
+        return Optional.ofNullable(rec).map(r -> UserRecordDecoders.OFFER.decode(r).getOrThrow());
     }
 
     public List<Offer> listByTarget(UserId targetUserId) {
@@ -48,7 +48,7 @@ public class OfferDao {
                 .from(table("offers"))
                 .where(TARGET_USER_ID.eq(targetUserId.value()))
                 .orderBy(OFFERED_AT.asc())
-                .fetch(OfferDao::mapOffer);
+                .fetch(r -> UserRecordDecoders.OFFER.decode(r).getOrThrow());
     }
 
     public boolean alreadyExists(UserId offeringUserId, UserId targetUserId) {
@@ -60,13 +60,5 @@ public class OfferDao {
 
     public void delete(OfferId id) {
         dsl.deleteFrom(table("offers")).where(ID.eq(id.value())).execute();
-    }
-
-    private static Offer mapOffer(Record r) {
-        return new Offer(
-                OfferId.of(r.get(ID)),
-                UserId.of(r.get(OFFERING_USER_ID)),
-                UserId.of(r.get(TARGET_USER_ID)),
-                r.get(OFFERED_AT));
     }
 }

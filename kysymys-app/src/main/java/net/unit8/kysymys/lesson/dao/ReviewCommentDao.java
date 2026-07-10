@@ -1,7 +1,6 @@
 package net.unit8.kysymys.lesson.dao;
 
 import net.unit8.kysymys.lesson.data.*;
-import net.unit8.kysymys.user.data.UserId;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 
@@ -37,12 +36,6 @@ public class ReviewCommentDao {
                 .from(table("review_comments"))
                 .where(ANSWER_ID.eq(answerId.value()))
                 .orderBy(POSTED_AT.asc())
-                .fetch(r -> new ReviewComment(
-                        new CommentId(r.get(ID)),
-                        new AnswerId(r.get(ANSWER_ID)),
-                        UserId.of(r.get(COMMENTER_ID)),
-                        new Description(r.get(DESCRIPTION)),
-                        r.get(POSTED_AT)
-                ));
+                .fetch(r -> LessonRecordDecoders.REVIEW_COMMENT.decode(r).getOrThrow());
     }
 }
