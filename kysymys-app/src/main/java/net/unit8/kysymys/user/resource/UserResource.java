@@ -7,21 +7,18 @@ import kotowari.restful.data.Problem;
 import kotowari.restful.data.RestContext;
 import kotowari.restful.resource.AllowedMethods;
 import net.unit8.kysymys.system.KysymysEventBus;
+import net.unit8.kysymys.system.Optionals;
+import net.unit8.kysymys.system.Problems;
+import net.unit8.kysymys.system.RestContexts;
 import net.unit8.kysymys.user.behavior.PrincipalRegistration;
 import net.unit8.kysymys.user.behavior.UpdateProfile;
 import net.unit8.kysymys.user.dao.UserDao;
 import net.unit8.kysymys.user.data.User;
-import net.unit8.kysymys.user.data.UserId;
-import net.unit8.raoh.Err;
-import net.unit8.raoh.Ok;
-import net.unit8.raoh.Result;
 import org.jooq.DSLContext;
 import tools.jackson.databind.JsonNode;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static kotowari.restful.DecisionPoint.*;
 
@@ -46,37 +43,23 @@ public class UserResource {
 
     @Decision(EXISTS)
     public boolean exists(Parameters params, DSLContext dsl, RestContext context) {
-        UserId id;
-        try { id = UserId.of(params.get("id")); }
-        catch (IllegalArgumentException ex) { return false; }
-        Optional<User> u = new UserDao(dsl).findById(id);
-        if (u.isEmpty()) return false;
-        context.put(USER, u.get());
-        return true;
+        return UserPathDecoders.USER_ID.decode(params.get("id"))
+                .fold(id -> RestContexts.stash(context, USER, new UserDao(dsl).findById(id)), _ -> false);
     }
 
     @Decision(value = MALFORMED, method = {"PUT"})
     public Problem validate(JsonNode body, RestContext context) {
-        Result<UserJsonDecoders.UpdateProfileInput> result = UserJsonDecoders.UPDATE_PROFILE.decode(body);
-        if (result instanceof Ok<UserJsonDecoders.UpdateProfileInput> ok) {
-            context.put(INPUT, ok.value());
-            return null;
-        }
-        Err<UserJsonDecoders.UpdateProfileInput> err = (Err<UserJsonDecoders.UpdateProfileInput>) result;
-        List<Problem.Violation> violations = err.issues().asList().stream()
-                .map(i -> new Problem.Violation(i.path().toJsonPointer(), i.code(), i.message()))
-                .toList();
-        return Problem.fromViolationList(violations);
+        return UserJsonDecoders.UPDATE_PROFILE.decode(body).fold(
+                input -> { context.put(INPUT, input); return null; },
+                Problems::of);
     }
 
     @Decision(PUT)
     public boolean update(DSLContext dsl, RestContext context) {
-        UserJsonDecoders.UpdateProfileInput input = context.get(INPUT).orElseThrow();
-        User existing = context.get(USER).orElseThrow();
-        Optional<User> updated = new UpdateProfile(dsl).apply(
-                new UpdateProfile.Input(existing.id(), input.email(), input.name()));
-        updated.ifPresent(u -> context.put(USER, u));
-        return updated.isPresent();
+        return Optionals.map2(context.get(INPUT), context.get(USER),
+                        (input, existing) -> RestContexts.stash(context, USER, new UpdateProfile(dsl).apply(
+                                new UpdateProfile.Input(existing.id(), input.email(), input.name()))))
+                .orElse(false);
     }
 
     @Decision(NEW)
@@ -87,6 +70,6 @@ public class UserResource {
 
     @Decision(HANDLE_OK)
     public Map<String, Object> show(RestContext context) {
-        return UserJsonEncoders.encodeUser(context.get(USER).orElseThrow());
+        return context.get(USER).map(UserJsonEncoders::encodeUser).orElseThrow();
     }
 }

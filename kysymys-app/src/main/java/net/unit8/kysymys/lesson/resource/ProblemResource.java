@@ -9,12 +9,11 @@ import kotowari.restful.resource.AllowedMethods;
 import net.unit8.kysymys.lesson.behavior.ArchiveProblem;
 import net.unit8.kysymys.lesson.behavior.UpdateProblem;
 import net.unit8.kysymys.lesson.dao.ProblemDao;
-import net.unit8.kysymys.lesson.data.ProblemId;
 import net.unit8.kysymys.lesson.data.ProblemStatus;
+import net.unit8.kysymys.system.Optionals;
+import net.unit8.kysymys.system.Problems;
+import net.unit8.kysymys.system.RestContexts;
 import net.unit8.kysymys.user.data.UserId;
-import net.unit8.raoh.Err;
-import net.unit8.raoh.Ok;
-import net.unit8.raoh.Result;
 import org.jooq.DSLContext;
 import tools.jackson.databind.JsonNode;
 
@@ -56,52 +55,49 @@ public class ProblemResource {
 
     @Decision(EXISTS)
     public boolean exists(Parameters params, DSLContext dsl, RestContext context) {
-        ProblemId id;
-        try {
-            id = new ProblemId(params.get("id"));
-        } catch (IllegalArgumentException ex) {
-            return false;
-        }
-        Optional<net.unit8.kysymys.lesson.data.Problem> p = new ProblemDao(dsl).findById(id);
-        if (p.isEmpty()) return false;
-        ProblemStatus status = new ProblemDao(dsl).findStatus(p.get().lifecycleId())
-                .orElse(ProblemStatus.ACTIVE);
-        context.put(PROBLEM, p.get());
-        context.put(STATUS, status);
-        return true;
+        return LessonPathDecoders.PROBLEM_ID.decode(params.get("id"))
+                .fold(id -> stashProblem(context, dsl, new ProblemDao(dsl).findById(id)), _ -> false);
+    }
+
+    /** Remembers the problem together with its derived lifecycle status, or reports absence. */
+    private static boolean stashProblem(RestContext context, DSLContext dsl,
+                                        Optional<net.unit8.kysymys.lesson.data.Problem> found) {
+        found.ifPresent(problem -> {
+            context.put(PROBLEM, problem);
+            context.put(STATUS, new ProblemDao(dsl).findStatus(problem.lifecycleId())
+                    .orElse(ProblemStatus.ACTIVE));
+        });
+        return found.isPresent();
     }
 
     @Decision(value = MALFORMED, method = {"PUT"})
     public Problem validatePut(JsonNode body, RestContext context) {
-        Result<LessonJsonDecoders.UpdateProblemInput> result = LessonJsonDecoders.UPDATE_PROBLEM.decode(body);
-        if (result instanceof Ok<LessonJsonDecoders.UpdateProblemInput> ok) {
-            context.put(UPDATE_INPUT, ok.value());
-            return null;
-        }
-        Err<LessonJsonDecoders.UpdateProblemInput> err = (Err<LessonJsonDecoders.UpdateProblemInput>) result;
-        return Problem.fromViolationList(ProblemsResource.toViolations(err));
+        return LessonJsonDecoders.UPDATE_PROBLEM.decode(body).fold(
+                input -> { context.put(UPDATE_INPUT, input); return null; },
+                Problems::of);
     }
 
     @Decision(PUT)
     public boolean update(DSLContext dsl, UserId caller, RestContext context) {
-        LessonJsonDecoders.UpdateProblemInput input = context.get(UPDATE_INPUT).orElseThrow();
-        net.unit8.kysymys.lesson.data.Problem existing = context.get(PROBLEM).orElseThrow();
-        Optional<net.unit8.kysymys.lesson.data.Problem> updated = new UpdateProblem(dsl).apply(
-                new UpdateProblem.Input(existing.id(), input.name(), input.repository(),
-                        caller, LocalDateTime.now()));
-        updated.ifPresent(p -> context.put(PROBLEM, p));
-        return updated.isPresent();
+        return Optionals.map2(context.get(UPDATE_INPUT), context.get(PROBLEM),
+                        (input, existing) -> RestContexts.stash(context, PROBLEM, new UpdateProblem(dsl).apply(
+                                new UpdateProblem.Input(existing.id(), input.name(), input.repository(),
+                                        caller, LocalDateTime.now()))))
+                .orElse(false);
     }
 
     @Decision(DELETE)
     public boolean delete(DSLContext dsl, UserId caller, RestContext context) {
-        net.unit8.kysymys.lesson.data.Problem existing = context.get(PROBLEM).orElseThrow();
-        boolean ok = new ArchiveProblem(dsl).apply(
-                new ArchiveProblem.Input(existing.id(), caller, LocalDateTime.now()));
-        if (ok) {
-            context.put(STATUS, ProblemStatus.ARCHIVED);
-        }
-        return ok;
+        return context.get(PROBLEM)
+                .map(existing -> {
+                    boolean archived = new ArchiveProblem(dsl).apply(
+                            new ArchiveProblem.Input(existing.id(), caller, LocalDateTime.now()));
+                    if (archived) {
+                        context.put(STATUS, ProblemStatus.ARCHIVED);
+                    }
+                    return archived;
+                })
+                .orElse(false);
     }
 
     @Decision(NEW)
@@ -112,8 +108,9 @@ public class ProblemResource {
 
     @Decision(HANDLE_OK)
     public Map<String, Object> show(RestContext context) {
-        net.unit8.kysymys.lesson.data.Problem p = context.get(PROBLEM).orElseThrow();
-        ProblemStatus s = context.get(STATUS).orElse(ProblemStatus.ACTIVE);
-        return LessonJsonEncoders.encodeProblem(p, s);
+        return context.get(PROBLEM)
+                .map(problem -> LessonJsonEncoders.encodeProblem(
+                        problem, context.get(STATUS).orElse(ProblemStatus.ACTIVE)))
+                .orElseThrow();
     }
 }

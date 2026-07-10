@@ -13,7 +13,6 @@ import org.jooq.DSLContext;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static kotowari.restful.DecisionPoint.AUTHORIZED;
 import static kotowari.restful.DecisionPoint.HANDLE_OK;
@@ -40,7 +39,7 @@ public class FollowerAnswersResource {
         AnswerDao answers = new AnswerDao(dsl);
         SubmissionDao submissions = new SubmissionDao(dsl);
         return answers.listByAnswerers(followees).stream()
-                .map(a -> LessonJsonEncoders.encodeAnswer(a, Optional.ofNullable(submissions.findLatest(a.id()).orElse(null))))
+                .map(a -> LessonJsonEncoders.encodeAnswer(a, submissions.findLatest(a.id())))
                 .toList();
     }
 }

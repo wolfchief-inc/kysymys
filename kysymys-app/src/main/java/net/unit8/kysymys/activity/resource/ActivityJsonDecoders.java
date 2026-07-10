@@ -4,8 +4,6 @@ import net.unit8.kysymys.activity.data.ActivityKind;
 import net.unit8.raoh.decode.Decoder;
 import tools.jackson.databind.JsonNode;
 
-import java.util.regex.Pattern;
-
 import static net.unit8.raoh.json.JsonDecoders.*;
 
 /**
@@ -19,11 +17,8 @@ import static net.unit8.raoh.json.JsonDecoders.*;
 public final class ActivityJsonDecoders {
     private ActivityJsonDecoders() {}
 
-    private static final Pattern KIND = Pattern.compile(
-            "^(BUILD_SUCCESS|BUILD_FAILURE|HEARTBEAT|STUCK|RESOLVED)$");
-
     public static final Decoder<JsonNode, RecordActivityInput> RECORD_ACTIVITY = combine(
-            field("kind", string().pattern(KIND)).map(ActivityKind::valueOf),
+            field("kind", enumOf(ActivityKind.class)),
             optionalField("problemId", string().minLength(1).maxLength(64)),
             optionalField("detail", string().maxLength(2000))
     ).map((kind, problemId, detail) ->
