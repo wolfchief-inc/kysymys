@@ -88,7 +88,7 @@ public class ProblemDao {
                 .from(PROBLEMS)
                 .where(ID.eq(id.value()))
                 .fetchOne();
-        return Optional.ofNullable(rec).map(ProblemDao::mapProblem);
+        return Optional.ofNullable(rec).map(r -> ProblemRecordDecoders.PROBLEM.decode(r).getOrThrow());
     }
 
     public Optional<ProblemStatus> findStatus(ProblemLifecycleId lifecycleId) {
@@ -105,53 +105,20 @@ public class ProblemDao {
         Field<String> lifecycleId = field("problem_lifecycles.id", String.class);
         Field<String> problemLifecycleId = field("problems.problem_lifecycle_id", String.class);
         return dsl.select(
-                        field("problems.id", String.class),
-                        field("problems.name", String.class),
-                        field("problems.repository_url", String.class),
-                        field("problems.branch", String.class),
-                        field("problems.readme_path", String.class),
-                        field("problems.runner", String.class),
-                        field("problems.problem_lifecycle_id", String.class))
+                        field("problems.id", String.class).as("id"),
+                        field("problems.name", String.class).as("name"),
+                        field("problems.repository_url", String.class).as("repository_url"),
+                        field("problems.branch", String.class).as("branch"),
+                        field("problems.readme_path", String.class).as("readme_path"),
+                        field("problems.runner", String.class).as("runner"),
+                        field("problems.problem_lifecycle_id", String.class).as("problem_lifecycle_id"))
                 .from(PROBLEMS)
                 .join(LIFECYCLES).on(problemLifecycleId.eq(lifecycleId))
                 .where(lifecycleStatus.eq(ProblemStatus.ACTIVE.name()))
-                .fetch(r -> mapProblemFromQualified(r));
+                .fetch(r -> ProblemRecordDecoders.PROBLEM.decode(r).getOrThrow());
     }
 
-    // ---- mapping helpers ----
-
-    private static Problem mapProblem(Record r) {
-        return mapFromColumns(
-                r.get(ID), r.get(NAME), r.get(REPOSITORY_URL), r.get(BRANCH),
-                r.get(README_PATH), r.get(RUNNER), r.get(PROBLEM_LIFECYCLE_ID));
-    }
-
-    private static Problem mapProblemFromQualified(Record r) {
-        return mapFromColumns(
-                r.get("problems.id", String.class),
-                r.get("problems.name", String.class),
-                r.get("problems.repository_url", String.class),
-                r.get("problems.branch", String.class),
-                r.get("problems.readme_path", String.class),
-                r.get("problems.runner", String.class),
-                r.get("problems.problem_lifecycle_id", String.class));
-    }
-
-    private static Problem mapFromColumns(String id, String name, String url, String branch,
-                                          String readmePath, String runner, String lifecycleId) {
-        ProblemRepository repo = switch (runner == null ? "generic" : runner) {
-            case "github" -> new GitHubProblemRepository(url, branch, readmePath);
-            case "bitbucket" -> new BitBucketProblemRepository(url, branch, readmePath);
-            case "generic" -> new GenericProblemRepository(url, branch);
-            default -> throw new IllegalStateException("unknown repository type: " + runner);
-        };
-        return new Problem(
-                new ProblemId(id),
-                new ProblemName(name),
-                repo,
-                new ProblemLifecycleId(lifecycleId)
-        );
-    }
+    // ---- write-side mapping helpers ----
 
     private static String branchOf(ProblemRepository repo) {
         return switch (repo) {
@@ -165,16 +132,16 @@ public class ProblemDao {
         return switch (repo) {
             case GitHubProblemRepository g -> g.readmePath();
             case BitBucketProblemRepository b -> b.readmePath();
-            case GenericProblemRepository g -> null;
+            case GenericProblemRepository _ -> null;
         };
     }
 
     /** The {@code runner} column doubles as the discriminator for {@link ProblemRepository}. */
     private static String repositoryTypeKey(ProblemRepository repo) {
         return switch (repo) {
-            case GitHubProblemRepository g -> "github";
-            case BitBucketProblemRepository b -> "bitbucket";
-            case GenericProblemRepository g -> "generic";
+            case GitHubProblemRepository _ -> "github";
+            case BitBucketProblemRepository _ -> "bitbucket";
+            case GenericProblemRepository _ -> "generic";
         };
     }
 }
