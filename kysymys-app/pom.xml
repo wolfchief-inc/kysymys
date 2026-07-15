@@ -114,6 +114,14 @@
     </build>
 
     <dependencies>
+        <!-- Jackson 3. raoh-json scopes Jackson as provided (raoh 0.6.0) while exposing JsonNode in
+             its API, so the consumer supplies it. Our resource/decoder classes use JsonNode directly
+             too, so declare it rather than leaning on enkan-component-jackson's transitive copy. -->
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
         <!-- JSON body reader/writer (loaded by SerDesMiddleware via ServiceLoader) -->
         <dependency>
             <groupId>tools.jackson.jakarta.rs</groupId>
