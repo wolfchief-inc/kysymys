@@ -1,6 +1,7 @@
 package net.unit8.kysymys.lesson.dao;
 
 import net.unit8.kysymys.lesson.data.*;
+import net.unit8.raoh.Result;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 
@@ -32,10 +33,12 @@ public class ReviewCommentDao {
     }
 
     public List<ReviewComment> listByAnswer(AnswerId answerId) {
-        return dsl.select(ID, ANSWER_ID, COMMENTER_ID, DESCRIPTION, POSTED_AT)
-                .from(table("review_comments"))
-                .where(ANSWER_ID.eq(answerId.value()))
-                .orderBy(POSTED_AT.asc())
-                .fetch(r -> LessonRecordDecoders.REVIEW_COMMENT.decode(r).getOrThrow());
+        return Result.traverse(
+                dsl.select(ID, ANSWER_ID, COMMENTER_ID, DESCRIPTION, POSTED_AT)
+                        .from(table("review_comments"))
+                        .where(ANSWER_ID.eq(answerId.value()))
+                        .orderBy(POSTED_AT.asc())
+                        .fetch(),
+                LessonRecordDecoders.REVIEW_COMMENT::decode).getOrThrow();
     }
 }

@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
+
 import static kotowari.restful.DecisionPoint.AUTHORIZED;
 import static kotowari.restful.DecisionPoint.HANDLE_CREATED;
 import static kotowari.restful.DecisionPoint.MALFORMED;
@@ -38,7 +40,7 @@ public class AnswersResource {
     }
 
     @Decision(value = MALFORMED, method = {"POST"})
-    public Problem validate(JsonNode body, RestContext context) {
+    public @Nullable Problem validate(JsonNode body, RestContext context) {
         return LessonJsonDecoders.SUBMIT_ANSWER.decode(body).fold(
                 input -> { context.put(SUBMIT_INPUT, input); return null; },
                 Problems::of);

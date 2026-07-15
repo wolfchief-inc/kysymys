@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
+
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
 
@@ -89,7 +91,7 @@ public class UserDao {
         ));
     }
 
-    public List<User> list(String query) {
+    public List<User> list(@Nullable String query) {
         var select = dsl.select(ID, EMAIL, NAME).from(table("users"));
         if (query == null || query.isBlank()) {
             return select.fetch().stream().map(this::mapWithRoles).toList();

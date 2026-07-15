@@ -3,6 +3,7 @@ package net.unit8.kysymys.inject;
 import enkan.web.data.HttpRequest;
 import kotowari.inject.ParameterInjector;
 import net.unit8.kysymys.user.data.UserId;
+import org.jspecify.annotations.Nullable;
 
 import java.security.Principal;
 
@@ -23,7 +24,7 @@ public class UserIdInjector implements ParameterInjector<UserId> {
     }
 
     @Override
-    public UserId getInjectObject(HttpRequest request) {
+    public @Nullable UserId getInjectObject(HttpRequest request) {
         Principal principal = request.getPrincipal();
         if (principal == null) return null;
         return UserId.of(principal.getName());

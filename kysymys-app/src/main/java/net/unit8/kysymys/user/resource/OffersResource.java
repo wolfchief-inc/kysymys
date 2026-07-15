@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import static kotowari.restful.DecisionPoint.*;
 
 @AllowedMethods({"GET", "POST"})
@@ -30,14 +32,14 @@ public class OffersResource {
     static final ContextKey<Offer> CREATED = ContextKey.of("createdOffer", Offer.class);
 
     @Decision(AUTHORIZED)
-    public boolean authorized(Principal principal, DSLContext dsl, KysymysEventBus eventBus) {
+    public boolean authorized(@Nullable Principal principal, DSLContext dsl, KysymysEventBus eventBus) {
         if (principal == null) return false;
         PrincipalRegistration.ensure(principal, dsl, eventBus);
         return true;
     }
 
     @Decision(value = MALFORMED, method = {"POST"})
-    public Problem validate(JsonNode body, RestContext context) {
+    public @Nullable Problem validate(JsonNode body, RestContext context) {
         return UserJsonDecoders.OFFER.decode(body).fold(
                 target -> { context.put(TARGET, target); return null; },
                 Problems::of);

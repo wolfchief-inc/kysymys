@@ -2,7 +2,6 @@ package net.unit8.kysymys.lesson.dao;
 
 import net.unit8.kysymys.lesson.data.*;
 import net.unit8.kysymys.user.data.UserId;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -10,14 +9,8 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AnswerDaoTest {
-    private static DaoTestSupport support;
-    private static AnswerDao dao;
-
-    @BeforeAll
-    static void setUp() {
-        support = new DaoTestSupport();
-        dao = new AnswerDao(support.dsl());
-    }
+    private static final DaoTestSupport support = new DaoTestSupport();
+    private static final AnswerDao dao = new AnswerDao(support.dsl());
 
     @Test
     void upsertReturnsExistingIdForSameAnswerer() {

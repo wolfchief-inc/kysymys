@@ -22,6 +22,8 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
+
 import static kotowari.restful.DecisionPoint.ALLOWED;
 import static kotowari.restful.DecisionPoint.AUTHORIZED;
 import static kotowari.restful.DecisionPoint.DELETE;
@@ -71,7 +73,7 @@ public class ProblemResource {
     }
 
     @Decision(value = MALFORMED, method = {"PUT"})
-    public Problem validatePut(JsonNode body, RestContext context) {
+    public @Nullable Problem validatePut(JsonNode body, RestContext context) {
         return LessonJsonDecoders.UPDATE_PROBLEM.decode(body).fold(
                 input -> { context.put(UPDATE_INPUT, input); return null; },
                 Problems::of);

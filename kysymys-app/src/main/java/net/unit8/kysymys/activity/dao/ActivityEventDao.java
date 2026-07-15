@@ -7,12 +7,14 @@ import net.unit8.kysymys.user.data.UserId;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
+import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
@@ -57,7 +59,7 @@ public class ActivityEventDao {
             String pid = r.get(PARTICIPANT_ID);
             ActivityKind kind = ActivityKind.valueOf(r.get(KIND));
             LocalDateTime at = r.get(OCCURRED_AT);
-            Acc a = accs.computeIfAbsent(pid, k -> new Acc());
+            Acc a = accs.computeIfAbsent(pid, _ -> new Acc());
             a.lastActivityAt = at; // events are ascending, so the last seen is the max
             if (r.get(PROBLEM_ID) != null) {
                 a.problemId = r.get(PROBLEM_ID);
@@ -79,7 +81,7 @@ public class ActivityEventDao {
             boolean stuck = a.stuckAt != null
                     && (a.resolvedAt == null || a.stuckAt.isAfter(a.resolvedAt));
             out.add(new ParticipantStatus(
-                    UserId.of(pid), a.problemId, a.lastActivityAt,
+                    UserId.of(pid), a.problemId, Objects.requireNonNull(a.lastActivityAt),
                     a.lastBuildKind, a.lastBuildAt, a.lastBuildDetail, stuck));
         });
         return out;
@@ -87,12 +89,12 @@ public class ActivityEventDao {
 
     /** Mutable per-participant accumulator used while reducing the event stream. */
     private static final class Acc {
-        String problemId;
-        LocalDateTime lastActivityAt;
-        ActivityKind lastBuildKind;
-        LocalDateTime lastBuildAt;
-        String lastBuildDetail;
-        LocalDateTime stuckAt;
-        LocalDateTime resolvedAt;
+        @Nullable String problemId;
+        @Nullable LocalDateTime lastActivityAt;
+        @Nullable ActivityKind lastBuildKind;
+        @Nullable LocalDateTime lastBuildAt;
+        @Nullable String lastBuildDetail;
+        @Nullable LocalDateTime stuckAt;
+        @Nullable LocalDateTime resolvedAt;
     }
 }

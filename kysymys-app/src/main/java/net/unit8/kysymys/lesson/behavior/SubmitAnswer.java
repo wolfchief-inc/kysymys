@@ -12,6 +12,7 @@ import net.unit8.kysymys.user.data.User;
 import net.unit8.kysymys.user.data.UserId;
 import net.unit8.kysymys.user.data.UserName;
 import org.jooq.DSLContext;
+import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,14 +20,14 @@ import java.util.Optional;
 
 public class SubmitAnswer {
     private final DSLContext dsl;
-    private final KysymysEventBus eventBus;
+    private final @Nullable KysymysEventBus eventBus;
 
     /** Test/legacy constructor: no event publication. */
     public SubmitAnswer(DSLContext dsl) {
         this(dsl, null);
     }
 
-    public SubmitAnswer(DSLContext dsl, KysymysEventBus eventBus) {
+    public SubmitAnswer(DSLContext dsl, @Nullable KysymysEventBus eventBus) {
         this.dsl = dsl;
         this.eventBus = eventBus;
     }
@@ -53,14 +54,15 @@ public class SubmitAnswer {
             holder[0] = new Output(ans, submission);
         });
 
-        if (eventBus != null) {
+        KysymysEventBus bus = eventBus;
+        if (bus != null) {
             // Look up answerer name + followers after the write commits so a publish
             // failure can never strand a half-written submission.
             UserName answererName = new UserDao(dsl).findById(in.answererId())
                     .map(User::name)
                     .orElse(new UserName(in.answererId().value()));
             List<UserId> followers = new ConnectionDao(dsl).listFollowersOf(in.answererId());
-            eventBus.publish(new SubmittedAnswerEvent(
+            bus.publish(new SubmittedAnswerEvent(
                     holder[0].answer().id(),
                     in.problemId(),
                     problem.get().name(),

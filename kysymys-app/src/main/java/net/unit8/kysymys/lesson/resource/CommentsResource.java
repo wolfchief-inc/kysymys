@@ -18,6 +18,8 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import static kotowari.restful.DecisionPoint.AUTHORIZED;
 import static kotowari.restful.DecisionPoint.HANDLE_CREATED;
 import static kotowari.restful.DecisionPoint.MALFORMED;
@@ -37,7 +39,7 @@ public class CommentsResource {
     }
 
     @Decision(value = MALFORMED, method = {"POST"})
-    public Problem validate(JsonNode body, RestContext context) {
+    public @Nullable Problem validate(JsonNode body, RestContext context) {
         return LessonJsonDecoders.POST_COMMENT.decode(body).fold(
                 input -> { context.put(POST_INPUT, input); return null; },
                 Problems::of);

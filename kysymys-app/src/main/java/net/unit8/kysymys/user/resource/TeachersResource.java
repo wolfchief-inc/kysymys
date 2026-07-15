@@ -12,6 +12,8 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import static kotowari.restful.DecisionPoint.AUTHORIZED;
 import static kotowari.restful.DecisionPoint.HANDLE_OK;
 
@@ -19,7 +21,7 @@ import static kotowari.restful.DecisionPoint.HANDLE_OK;
 public class TeachersResource {
 
     @Decision(AUTHORIZED)
-    public boolean authorized(Principal principal, DSLContext dsl, KysymysEventBus eventBus) {
+    public boolean authorized(@Nullable Principal principal, DSLContext dsl, KysymysEventBus eventBus) {
         if (principal == null) return false;
         PrincipalRegistration.ensure(principal, dsl, eventBus);
         return true;

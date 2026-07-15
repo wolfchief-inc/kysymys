@@ -5,7 +5,6 @@ import net.unit8.kysymys.lesson.dao.ProblemDao;
 import net.unit8.kysymys.lesson.dao.ProblemEventDao;
 import net.unit8.kysymys.lesson.data.*;
 import net.unit8.kysymys.user.data.UserId;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -13,16 +12,9 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ArchiveProblemTest {
-    private static DaoTestSupport support;
-    private static CreateProblem create;
-    private static ArchiveProblem archive;
-
-    @BeforeAll
-    static void setUp() {
-        support = new DaoTestSupport();
-        create = new CreateProblem(support.dsl());
-        archive = new ArchiveProblem(support.dsl());
-    }
+    private static final DaoTestSupport support = new DaoTestSupport();
+    private static final CreateProblem create = new CreateProblem(support.dsl());
+    private static final ArchiveProblem archive = new ArchiveProblem(support.dsl());
 
     @Test
     void archiveSwitchesStatusAndAppendsEvent() {

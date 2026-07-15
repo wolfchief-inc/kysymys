@@ -14,6 +14,11 @@ public record GitHubProblemRepository(String url, String branch, String readmePa
     }
 
     @Override
+    public String typeKey() {
+        return "github";
+    }
+
+    @Override
     public String problemUrl() {
         return chopDotGit(url) + "/blob/" + branch + readmePath;
     }

@@ -1,9 +1,9 @@
 package net.unit8.kysymys.lesson.dao;
 
 import net.unit8.kysymys.lesson.data.*;
+import net.unit8.raoh.Result;
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.jooq.Record;
 import org.jooq.Table;
 
 import java.util.List;
@@ -51,9 +51,9 @@ public class ProblemDao {
                 .values(p.id().value(),
                         p.name().value(),
                         p.repository().url(),
-                        branchOf(p.repository()),
-                        readmePathOrNull(p.repository()),
-                        repositoryTypeKey(p.repository()),
+                        p.repository().branch(),
+                        p.repository().readmePath(),
+                        p.repository().typeKey(),
                         null)
                 .execute();
         dsl.insertInto(LIFECYCLES, ID, PROBLEM_ID, STATUS)
@@ -69,9 +69,9 @@ public class ProblemDao {
         dsl.update(PROBLEMS)
                 .set(NAME, p.name().value())
                 .set(REPOSITORY_URL, p.repository().url())
-                .set(BRANCH, branchOf(p.repository()))
-                .set(README_PATH, readmePathOrNull(p.repository()))
-                .set(RUNNER, repositoryTypeKey(p.repository()))
+                .set(BRANCH, p.repository().branch())
+                .set(README_PATH, p.repository().readmePath())
+                .set(RUNNER, p.repository().typeKey())
                 .where(ID.eq(p.id().value()))
                 .execute();
     }
@@ -84,11 +84,11 @@ public class ProblemDao {
     }
 
     public Optional<Problem> findById(ProblemId id) {
-        Record rec = dsl.select(ID, NAME, REPOSITORY_URL, BRANCH, README_PATH, RUNNER, PROBLEM_LIFECYCLE_ID)
+        return dsl.select(ID, NAME, REPOSITORY_URL, BRANCH, README_PATH, RUNNER, PROBLEM_LIFECYCLE_ID)
                 .from(PROBLEMS)
                 .where(ID.eq(id.value()))
-                .fetchOne();
-        return Optional.ofNullable(rec).map(r -> LessonRecordDecoders.PROBLEM.decode(r).getOrThrow());
+                .fetchOptional()
+                .map(r -> LessonRecordDecoders.PROBLEM.decode(r).getOrThrow());
     }
 
     public Optional<ProblemStatus> findStatus(ProblemLifecycleId lifecycleId) {
@@ -104,44 +104,19 @@ public class ProblemDao {
         Field<String> lifecycleStatus = field("problem_lifecycles.status", String.class);
         Field<String> lifecycleId = field("problem_lifecycles.id", String.class);
         Field<String> problemLifecycleId = field("problems.problem_lifecycle_id", String.class);
-        return dsl.select(
-                        field("problems.id", String.class).as("id"),
-                        field("problems.name", String.class).as("name"),
-                        field("problems.repository_url", String.class).as("repository_url"),
-                        field("problems.branch", String.class).as("branch"),
-                        field("problems.readme_path", String.class).as("readme_path"),
-                        field("problems.runner", String.class).as("runner"),
-                        field("problems.problem_lifecycle_id", String.class).as("problem_lifecycle_id"))
-                .from(PROBLEMS)
-                .join(LIFECYCLES).on(problemLifecycleId.eq(lifecycleId))
-                .where(lifecycleStatus.eq(ProblemStatus.ACTIVE.name()))
-                .fetch(r -> LessonRecordDecoders.PROBLEM.decode(r).getOrThrow());
-    }
-
-    // ---- write-side mapping helpers ----
-
-    private static String branchOf(ProblemRepository repo) {
-        return switch (repo) {
-            case GitHubProblemRepository g -> g.branch();
-            case BitBucketProblemRepository b -> b.branch();
-            case GenericProblemRepository g -> g.branch();
-        };
-    }
-
-    private static String readmePathOrNull(ProblemRepository repo) {
-        return switch (repo) {
-            case GitHubProblemRepository g -> g.readmePath();
-            case BitBucketProblemRepository b -> b.readmePath();
-            case GenericProblemRepository _ -> null;
-        };
-    }
-
-    /** The {@code runner} column doubles as the discriminator for {@link ProblemRepository}. */
-    private static String repositoryTypeKey(ProblemRepository repo) {
-        return switch (repo) {
-            case GitHubProblemRepository _ -> "github";
-            case BitBucketProblemRepository _ -> "bitbucket";
-            case GenericProblemRepository _ -> "generic";
-        };
+        return Result.traverse(
+                dsl.select(
+                                field("problems.id", String.class).as("id"),
+                                field("problems.name", String.class).as("name"),
+                                field("problems.repository_url", String.class).as("repository_url"),
+                                field("problems.branch", String.class).as("branch"),
+                                field("problems.readme_path", String.class).as("readme_path"),
+                                field("problems.runner", String.class).as("runner"),
+                                field("problems.problem_lifecycle_id", String.class).as("problem_lifecycle_id"))
+                        .from(PROBLEMS)
+                        .join(LIFECYCLES).on(problemLifecycleId.eq(lifecycleId))
+                        .where(lifecycleStatus.eq(ProblemStatus.ACTIVE.name()))
+                        .fetch(),
+                LessonRecordDecoders.PROBLEM::decode).getOrThrow();
     }
 }

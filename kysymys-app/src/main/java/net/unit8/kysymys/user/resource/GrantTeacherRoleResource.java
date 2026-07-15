@@ -18,6 +18,8 @@ import tools.jackson.databind.JsonNode;
 import java.security.Principal;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import static kotowari.restful.DecisionPoint.*;
 
 @AllowedMethods({"POST"})
@@ -27,7 +29,7 @@ public class GrantTeacherRoleResource {
     static final ContextKey<User> RESULT = ContextKey.of("result", User.class);
 
     @Decision(AUTHORIZED)
-    public boolean authorized(Principal principal, DSLContext dsl, KysymysEventBus eventBus) {
+    public boolean authorized(@Nullable Principal principal, DSLContext dsl, KysymysEventBus eventBus) {
         if (principal == null) return false;
         PrincipalRegistration.ensure(principal, dsl, eventBus);
         return true;
@@ -40,7 +42,7 @@ public class GrantTeacherRoleResource {
     }
 
     @Decision(MALFORMED)
-    public Problem validate(JsonNode body, RestContext context) {
+    public @Nullable Problem validate(JsonNode body, RestContext context) {
         return UserJsonDecoders.GRANT_TEACHER_ROLE.decode(body).fold(
                 target -> { context.put(TARGET, target); return null; },
                 Problems::of);

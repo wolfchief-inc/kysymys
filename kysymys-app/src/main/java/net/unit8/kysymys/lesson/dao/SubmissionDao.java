@@ -3,7 +3,6 @@ package net.unit8.kysymys.lesson.dao;
 import net.unit8.kysymys.lesson.data.*;
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.jooq.Record;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -52,13 +51,13 @@ public class SubmissionDao {
     }
 
     public Optional<Submission> findLatest(AnswerId answerId) {
-        Record rec = dsl.select(ID, ANSWER_ID, COMMIT_HASH, SUBMITTED_AT)
+        return dsl.select(ID, ANSWER_ID, COMMIT_HASH, SUBMITTED_AT)
                 .from(table("submissions"))
                 .where(ID.eq(
                         dsl.select(SUBMISSION_ID).from(table("latest_submissions"))
                                 .where(ANSWER_ID.eq(answerId.value()))
                 ))
-                .fetchOne();
-        return Optional.ofNullable(rec).map(r -> LessonRecordDecoders.SUBMISSION.decode(r).getOrThrow());
+                .fetchOptional()
+                .map(r -> LessonRecordDecoders.SUBMISSION.decode(r).getOrThrow());
     }
 }

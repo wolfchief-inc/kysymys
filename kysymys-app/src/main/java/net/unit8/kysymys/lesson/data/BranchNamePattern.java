@@ -15,7 +15,7 @@ final class BranchNamePattern {
     private BranchNamePattern() {}
 
     static String validateBranch(String branch) {
-        if (branch == null || branch.isEmpty() || branch.length() > 100) {
+        if (branch.isEmpty() || branch.length() > 100) {
             throw new IllegalArgumentException("branch must be 1..100 chars");
         }
         if (!BRANCH.matcher(branch).matches()) {
@@ -25,7 +25,7 @@ final class BranchNamePattern {
     }
 
     static String validateUrl(String url) {
-        if (url == null || url.isBlank() || url.length() > 255) {
+        if (url.isBlank() || url.length() > 255) {
             throw new IllegalArgumentException("url must be 1..255 chars");
         }
         return url;
@@ -36,7 +36,7 @@ final class BranchNamePattern {
     }
 
     static String validateReadmePath(String path) {
-        if (path == null || path.isEmpty() || path.length() > 100) {
+        if (path.isEmpty() || path.length() > 100) {
             throw new IllegalArgumentException("readmePath must be 1..100 chars");
         }
         return path;

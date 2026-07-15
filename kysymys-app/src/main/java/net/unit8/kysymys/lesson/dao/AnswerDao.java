@@ -2,9 +2,9 @@ package net.unit8.kysymys.lesson.dao;
 
 import net.unit8.kysymys.lesson.data.*;
 import net.unit8.kysymys.user.data.UserId;
+import net.unit8.raoh.Result;
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.jooq.Record;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,18 +48,20 @@ public class AnswerDao {
     }
 
     public Optional<Answer> findById(AnswerId id) {
-        Record rec = dsl.select(ID, PROBLEM_ID, ANSWERER_ID, REPOSITORY_URL)
+        return dsl.select(ID, PROBLEM_ID, ANSWERER_ID, REPOSITORY_URL)
                 .from(table("answers"))
                 .where(ID.eq(id.value()))
-                .fetchOne();
-        return Optional.ofNullable(rec).map(r -> LessonRecordDecoders.ANSWER.decode(r).getOrThrow());
+                .fetchOptional()
+                .map(r -> LessonRecordDecoders.ANSWER.decode(r).getOrThrow());
     }
 
     public List<Answer> listByAnswerer(UserId answererId) {
-        return dsl.select(ID, PROBLEM_ID, ANSWERER_ID, REPOSITORY_URL)
-                .from(table("answers"))
-                .where(ANSWERER_ID.eq(answererId.value()))
-                .fetch(r -> LessonRecordDecoders.ANSWER.decode(r).getOrThrow());
+        return Result.traverse(
+                dsl.select(ID, PROBLEM_ID, ANSWERER_ID, REPOSITORY_URL)
+                        .from(table("answers"))
+                        .where(ANSWERER_ID.eq(answererId.value()))
+                        .fetch(),
+                LessonRecordDecoders.ANSWER::decode).getOrThrow();
     }
 
     /**
@@ -68,14 +70,16 @@ public class AnswerDao {
      * user ids resolved from the User context's ConnectionDao).
      */
     public List<Answer> listByAnswerers(List<UserId> answererIds) {
-        if (answererIds == null || answererIds.isEmpty()) {
+        if (answererIds.isEmpty()) {
             return List.of();
         }
         List<String> values = answererIds.stream().map(UserId::value).toList();
-        return dsl.select(ID, PROBLEM_ID, ANSWERER_ID, REPOSITORY_URL)
-                .from(table("answers"))
-                .where(ANSWERER_ID.in(values))
-                .fetch(r -> LessonRecordDecoders.ANSWER.decode(r).getOrThrow());
+        return Result.traverse(
+                dsl.select(ID, PROBLEM_ID, ANSWERER_ID, REPOSITORY_URL)
+                        .from(table("answers"))
+                        .where(ANSWERER_ID.in(values))
+                        .fetch(),
+                LessonRecordDecoders.ANSWER::decode).getOrThrow();
     }
 
 }

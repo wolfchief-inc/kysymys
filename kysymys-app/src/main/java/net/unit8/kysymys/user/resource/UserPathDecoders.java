@@ -21,9 +21,9 @@ import static net.unit8.raoh.decode.ObjectDecoders.string;
 public final class UserPathDecoders {
     private UserPathDecoders() {}
 
-    /** {@code :id} of a User — a non-blank principal identifier. */
+    /** {@code :id} of a User — a 21-char nanoid, matching {@code UserJsonDecoders}. */
     public static final Decoder<Object, UserId> USER_ID =
-            string().nonBlank().map(UserId::of);
+            string().fixedLength(21).map(UserId::of);
 
     /** {@code :id} of a follow Offer — a 21-char nanoid. */
     public static final Decoder<Object, OfferId> OFFER_ID =

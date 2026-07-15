@@ -4,7 +4,6 @@ import net.unit8.kysymys.lesson.dao.DaoTestSupport;
 import net.unit8.kysymys.lesson.dao.ReviewCommentDao;
 import net.unit8.kysymys.lesson.data.*;
 import net.unit8.kysymys.user.data.UserId;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -13,18 +12,10 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PostCommentTest {
-    private static DaoTestSupport support;
-    private static CreateProblem create;
-    private static SubmitAnswer submit;
-    private static PostComment post;
-
-    @BeforeAll
-    static void setUp() {
-        support = new DaoTestSupport();
-        create = new CreateProblem(support.dsl());
-        submit = new SubmitAnswer(support.dsl());
-        post = new PostComment(support.dsl());
-    }
+    private static final DaoTestSupport support = new DaoTestSupport();
+    private static final CreateProblem create = new CreateProblem(support.dsl());
+    private static final SubmitAnswer submit = new SubmitAnswer(support.dsl());
+    private static final PostComment post = new PostComment(support.dsl());
 
     @Test
     void postsCommentForExistingAnswer() {

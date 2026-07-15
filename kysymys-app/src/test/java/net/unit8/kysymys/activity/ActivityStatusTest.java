@@ -6,7 +6,6 @@ import net.unit8.kysymys.activity.data.ActivityKind;
 import net.unit8.kysymys.activity.data.ParticipantStatus;
 import net.unit8.kysymys.lesson.dao.DaoTestSupport;
 import net.unit8.kysymys.user.data.UserId;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -16,16 +15,9 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ActivityStatusTest {
-    private static DaoTestSupport support;
-    private static RecordActivity record;
-    private static ListParticipantStatus list;
-
-    @BeforeAll
-    static void setUp() {
-        support = new DaoTestSupport();
-        record = new RecordActivity(support.dsl());
-        list = new ListParticipantStatus(support.dsl());
-    }
+    private static final DaoTestSupport support = new DaoTestSupport();
+    private static final RecordActivity record = new RecordActivity(support.dsl());
+    private static final ListParticipantStatus list = new ListParticipantStatus(support.dsl());
 
     private static Optional<ParticipantStatus> statusOf(UserId who) {
         return list.apply().stream().filter(s -> s.participantId().equals(who)).findFirst();

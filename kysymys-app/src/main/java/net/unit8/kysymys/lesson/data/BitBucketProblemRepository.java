@@ -14,6 +14,11 @@ public record BitBucketProblemRepository(String url, String branch, String readm
     }
 
     @Override
+    public String typeKey() {
+        return "bitbucket";
+    }
+
+    @Override
     public String problemUrl() {
         return chopDotGit(url) + "/src/" + branch + readmePath;
     }

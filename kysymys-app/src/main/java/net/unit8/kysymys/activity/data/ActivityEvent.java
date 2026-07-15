@@ -1,6 +1,7 @@
 package net.unit8.kysymys.activity.data;
 
 import net.unit8.kysymys.user.data.UserId;
+import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -16,9 +17,9 @@ import java.util.Objects;
 public record ActivityEvent(
         ActivityEventId id,
         UserId participantId,
-        String problemId,
+        @Nullable String problemId,
         ActivityKind kind,
-        String detail,
+        @Nullable String detail,
         LocalDateTime occurredAt
 ) {
     public ActivityEvent {

@@ -20,6 +20,8 @@ import tools.jackson.databind.JsonNode;
 import java.security.Principal;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import static kotowari.restful.DecisionPoint.*;
 
 @AllowedMethods({"GET", "PUT"})
@@ -30,7 +32,7 @@ public class UserResource {
             ContextKey.of("updateInput", UserJsonDecoders.UpdateProfileInput.class);
 
     @Decision(AUTHORIZED)
-    public boolean authorized(Principal principal, DSLContext dsl, KysymysEventBus eventBus) {
+    public boolean authorized(@Nullable Principal principal, DSLContext dsl, KysymysEventBus eventBus) {
         if (principal == null) return false;
         PrincipalRegistration.ensure(principal, dsl, eventBus);
         return true;
@@ -48,7 +50,7 @@ public class UserResource {
     }
 
     @Decision(value = MALFORMED, method = {"PUT"})
-    public Problem validate(JsonNode body, RestContext context) {
+    public @Nullable Problem validate(JsonNode body, RestContext context) {
         return UserJsonDecoders.UPDATE_PROFILE.decode(body).fold(
                 input -> { context.put(INPUT, input); return null; },
                 Problems::of);

@@ -1,6 +1,7 @@
 package net.unit8.kysymys.activity.data;
 
 import net.unit8.kysymys.user.data.UserId;
+import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDateTime;
 
@@ -20,11 +21,11 @@ import java.time.LocalDateTime;
  */
 public record ParticipantStatus(
         UserId participantId,
-        String problemId,
+        @Nullable String problemId,
         LocalDateTime lastActivityAt,
-        ActivityKind lastBuildKind,
-        LocalDateTime lastBuildAt,
-        String lastBuildDetail,
+        @Nullable ActivityKind lastBuildKind,
+        @Nullable LocalDateTime lastBuildAt,
+        @Nullable String lastBuildDetail,
         boolean stuck
 ) {
 }
