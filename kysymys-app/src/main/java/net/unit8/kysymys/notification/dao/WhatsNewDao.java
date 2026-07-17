@@ -1,10 +1,10 @@
 package net.unit8.kysymys.notification.dao;
 
-import net.unit8.kysymys.notification.data.TemplatePath;
 import net.unit8.kysymys.notification.data.UnreadWhatsNew;
 import net.unit8.kysymys.notification.data.WhatsNew;
 import net.unit8.kysymys.notification.data.WhatsNewId;
 import net.unit8.kysymys.user.data.UserId;
+import net.unit8.raoh.Result;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import tools.jackson.databind.ObjectMapper;
@@ -52,19 +52,13 @@ public class WhatsNewDao {
     }
 
     public List<WhatsNew> listByUser(UserId userId) {
-        return dsl.select(ID, USER_ID, TEMPLATE_PATH, PARAMS, POSTED_AT)
-                .from(table("whats_news"))
-                .where(USER_ID.eq(userId.value()))
-                .orderBy(POSTED_AT.desc())
-                .fetch(r -> {
-                    Map<String, Object> params = deserialiseParams(r.get(PARAMS));
-                    return new WhatsNew(
-                            WhatsNewId.of(r.get(ID)),
-                            UserId.of(r.get(USER_ID)),
-                            TemplatePath.of(r.get(TEMPLATE_PATH)),
-                            params,
-                            r.get(POSTED_AT));
-                });
+        return Result.traverse(
+                dsl.select(ID, USER_ID, TEMPLATE_PATH, PARAMS, POSTED_AT)
+                        .from(table("whats_news"))
+                        .where(USER_ID.eq(userId.value()))
+                        .orderBy(POSTED_AT.desc())
+                        .fetch(),
+                NotificationRecordDecoders.WHATS_NEW::decode).getOrThrow();
     }
 
     /** Deletes the unread row for {@code whatsNewId} owned by {@code userId}. Returns rows affected. */
@@ -83,7 +77,7 @@ public class WhatsNewDao {
     }
 
     private static String serialiseParams(Map<String, Object> params) {
-        if (params == null || params.isEmpty()) return "{}";
+        if (params.isEmpty()) return "{}";
         try {
             return JSON.writeValueAsString(params);
         } catch (Exception e) {
@@ -92,8 +86,8 @@ public class WhatsNewDao {
     }
 
     @SuppressWarnings("unchecked")
-    private static Map<String, Object> deserialiseParams(String json) {
-        if (json == null || json.isBlank()) return Map.of();
+    static Map<String, Object> deserialiseParams(String json) {
+        if (json.isBlank()) return Map.of();
         try {
             return JSON.readValue(json, Map.class);
         } catch (Exception e) {

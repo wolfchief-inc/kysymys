@@ -8,6 +8,8 @@ import jakarta.inject.Inject;
 import net.unit8.kysymys.avatar.behavior.EnsureAvatar;
 import net.unit8.kysymys.avatar.image.EightBitAvatarGenerator;
 import net.unit8.kysymys.user.data.UserId;
+import net.unit8.kysymys.user.resource.UserPathDecoders;
+import net.unit8.raoh.Ok;
 import org.jooq.DSLContext;
 
 import java.io.ByteArrayInputStream;
@@ -36,9 +38,7 @@ public class AvatarEndpoint implements Endpoint<HttpRequest, HttpResponse> {
             r.setStatus(404);
             return r;
         }
-        UserId userId;
-        try { userId = UserId.of(m.group(1)); }
-        catch (IllegalArgumentException ex) {
+        if (!(UserPathDecoders.USER_ID.decode(m.group(1)) instanceof Ok<UserId>(var userId))) {
             HttpResponse r = HttpResponse.of("Invalid user id");
             r.setStatus(404);
             return r;

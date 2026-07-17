@@ -7,6 +7,7 @@ import enkan.web.data.HttpRequest;
 import enkan.web.data.HttpResponse;
 import enkan.web.middleware.WebMiddleware;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Middleware that exposes the {@link KysymysEventBus} singleton to downstream
@@ -20,8 +21,8 @@ public class EventBusBindMiddleware implements WebMiddleware {
     KysymysEventBus eventBus;
 
     @Override
-    public <NNREQ, NNRES> HttpResponse handle(HttpRequest request,
-                                              MiddlewareChain<HttpRequest, HttpResponse, NNREQ, NNRES> chain) {
+    public <NNREQ, NNRES> @Nullable HttpResponse handle(HttpRequest request,
+                                                        MiddlewareChain<HttpRequest, HttpResponse, NNREQ, NNRES> chain) {
         Object proxy = request;
         if (proxy instanceof Extendable e) {
             e.setExtension("kysymysEventBus", eventBus);

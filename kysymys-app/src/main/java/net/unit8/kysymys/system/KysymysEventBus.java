@@ -25,7 +25,7 @@ public class KysymysEventBus extends SystemComponent<KysymysEventBus> {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public <T extends KysymysEvent> void subscribe(Class<T> type, Consumer<T> handler) {
-        subscribers.computeIfAbsent(type, k -> new CopyOnWriteArrayList<>())
+        subscribers.computeIfAbsent(type, _ -> new CopyOnWriteArrayList<>())
                 .add((Consumer) handler);
     }
 

@@ -5,7 +5,6 @@ import kotowari.restful.Decision;
 import kotowari.restful.resource.AllowedMethods;
 import net.unit8.kysymys.notification.behavior.MarkAsRead;
 import net.unit8.kysymys.notification.dao.WhatsNewDao;
-import net.unit8.kysymys.notification.data.WhatsNewId;
 import net.unit8.kysymys.system.KysymysEventBus;
 import net.unit8.kysymys.user.behavior.PrincipalRegistration;
 import net.unit8.kysymys.user.data.UserId;
@@ -13,6 +12,8 @@ import org.jooq.DSLContext;
 
 import java.security.Principal;
 import java.util.Map;
+
+import org.jspecify.annotations.Nullable;
 
 import static kotowari.restful.DecisionPoint.AUTHORIZED;
 import static kotowari.restful.DecisionPoint.HANDLE_OK;
@@ -25,7 +26,7 @@ import static kotowari.restful.DecisionPoint.EXISTS;
 public class WhatsNewsResource {
 
     @Decision(AUTHORIZED)
-    public boolean authorized(Principal principal, DSLContext dsl, KysymysEventBus eventBus) {
+    public boolean authorized(@Nullable Principal principal, DSLContext dsl, KysymysEventBus eventBus) {
         if (principal == null) return false;
         PrincipalRegistration.ensure(principal, dsl, eventBus);
         return true;
@@ -33,8 +34,7 @@ public class WhatsNewsResource {
 
     @Decision(value = EXISTS, method = {"PUT"})
     public boolean exists(Parameters params) {
-        try { WhatsNewId.of(params.get("id")); return true; }
-        catch (IllegalArgumentException ex) { return false; }
+        return NotificationPathDecoders.WHATS_NEW_ID.decode(params.get("id")).isOk();
     }
 
     @Decision(value = NEW, method = {"PUT"})
@@ -45,9 +45,9 @@ public class WhatsNewsResource {
 
     @Decision(PUT)
     public boolean markRead(Parameters params, Principal principal, DSLContext dsl) {
-        WhatsNewId id = WhatsNewId.of(params.get("id"));
         UserId caller = UserId.of(principal.getName());
-        return new MarkAsRead(dsl).apply(id, caller);
+        return NotificationPathDecoders.WHATS_NEW_ID.decode(params.get("id"))
+                .fold(id -> new MarkAsRead(dsl).apply(id, caller), _ -> false);
     }
 
     @Decision(HANDLE_OK)

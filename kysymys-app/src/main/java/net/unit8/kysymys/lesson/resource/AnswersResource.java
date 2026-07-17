@@ -7,11 +7,10 @@ import kotowari.restful.data.Problem;
 import kotowari.restful.data.RestContext;
 import kotowari.restful.resource.AllowedMethods;
 import net.unit8.kysymys.lesson.behavior.SubmitAnswer;
-import net.unit8.kysymys.lesson.data.ProblemId;
+import net.unit8.kysymys.system.KysymysEventBus;
+import net.unit8.kysymys.system.Problems;
+import net.unit8.kysymys.system.RestContexts;
 import net.unit8.kysymys.user.data.UserId;
-import net.unit8.raoh.Err;
-import net.unit8.raoh.Ok;
-import net.unit8.raoh.Result;
 import org.jooq.DSLContext;
 import tools.jackson.databind.JsonNode;
 
@@ -19,6 +18,8 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
+
+import org.jspecify.annotations.Nullable;
 
 import static kotowari.restful.DecisionPoint.AUTHORIZED;
 import static kotowari.restful.DecisionPoint.HANDLE_CREATED;
@@ -39,35 +40,28 @@ public class AnswersResource {
     }
 
     @Decision(value = MALFORMED, method = {"POST"})
-    public Problem validate(JsonNode body, RestContext context) {
-        Result<LessonJsonDecoders.SubmitAnswerInput> result = LessonJsonDecoders.SUBMIT_ANSWER.decode(body);
-        if (result instanceof Ok<LessonJsonDecoders.SubmitAnswerInput> ok) {
-            context.put(SUBMIT_INPUT, ok.value());
-            return null;
-        }
-        Err<LessonJsonDecoders.SubmitAnswerInput> err = (Err<LessonJsonDecoders.SubmitAnswerInput>) result;
-        return Problem.fromViolationList(ProblemsResource.toViolations(err));
+    public @Nullable Problem validate(JsonNode body, RestContext context) {
+        return LessonJsonDecoders.SUBMIT_ANSWER.decode(body).fold(
+                input -> { context.put(SUBMIT_INPUT, input); return null; },
+                Problems::of);
     }
 
     @Decision(POST)
     public boolean submit(Parameters params, DSLContext dsl, UserId caller,
-                          net.unit8.kysymys.system.KysymysEventBus eventBus, RestContext context) {
-        LessonJsonDecoders.SubmitAnswerInput input = context.get(SUBMIT_INPUT).orElseThrow();
-        ProblemId pid;
-        try { pid = new ProblemId(params.get("id")); }
-        catch (IllegalArgumentException ex) { return false; }
-
-        Optional<SubmitAnswer.Output> out = new SubmitAnswer(dsl, eventBus).apply(
-                new SubmitAnswer.Input(
-                        pid, caller, input.repository(), input.commitHash(),
-                        LocalDateTime.now()));
-        out.ifPresent(o -> context.put(OUTPUT, o));
-        return out.isPresent();
+                          KysymysEventBus eventBus, RestContext context) {
+        return context.get(SUBMIT_INPUT).map(input ->
+                LessonPathDecoders.PROBLEM_ID.decode(params.get("id")).fold(
+                        pid -> RestContexts.stash(context, OUTPUT, new SubmitAnswer(dsl, eventBus).apply(
+                                new SubmitAnswer.Input(pid, caller, input.repository(), input.commitHash(),
+                                        LocalDateTime.now()))),
+                        _ -> false))
+                .orElse(false);
     }
 
     @Decision(HANDLE_CREATED)
     public Map<String, Object> handleCreated(RestContext context) {
-        SubmitAnswer.Output out = context.get(OUTPUT).orElseThrow();
-        return LessonJsonEncoders.encodeAnswer(out.answer(), Optional.of(out.submission()));
+        return context.get(OUTPUT)
+                .map(out -> LessonJsonEncoders.encodeAnswer(out.answer(), Optional.of(out.submission())))
+                .orElseThrow();
     }
 }

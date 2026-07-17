@@ -4,6 +4,7 @@ import enkan.data.Extendable;
 import enkan.web.data.HttpRequest;
 import kotowari.inject.ParameterInjector;
 import org.jooq.DSLContext;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Injects the per-request jOOQ {@link DSLContext} into {@code @Decision} method
@@ -22,7 +23,7 @@ public class DSLContextInjector implements ParameterInjector<DSLContext> {
     }
 
     @Override
-    public DSLContext getInjectObject(HttpRequest request) {
+    public @Nullable DSLContext getInjectObject(HttpRequest request) {
         // HttpRequest itself does not extend Extendable, but middleware (MixinUtils#mixin)
         // returns proxies that implement both. Cast through Object so Java 25's pattern
         // matching does not reject the type pair as statically incompatible.

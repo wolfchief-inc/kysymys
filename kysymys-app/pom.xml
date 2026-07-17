@@ -114,6 +114,14 @@
     </build>
 
     <dependencies>
+        <!-- Jackson 3. raoh-json scopes Jackson as provided (raoh 0.6.0) while exposing JsonNode in
+             its API, so the consumer supplies it. Our resource/decoder classes use JsonNode directly
+             too, so declare it rather than leaning on enkan-component-jackson's transitive copy. -->
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
         <!-- JSON body reader/writer (loaded by SerDesMiddleware via ServiceLoader) -->
         <dependency>
             <groupId>tools.jackson.jakarta.rs</groupId>
@@ -130,6 +138,14 @@
         <dependency>
             <groupId>net.unit8.enkan</groupId>
             <artifactId>kotowari-restful-devel</artifactId>
+            <version>${enkan.version}</version>
+        </dependency>
+        <!-- kotowari-restful 0.15.2 still declares kotowari:0.15.0 transitively, which predates
+             the JSpecify @NullMarked package-info. Pin the base to 0.15.2 so ParameterInjector
+             carries the null contract and our @NullMarked injectors line up. -->
+        <dependency>
+            <groupId>net.unit8.enkan</groupId>
+            <artifactId>kotowari</artifactId>
             <version>${enkan.version}</version>
         </dependency>
         <dependency>
@@ -169,7 +185,7 @@
         <dependency>
             <groupId>net.unit8.enkan</groupId>
             <artifactId>enkan-bouncr</artifactId>
-            <version>${enkan.version}</version>
+            <version>${bouncr.version}</version>
         </dependency>
 
         <!-- Raoh (validation) -->
@@ -182,6 +198,15 @@
             <groupId>net.unit8.raoh</groupId>
             <artifactId>raoh-jooq</artifactId>
             <version>${raoh.version}</version>
+        </dependency>
+
+        <!-- jspecify null annotations (@NullMarked); compile-time only. Makes the
+             IDE's null analysis declaration-based and coherent with Raoh's contract. -->
+        <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>1.0.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Bean Validation (required by kotowari-restful BeansValidator) -->
@@ -214,6 +239,15 @@
             <groupId>com.talanlabs</groupId>
             <artifactId>avatar-generator-8bit</artifactId>
             <version>1.1.0</version>
+            <exclusions>
+                <!-- Ancient JSR-305 @Nonnull (via reflections 0.9.10). The IDE's
+                     "automatic" null analysis picks it up and mis-flags method
+                     references; drop it so jspecify is the null-annotation contract. -->
+                <exclusion>
+                    <groupId>com.google.code.findbugs</groupId>
+                    <artifactId>annotations</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- DB drivers -->
@@ -226,7 +260,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.3</version>
+            <version>42.7.13</version>
             <scope>runtime</scope>
         </dependency>
 

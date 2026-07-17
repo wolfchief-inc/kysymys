@@ -3,9 +3,9 @@ package net.unit8.kysymys.user.dao;
 import net.unit8.kysymys.user.data.Offer;
 import net.unit8.kysymys.user.data.OfferId;
 import net.unit8.kysymys.user.data.UserId;
+import net.unit8.raoh.Result;
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.jooq.Record;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,19 +36,21 @@ public class OfferDao {
     }
 
     public Optional<Offer> findById(OfferId id) {
-        Record rec = dsl.select(ID, OFFERING_USER_ID, TARGET_USER_ID, OFFERED_AT)
+        return dsl.select(ID, OFFERING_USER_ID, TARGET_USER_ID, OFFERED_AT)
                 .from(table("offers"))
                 .where(ID.eq(id.value()))
-                .fetchOne();
-        return Optional.ofNullable(rec).map(OfferDao::mapOffer);
+                .fetchOptional()
+                .map(r -> UserRecordDecoders.OFFER.decode(r).getOrThrow());
     }
 
     public List<Offer> listByTarget(UserId targetUserId) {
-        return dsl.select(ID, OFFERING_USER_ID, TARGET_USER_ID, OFFERED_AT)
-                .from(table("offers"))
-                .where(TARGET_USER_ID.eq(targetUserId.value()))
-                .orderBy(OFFERED_AT.asc())
-                .fetch(OfferDao::mapOffer);
+        return Result.traverse(
+                dsl.select(ID, OFFERING_USER_ID, TARGET_USER_ID, OFFERED_AT)
+                        .from(table("offers"))
+                        .where(TARGET_USER_ID.eq(targetUserId.value()))
+                        .orderBy(OFFERED_AT.asc())
+                        .fetch(),
+                UserRecordDecoders.OFFER::decode).getOrThrow();
     }
 
     public boolean alreadyExists(UserId offeringUserId, UserId targetUserId) {
@@ -60,13 +62,5 @@ public class OfferDao {
 
     public void delete(OfferId id) {
         dsl.deleteFrom(table("offers")).where(ID.eq(id.value())).execute();
-    }
-
-    private static Offer mapOffer(Record r) {
-        return new Offer(
-                OfferId.of(r.get(ID)),
-                UserId.of(r.get(OFFERING_USER_ID)),
-                UserId.of(r.get(TARGET_USER_ID)),
-                r.get(OFFERED_AT));
     }
 }

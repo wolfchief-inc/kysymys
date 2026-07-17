@@ -6,6 +6,7 @@ import net.unit8.kysymys.activity.data.ActivityEventId;
 import net.unit8.kysymys.activity.data.ActivityKind;
 import net.unit8.kysymys.user.data.UserId;
 import org.jooq.DSLContext;
+import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDateTime;
 
@@ -31,9 +32,9 @@ public class RecordActivity {
 
     public record Input(
             UserId participantId,
-            String problemId,
+            @Nullable String problemId,
             ActivityKind kind,
-            String detail,
+            @Nullable String detail,
             LocalDateTime now
     ) {
     }

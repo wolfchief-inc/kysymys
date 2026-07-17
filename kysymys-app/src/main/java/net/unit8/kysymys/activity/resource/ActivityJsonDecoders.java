@@ -2,9 +2,8 @@ package net.unit8.kysymys.activity.resource;
 
 import net.unit8.kysymys.activity.data.ActivityKind;
 import net.unit8.raoh.decode.Decoder;
+import org.jspecify.annotations.Nullable;
 import tools.jackson.databind.JsonNode;
-
-import java.util.regex.Pattern;
 
 import static net.unit8.raoh.json.JsonDecoders.*;
 
@@ -19,16 +18,12 @@ import static net.unit8.raoh.json.JsonDecoders.*;
 public final class ActivityJsonDecoders {
     private ActivityJsonDecoders() {}
 
-    private static final Pattern KIND = Pattern.compile(
-            "^(BUILD_SUCCESS|BUILD_FAILURE|HEARTBEAT|STUCK|RESOLVED)$");
-
     public static final Decoder<JsonNode, RecordActivityInput> RECORD_ACTIVITY = combine(
-            field("kind", string().pattern(KIND)).map(ActivityKind::valueOf),
-            optionalField("problemId", string().minLength(1).maxLength(64)),
-            optionalField("detail", string().maxLength(2000))
-    ).map((kind, problemId, detail) ->
-            new RecordActivityInput(kind, problemId.orElse(null), detail.orElse(null)));
+            field("kind", enumOf(ActivityKind.class)),
+            nullableField("problemId", string().minLength(1).maxLength(64)),
+            nullableField("detail", string().maxLength(2000))
+    ).map(RecordActivityInput::new);
 
     /** Decoder output for POST /activity. */
-    public record RecordActivityInput(ActivityKind kind, String problemId, String detail) {}
+    public record RecordActivityInput(ActivityKind kind, @Nullable String problemId, @Nullable String detail) {}
 }

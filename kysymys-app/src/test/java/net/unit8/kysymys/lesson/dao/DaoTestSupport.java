@@ -11,8 +11,8 @@ import java.util.UUID;
 
 /**
  * Test-only helper. Creates a private in-memory H2 database, runs Flyway,
- * and exposes a jOOQ {@link DSLContext}. Each dao test class instantiates
- * one of these in {@code @BeforeAll}.
+ * and exposes a jOOQ {@link DSLContext}. Each dao test class holds one as a
+ * {@code static final} field.
  */
 public final class DaoTestSupport implements AutoCloseable {
     private final DataSource dataSource;

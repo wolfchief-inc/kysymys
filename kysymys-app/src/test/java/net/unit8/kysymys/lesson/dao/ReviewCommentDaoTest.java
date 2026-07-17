@@ -2,7 +2,6 @@ package net.unit8.kysymys.lesson.dao;
 
 import net.unit8.kysymys.lesson.data.*;
 import net.unit8.kysymys.user.data.UserId;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -11,14 +10,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReviewCommentDaoTest {
-    private static DaoTestSupport support;
-    private static ReviewCommentDao comments;
-
-    @BeforeAll
-    static void setUp() {
-        support = new DaoTestSupport();
-        comments = new ReviewCommentDao(support.dsl());
-    }
+    private static final DaoTestSupport support = new DaoTestSupport();
+    private static final ReviewCommentDao comments = new ReviewCommentDao(support.dsl());
 
     @Test
     void insertAndListByAnswerInPostedOrder() {

@@ -3,6 +3,7 @@ package net.unit8.kysymys.user.behavior;
 import net.unit8.kysymys.user.dao.UserDao;
 import net.unit8.kysymys.user.data.*;
 import org.jooq.DSLContext;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -18,14 +19,17 @@ public class UpdateProfile {
         Optional<User> existing = dao.findById(in.userId());
         if (existing.isEmpty()) return Optional.empty();
 
+        User current = existing.get();
+        @Nullable EmailAddress email = in.email();
+        @Nullable UserName name = in.name();
         User updated = new User(
-                existing.get().id(),
-                in.email() != null ? in.email() : existing.get().email(),
-                in.name() != null ? in.name() : existing.get().name(),
-                existing.get().roles());
+                current.id(),
+                email != null ? email : current.email(),
+                name != null ? name : current.name(),
+                current.roles());
         dsl.transaction(cfg -> new UserDao(cfg.dsl()).upsert(updated));
         return Optional.of(updated);
     }
 
-    public record Input(UserId userId, EmailAddress email, UserName name) {}
+    public record Input(UserId userId, @Nullable EmailAddress email, @Nullable UserName name) {}
 }

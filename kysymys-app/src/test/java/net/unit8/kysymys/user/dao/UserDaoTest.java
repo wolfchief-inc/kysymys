@@ -3,7 +3,6 @@ package net.unit8.kysymys.user.dao;
 import net.unit8.kysymys.lesson.dao.DaoTestSupport;
 import net.unit8.kysymys.lesson.data.IdGenerator;
 import net.unit8.kysymys.user.data.*;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -13,14 +12,8 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserDaoTest {
-    private static DaoTestSupport support;
-    private static UserDao dao;
-
-    @BeforeAll
-    static void setUp() {
-        support = new DaoTestSupport();
-        dao = new UserDao(support.dsl());
-    }
+    private static final DaoTestSupport support = new DaoTestSupport();
+    private static final UserDao dao = new UserDao(support.dsl());
 
     @Test
     void upsertInsertsThenUpdates() {

@@ -6,12 +6,13 @@ import kotowari.restful.resource.AllowedMethods;
 import net.unit8.kysymys.system.KysymysEventBus;
 import net.unit8.kysymys.user.behavior.AcceptFollow;
 import net.unit8.kysymys.user.behavior.PrincipalRegistration;
-import net.unit8.kysymys.user.data.OfferId;
 import net.unit8.kysymys.user.data.UserId;
 import org.jooq.DSLContext;
 
 import java.security.Principal;
 import java.util.Map;
+
+import org.jspecify.annotations.Nullable;
 
 import static kotowari.restful.DecisionPoint.*;
 
@@ -19,7 +20,7 @@ import static kotowari.restful.DecisionPoint.*;
 public class AcceptOfferResource {
 
     @Decision(AUTHORIZED)
-    public boolean authorized(Principal principal, DSLContext dsl, KysymysEventBus eventBus) {
+    public boolean authorized(@Nullable Principal principal, DSLContext dsl, KysymysEventBus eventBus) {
         if (principal == null) return false;
         PrincipalRegistration.ensure(principal, dsl, eventBus);
         return true;
@@ -27,8 +28,7 @@ public class AcceptOfferResource {
 
     @Decision(EXISTS)
     public boolean exists(Parameters params) {
-        try { OfferId.of(params.get("id")); return true; }
-        catch (IllegalArgumentException ex) { return false; }
+        return UserPathDecoders.OFFER_ID.decode(params.get("id")).isOk();
     }
 
     @Decision(NEW)
@@ -39,9 +39,9 @@ public class AcceptOfferResource {
 
     @Decision(PUT)
     public boolean accept(Parameters params, Principal principal, DSLContext dsl) {
-        OfferId offerId = OfferId.of(params.get("id"));
         UserId caller = UserId.of(principal.getName());
-        return new AcceptFollow(dsl).apply(offerId, caller);
+        return UserPathDecoders.OFFER_ID.decode(params.get("id"))
+                .fold(offerId -> new AcceptFollow(dsl).apply(offerId, caller), _ -> false);
     }
 
     @Decision(HANDLE_OK)

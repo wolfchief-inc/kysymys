@@ -8,6 +8,7 @@ import enkan.web.data.HttpResponse;
 import enkan.web.middleware.WebMiddleware;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 import net.unit8.kysymys.events.OfferedToFollowEvent;
 import net.unit8.kysymys.events.SubmittedAnswerEvent;
 import net.unit8.kysymys.notification.behavior.RecordWhatsNew;
@@ -42,8 +43,8 @@ public class RecordWhatsNewSubscriber implements WebMiddleware {
     }
 
     @Override
-    public <NNREQ, NNRES> HttpResponse handle(HttpRequest request,
-                                              MiddlewareChain<HttpRequest, HttpResponse, NNREQ, NNRES> chain) {
+    public <NNREQ, NNRES> @Nullable HttpResponse handle(HttpRequest request,
+                                                        MiddlewareChain<HttpRequest, HttpResponse, NNREQ, NNRES> chain) {
         return chain.next(request);
     }
 }

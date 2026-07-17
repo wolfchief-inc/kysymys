@@ -4,6 +4,7 @@ import enkan.data.Extendable;
 import enkan.web.data.HttpRequest;
 import kotowari.inject.ParameterInjector;
 import net.unit8.kysymys.system.KysymysEventBus;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Injects the singleton {@link KysymysEventBus} into resource methods.
@@ -23,7 +24,7 @@ public class EventBusInjector implements ParameterInjector<KysymysEventBus> {
     }
 
     @Override
-    public KysymysEventBus getInjectObject(HttpRequest request) {
+    public @Nullable KysymysEventBus getInjectObject(HttpRequest request) {
         Object proxy = request;
         if (proxy instanceof Extendable e) {
             return e.getExtension("kysymysEventBus");
