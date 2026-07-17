@@ -1,0 +1,11 @@
+# 演習リポジトリのルート (pom.xml と同じ階層) に kysymys.properties として置く。
+# 値は研修主催者から配布される。
+
+# 講師の kysymys サーバ
+kysymys.url=http://INSTRUCTOR_HOST:3000
+
+# 取り組む問題の ID
+kysymys.problemId=PROBLEM_ID
+
+# 参加者ごとに配布される Bouncr JWT (これで本人として識別される)
+kysymys.token=YOUR_JWT_HERE

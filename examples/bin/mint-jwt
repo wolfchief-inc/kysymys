@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+"""dev 用の HS256 JWT を発行する。
+
+kysymys の BouncrBackend は x-bouncr-credential ヘッダの JWT を KYSYMYS_JWT_SECRET
+(dev 既定 "kysymys-dev-jwt-secret-not-for-production") で検証し、claims から
+UserPermissionPrincipal を作る。読む claim は:
+
+  sub          -> principal 名 = UserId (必須)
+  permissions  -> 権限の配列 (例 ["TEACHER"] / ["STUDENT"])
+  uid          -> 数値 id (任意)
+  その他        -> profiles (name / email など)
+
+本物の Bouncr スタックの代わりに研修 dev / verify.sh で使う。本番トークンではない。
+
+使い方:
+  mint-jwt --sub alice --perm STUDENT --name Alice --email alice@example.com
+  mint-jwt --sub teacher1 --perm TEACHER
+  KYSYMYS_JWT_SECRET=... mint-jwt --sub bob            # 秘密鍵を環境変数で上書き
+"""
+import argparse
+import base64
+import hashlib
+import hmac
+import json
+import os
+import sys
+
+DEV_SECRET = "kysymys-dev-jwt-secret-not-for-production"
+
+
+def b64url(raw: bytes) -> str:
+    return base64.urlsafe_b64encode(raw).rstrip(b"=").decode("ascii")
+
+
+def main() -> int:
+    p = argparse.ArgumentParser(description="Mint an HS256 dev JWT for kysymys.")
+    p.add_argument("--sub", required=True, help="principal id (sub claim = UserId)")
+    p.add_argument("--perm", action="append", default=[],
+                   help="permission, repeatable (e.g. --perm TEACHER)")
+    p.add_argument("--uid", type=int, default=None, help="numeric uid claim (optional)")
+    p.add_argument("--name", default=None, help="display name (profile claim)")
+    p.add_argument("--email", default=None, help="email (profile claim)")
+    p.add_argument("--secret", default=os.environ.get("KYSYMYS_JWT_SECRET", DEV_SECRET),
+                   help="HMAC secret (default: env KYSYMYS_JWT_SECRET or dev secret)")
+    args = p.parse_args()
+
+    header = {"alg": "HS256", "typ": "JWT"}
+    claims: dict = {"sub": args.sub, "permissions": args.perm}
+    if args.uid is not None:
+        claims["uid"] = args.uid
+    if args.name is not None:
+        claims["name"] = args.name
+    if args.email is not None:
+        claims["email"] = args.email
+
+    signing_input = (
+        b64url(json.dumps(header, separators=(",", ":")).encode())
+        + "."
+        + b64url(json.dumps(claims, separators=(",", ":")).encode())
+    )
+    sig = hmac.new(args.secret.encode(), signing_input.encode(), hashlib.sha256).digest()
+    print(signing_input + "." + b64url(sig))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

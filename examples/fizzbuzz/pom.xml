@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  演習問題プロジェクト (FizzBuzz)。
+
+  研修参加者はこのリポジトリを clone し、src/main の FizzBuzz を実装して
+  `mvn net.unit8.kysymys:kysymys-maven-plugin:submit` (省略形 `mvn kysymys:submit`)
+  で kysymys サーバに提出する。ビルドのたびに .mvn/extensions.xml の
+  kysymys-activity-agent が作業状況を送る。
+
+  自己完結の standalone プロジェクトで、kysymys-parent の子ではない (研修参加者は
+  kysymys 本体を clone しない)。依存する SNAPSHOT (scorer / plugin / activity-agent) は
+  研修主催者が事前に配布した ~/.m2 のものを解決する。
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.unit8.kysymys.example</groupId>
+    <artifactId>fizzbuzz</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>kysymys-example-fizzbuzz</name>
+    <description>Kysymys 演習問題のサンプル: FizzBuzz</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
+        <!-- 研修主催者が配布した kysymys モジュール群のバージョン -->
+        <kysymys.version>0.2.0-SNAPSHOT</kysymys.version>
+        <junit.version>5.10.2</junit.version>
+    </properties>
+
+    <dependencies>
+        <!-- 採点ロジック。KysymysTestLauncher が junit-platform を走らせて点数を stdout に出す -->
+        <dependency>
+            <groupId>net.unit8.kysymys</groupId>
+            <artifactId>kysymys-scorer-java</artifactId>
+            <version>${kysymys.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+            </plugin>
+            <!-- `mvn -Pscore test-compile exec:java` で自己採点 (点数を stdout に出力) -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <mainClass>net.unit8.kysymys.example.fizzbuzz.Scoring</mainClass>
+                    <classpathScope>test</classpathScope>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
