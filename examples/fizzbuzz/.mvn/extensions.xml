@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  研修参加者の演習リポジトリに .mvn/extensions.xml として置く。
+  これだけで mvn 実行のたびにビルド成否が、ファイル編集のたびに heartbeat が
+  講師の kysymys サーバに送られる。接続先と本人トークンは隣の kysymys.properties で渡す。
+-->
+<extensions>
+  <extension>
+    <groupId>net.unit8.kysymys</groupId>
+    <artifactId>kysymys-activity-agent</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
+  </extension>
+</extensions>
